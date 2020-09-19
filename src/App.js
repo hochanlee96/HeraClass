@@ -1,29 +1,24 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
+
+import Home from './containers/Home/Home';
+import ClassList from './containers/ClassList/ClassList';
 
 function App() {
+
+  let routes = (
+    <Switch>
+      <Route path="/home" exact component={Home} />
+      <Route path="/class-list" exact component={ClassList} />
+      <Route path="/" exact component={Home} />
+      <Redirect to="/home" />
+    </Switch>)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hello Hochan!
-        </p>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {routes}
     </div>
   );
 }
 
-export default App;
+export default withRouter(App);
