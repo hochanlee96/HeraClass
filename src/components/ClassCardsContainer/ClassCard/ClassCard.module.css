@@ -1,0 +1,29 @@
+.ClassCard{
+    background-color: aqua;
+    width: 320px;
+    height: 400px;
+    display: inline-block;
+    margin: 10px 10px;
+    border-radius: 10px;
+}
+
+.ImageContainer{
+    width: 100%;
+    height: 60%;
+    overflow: hidden;
+}
+
+.Image{
+    width: 100%;
+    height: 100%;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.Summary{
+    width: 100%
+}
+
+.Title{
+    font-weight: bold;
+}

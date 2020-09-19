@@ -3,7 +3,7 @@ class Class {
         this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
-        this.address = addrss;
+        this.address = address;
         this.category = category;
         this.details = details;
     }

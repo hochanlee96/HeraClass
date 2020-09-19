@@ -1,5 +1,4 @@
 import Class from '../models/class';
-import classes from '*.module.css';
 
 const CLASSES = [
     new Class(
