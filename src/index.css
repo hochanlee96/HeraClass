@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: 'CookieRun-Black';
+  src: local('CookieRun-Black'), url(./fonts/CookieRunFont/CookieRun-Black.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'CookieRun-Bold';
+  src: local('CookieRun-Bold'), url(./fonts/CookieRunFont/CookieRun-Bold.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'CookieRun-Regular';
+  src: local('CookieRun-Regular'), url(./fonts/CookieRunFont/CookieRun-Regular.ttf) format('truetype');
+}
