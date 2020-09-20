@@ -4,12 +4,12 @@ import classes from './ClassCard.module.css';
 
 const ClassCard = props => {
 
-    const clickHandler = () => {
-        console.log("clicked!");
+    const clickHandler = classId => {
+        props.history.push(`/detail/${classId}`);;
     }
 
     return (
-        <div className={classes.ClassCard} onClick={clickHandler}>
+        <div className={classes.ClassCard} onClick={() => clickHandler(props.classId)}>
             <div className={classes.ImageContainer}>
                 <img className={classes.Image} src={props.imageUrl} alt='' />
             </div>

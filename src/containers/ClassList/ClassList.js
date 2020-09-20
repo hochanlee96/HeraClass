@@ -9,7 +9,7 @@ const ClassList = props => {
         <Layout>
             <p>This is the Class List container</p>
             <div className={classes.MainContainer}>
-                <ClassListContainer />
+                <ClassListContainer history={props.history} />
             </div>
         </Layout>
     )
