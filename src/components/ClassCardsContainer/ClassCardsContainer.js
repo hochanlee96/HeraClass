@@ -9,6 +9,7 @@ const ClassCardsContainer = props => {
     const classList = CLASSES.map(classData => {
         return (
             <ClassCard
+                key={classData.id}
                 imageUrl={classData.imageUrl}
                 title={classData.title}
                 address={classData.address}

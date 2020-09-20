@@ -3,8 +3,13 @@ import React from 'react';
 import classes from './ClassCard.module.css';
 
 const ClassCard = props => {
+
+    const clickHandler = () => {
+        console.log("clicked!");
+    }
+
     return (
-        <div className={classes.ClassCard}>
+        <div className={classes.ClassCard} onClick={clickHandler}>
             <div className={classes.ImageContainer}>
                 <img className={classes.Image} src={props.imageUrl} alt='' />
             </div>
