@@ -5,6 +5,7 @@ import ClassListContainer from '../../components/ClassCardsContainer/ClassCardsC
 import classes from './ClassList.module.css';
 
 const ClassList = props => {
+
     return (
         <Layout>
             <p>This is the Class List container</p>
