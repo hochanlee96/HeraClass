@@ -12,7 +12,6 @@ const Header = props => {
     const [showSignup, setShowSignup] = useState(false);
 
     const isLoggedIn = useSelector(state => state.auth.token !== null);
-    console.log(isLoggedIn);
 
     const modalCloseHandler = () => {
         setShowLogin(false);
