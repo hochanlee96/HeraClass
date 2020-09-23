@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import classes from './Header.module.css';
+import Backdrop from '../../Backdrop/Backdrop';
 
 const Header = props => {
+    const [showBackdrop, setShowBackdrop] = useState(false);
+
     return (
         <div className={classes.Header}>
             <div className={classes.Item}>Logo</div>
@@ -20,7 +23,17 @@ const Header = props => {
                     Home
                 </NavLink>
             </div>
-            <div className={classes.Item}>End</div>
+            <div className={classes.Item}>
+                <button onClick={() => {
+                    setShowBackdrop(true);
+                }}>Login</button>
+                <button>Sign Up</button>
+            </div>
+            <Backdrop
+                show={showBackdrop}
+                clicked={() => {
+                    setShowBackdrop(false)
+                }} />
         </div>
     )
 }
