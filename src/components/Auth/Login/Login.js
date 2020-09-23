@@ -24,7 +24,7 @@ const Login = props => {
             <form onSubmit={submitHandler}>
                 <input type="email" value={emailInput} onChange={(event) => inputChangeHandler('email', event)} />
                 <input type="password" value={passwordInput} onChange={(event) => inputChangeHandler('password', event)} />
-                <button>Sign Up</button>
+                <button>Login</button>
             </form>
         </div>
     )

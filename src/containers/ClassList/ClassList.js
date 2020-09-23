@@ -7,7 +7,8 @@ import classes from './ClassList.module.css';
 const ClassList = props => {
 
     return (
-        <Layout>
+        <Layout history={props.history}
+            currentScreen='/class-list'>
             <p>This is the Class List container</p>
             <div className={classes.MainContainer}>
                 <ClassListContainer history={props.history} />

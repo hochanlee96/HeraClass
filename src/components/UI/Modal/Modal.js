@@ -8,13 +8,13 @@ const Modal = props => {
     return (
         <div style={{ width: '100%', height: '100%' }}>
             <Backdrop
-                show={}
-                clicked={} />
+                show={props.show}
+                clicked={props.modalClosed} />
             <div
                 className={classes.Modal}
                 style={{
-                    transform: this.props.show ? 'translateY(0)' : 'translateY(-100vh)',
-                    opacity: this.props.show ? ' ' : '0'
+                    transform: props.show ? 'translateY(0)' : 'translateY(100vh)',
+                    opacity: props.show ? ' ' : '0'
                 }}>
                 {props.children}
             </div>
@@ -23,4 +23,4 @@ const Modal = props => {
 
 }
 
-export const Modal;
+export default Modal;
