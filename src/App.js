@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 
 import Home from './containers/Home/Home';
 import ClassList from './containers/ClassList/ClassList';
 import ClassDetail from './containers/ClassDetail/ClassDetail';
+import * as authActions from './store/actions/auth';
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(authActions.authCheckState());
+  }, [dispatch])
 
   let routes = (
     <Switch>

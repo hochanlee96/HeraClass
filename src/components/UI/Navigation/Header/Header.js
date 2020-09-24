@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import classes from './Header.module.css';
 import Modal from '../../Modal/Modal';
 import Login from '../../../Auth/Login/Login';
 import Signup from '../../../Auth/Register/Register';
+import * as authActions from '../../../../store/actions/auth';
 
 const Header = props => {
     const [showLogin, setShowLogin] = useState(false);
     const [showSignup, setShowSignup] = useState(false);
 
     const isLoggedIn = useSelector(state => state.auth.token !== null);
+
+    const dispatch = useDispatch();
 
     const modalCloseHandler = () => {
         setShowLogin(false);
@@ -22,7 +25,7 @@ const Header = props => {
         ? <div className={classes.Item}>
             <button
                 onClick={() => {
-                    //dispatch(actions....logout)
+                    dispatch(authActions.logout());
                 }}>
                 Log Out
                     </button>
