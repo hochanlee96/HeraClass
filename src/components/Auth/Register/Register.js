@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import * as authActions from '../../../store/actions/auth';
@@ -29,6 +29,17 @@ const Register = props => {
             setError(err.message);
         }
     }
+
+    const { show } = props;
+
+    useEffect(() => {
+        if (!show) {
+            setPasswordInput('');
+            setEmailInput('');
+            setError(null);
+        }
+    }, [show]);
+
 
     return (
         <div>

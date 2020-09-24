@@ -18,12 +18,15 @@ const Header = props => {
         setShowSignup(false);
     }
 
-    const authContinueHandler = () => {
-
-    }
-
     const loginHeader = (isLoggedIn
-        ? <p>Log Out</p>
+        ? <div className={classes.Item}>
+            <button
+                onClick={() => {
+                    //dispatch(actions....logout)
+                }}>
+                Log Out
+                    </button>
+        </div>
         : <div className={classes.Item}>
             <button
                 onClick={() => {
@@ -58,12 +61,18 @@ const Header = props => {
             {loginHeader}
             <div className={classes.Modal}>
                 <Modal show={showLogin} modalClosed={modalCloseHandler}>
-                    <Login />
+                    <Login
+                        history={props.history}
+                        resetModal={() => setShowLogin(false)}
+                        returnScreen={props.currentScreen}
+                        show={showLogin} />
                 </Modal>
                 <Modal show={showSignup} modalClosed={modalCloseHandler}>
-                    <Signup history={props.history} authContinued={authContinueHandler}
+                    <Signup
+                        history={props.history}
                         resetModal={() => setShowSignup(false)}
-                        returnScreen={props.currentScreen} />
+                        returnScreen={props.currentScreen}
+                        show={showSignup} />
                 </Modal>
             </div>
         </div>
