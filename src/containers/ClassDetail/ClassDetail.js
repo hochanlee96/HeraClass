@@ -1,11 +1,43 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+// import { useSelector } from 'react-redux';
 
 import Layout from '../../components/hoc/Layout/Layout';
 
 const ClassDetail = props => {
     const classId = props.match.params.classId;
-    const selectedClass = useSelector(state => state.allClasses.allClasses.find(cl => cl.id === classId));
+    const [selectedClass, setFetchedClass] = useState();
+
+
+    // try fetching
+    const fetchClass = async classId => {
+        try {
+            const response = await fetch(`https://hercules-56a2b.firebaseio.com/class-list/${classId}.json`);
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+
+            const resData = await response.json();
+            setFetchedClass({
+                title: resData.title,
+                imageUrl: resData.imageUrl,
+                address: resData.address,
+                details: { ...resData.details },
+                category: [...resData.category]
+            })
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    useEffect(() => {
+        fetchClass(classId);
+    }, [classId])
+
+
+    // 
+    // const selectedClass = useSelector(state => state.allClasses.allClasses.find(cl => cl.id === classId));
+
 
     let detail = null;
     if (selectedClass) {
