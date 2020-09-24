@@ -24,7 +24,6 @@ const Register = props => {
         try {
             await dispatch(authActions.register(emailInput, passwordInput));
             props.resetModal();
-            props.history.push(props.returnScreen);
         } catch (err) {
             setError(err.message);
         }

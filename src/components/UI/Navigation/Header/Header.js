@@ -67,14 +67,12 @@ const Header = props => {
                     <Login
                         history={props.history}
                         resetModal={() => setShowLogin(false)}
-                        returnScreen={props.currentScreen}
                         show={showLogin} />
                 </Modal>
                 <Modal show={showSignup} modalClosed={modalCloseHandler}>
                     <Signup
                         history={props.history}
                         resetModal={() => setShowSignup(false)}
-                        returnScreen={props.currentScreen}
                         show={showSignup} />
                 </Modal>
             </div>

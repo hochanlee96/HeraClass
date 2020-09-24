@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import { useSelector } from 'react-redux';
-
-import Layout from '../../components/hoc/Layout/Layout';
 
 const ClassDetail = props => {
     const classId = props.match.params.classId;
@@ -55,10 +52,10 @@ const ClassDetail = props => {
     }
 
     return (
-        <Layout>
+        <div>
             <p>This is the Class Detail container</p>
             {detail}
-        </Layout>
+        </div>
     )
 }
 
