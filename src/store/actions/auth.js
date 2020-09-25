@@ -189,13 +189,13 @@ export const fetchUserData = userId => {
 export const createUser = (userId, username) => {
     return async dispatch => {
         console.log('create User right before dispatch')
-        const response = await fetch(`https://hercules-56a2b.firebaseio.com/users.json`, {
-            method: 'POST',
+        const response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}.json`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                id: userId,
+                // id: userId,
                 username: username,
                 favorites: null
             })
