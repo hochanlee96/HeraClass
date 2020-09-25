@@ -178,7 +178,8 @@ export const fetchUserData = userId => {
 
             const resData = await response.json();
             console.log(resData);
-            dispatch({ type: FETCH_USER_DATA, userData: { username: resData.username, favorites: [...resData.favorites] } });
+            localStorage.setItem('username', resData.username)
+            dispatch({ type: FETCH_USER_DATA, userData: { username: resData.username } });
         } catch (error) {
             throw error;
         }
