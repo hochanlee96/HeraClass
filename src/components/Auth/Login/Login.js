@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import * as authActions from '../../../store/actions/auth';
+import classes from './Login.module.css';
 
 const Login = props => {
 
@@ -44,9 +45,9 @@ const Login = props => {
             <p>Login</p>
             <p>{error}</p>
             <form onSubmit={submitHandler}>
-                <input type="email" value={emailInput} onChange={(event) => inputChangeHandler('email', event)} />
-                <input type="password" value={passwordInput} onChange={(event) => inputChangeHandler('password', event)} />
-                <button onClick={props.authContinued}>Login</button>
+                <input className={classes.Input} type="email" placeholder="Email" value={emailInput} onChange={(event) => inputChangeHandler('email', event)} />
+                <input className={classes.Input} type="password" placeholder="password" value={passwordInput} onChange={(event) => inputChangeHandler('password', event)} />
+                <button className={classes.Button} onClick={props.authContinued}>Login</button>
             </form>
         </div>
     )

@@ -1,5 +1,7 @@
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
+export const FETCH_USER_DATA = 'FETCH_USER_DATA';
+export const CREATE_USER = 'CREATE_USER';
 
 let timer;
 
@@ -19,6 +21,7 @@ export const authenticate = (token, userId, expiryTime) => {
 export const logout = () => {
     clearLogoutTimer();
     localStorage.removeItem('token');
+    localStorage.removeItem('username');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('userId');
     localStorage.removeItem('expiration');
@@ -40,6 +43,7 @@ const setLogoutTimer = expirationTime => {
         }, expirationTime);
     }
 }
+
 
 export const register = (email, password) => {
     return async dispatch => {
@@ -64,9 +68,8 @@ export const register = (email, password) => {
             }
             throw new Error(message);
         }
-
         const resData = await response.json();
-        console.log(resData);
+
         dispatch(authenticate(resData.idToken, resData.localId, parseInt(resData.expiresIn) * 1000))
         const expirationDate = new Date().getTime() + parseInt(resData.expiresIn) * 1000;
         localStorage.setItem('token', resData.idToken);
@@ -103,6 +106,7 @@ export const login = (email, password) => {
         }
 
         const resData = await response.json();
+        fetchUserData(resData.localId);
         dispatch(authenticate(resData.idToken, resData.localId, parseInt(resData.expiresIn) * 1000));
         const expirationDate = new Date(new Date().getTime() + parseInt(resData.expiresIn) * 1000);
         localStorage.setItem('token', resData.idToken);
@@ -162,3 +166,51 @@ export const refreshAuth = refreshToken => {
         localStorage.setItem('expiration', expirationDate);
     }
 }
+
+// 
+export const fetchUserData = userId => {
+    return async dispatch => {
+        try {
+            const response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}.json`);
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+
+            const resData = await response.json();
+            console.log(resData);
+            dispatch({ type: FETCH_USER_DATA, userData: { username: resData.username, favorites: [...resData.favorites] } });
+        } catch (error) {
+            throw error;
+        }
+    }
+}
+
+
+export const createUser = (userId, username) => {
+    return async dispatch => {
+        console.log('create User right before dispatch')
+        const response = await fetch(`https://hercules-56a2b.firebaseio.com/users.json`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: userId,
+                username: username,
+                favorites: null
+            })
+        });
+
+        if (!response.ok) {
+            let message = 'Something went wrong...';
+            throw new Error(message);
+        }
+
+        const resData = await response.json();
+        console.log(resData);
+        localStorage.setItem('username', username)
+        dispatch({ type: CREATE_USER, userData: { username: username } })
+    }
+}
+
+
