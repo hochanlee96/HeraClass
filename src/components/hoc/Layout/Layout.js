@@ -7,8 +7,7 @@ const Layout = props => {
     return (
         <div>
             <div className={classes.Header}>
-                <Header history={props.history}
-                    currentScreen={props.currentScreen} />
+                <Header history={props.history} />
             </div>
             <div className={classes.Body}>{props.children}</div>
             <div className={classes.Footer}>Footer</div>
