@@ -33,7 +33,7 @@ const Header = props => {
 
     const loginHeader = (isLoggedIn
         ? <div>
-            <p onClick={dropdownToggler}>Dropdown</p>
+            <p onClick={dropdownToggler}>{localStorage.getItem('username')}</p>
         </div>
         : <div className={classes.Item}>
             <button
