@@ -2,11 +2,11 @@
     position: fixed;
     z-index: 500;
     background-color: white;
-    width: 70%;
+    width: 40%;
     border: 1px solid #ccc;
     box-shadow: 1px 1px 1px black;
     padding: 16px;
-    right: 0;
+    right: 10%;
     top: 10%;
     box-sizing: border-box;
     transition: all 0.3s ease-out;
@@ -15,7 +15,7 @@
 @media (min-width: 600px) {
     .Modal {
         width: 300px;
-        left: calc(85% - 250px);
+        left: calc(95% - 250px);
         top: 10%;
     }
 }

@@ -7,12 +7,14 @@ import Layout from './components/hoc/Layout/Layout';
 import ClassList from './containers/ClassList/ClassList';
 import ClassDetail from './containers/ClassDetail/ClassDetail';
 import Logout from './components/Auth/Logout/Logout';
+import MyPage from './containers/MyPage/MyPage';
 import * as authActions from './store/actions/auth';
 
 function App() {
 
   const dispatch = useDispatch();
 
+  //auto login or logout functionality when refreshed
   useEffect(() => {
     dispatch(authActions.authCheckState());
   }, [dispatch])
@@ -22,6 +24,7 @@ function App() {
       <Route path="/home" exact component={Home} />
       <Route path="/detail/:classId" component={ClassDetail} />
       <Route path="/class-list" exact component={ClassList} />
+      <Route path="/my-page" exact component={MyPage} />
       <Route path="/logout" exact component={Logout} />
       <Route path="/" exact component={Home} />
       <Redirect to="/home" />

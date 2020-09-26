@@ -3,32 +3,27 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import ClassCard from './ClassCard/ClassCard';
 import classes from './ClassCardsContainer.module.css';
-// import CLASSES from '../../data/dummy-data';
 
 import * as classActions from '../../store/actions/class-list';
 
 
 const ClassCardsContainer = props => {
 
-    const allClasses = useSelector(state => state.allClasses.allClasses);
-    // const [error, setError] = useState();
-    // const [isLoading, setIsLoading] = useState(false);
+    const allClasses = useSelector(state => state.classList.allClasses);
 
     const dispatch = useDispatch();
 
+    //fetch classes from the database
     const loadClasses = useCallback(async () => {
-        // setError(null);
         try {
             await dispatch(classActions.fetchClass());
         } catch (error) {
-            // setError(error.message);
         }
-    }, [dispatch, /*setIsLoading, setError*/]);
+    }, [dispatch]);
 
+    //when this page is rendered, load classes
     useEffect(() => {
-        // setIsLoading(true);
         loadClasses().then(() => {
-            // setIsLoading(false);
         });
     }, [dispatch, loadClasses])
 

@@ -12,7 +12,7 @@ export const authenticate = (token, userId, expiryTime) => {
             {
                 type: AUTHENTICATE,
                 token: token,
-                userId: userId
+                userId: userId,
             }
         );
     }

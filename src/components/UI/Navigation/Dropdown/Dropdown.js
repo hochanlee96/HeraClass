@@ -6,7 +6,7 @@ import DropdownBackdrop from './DropdownBackdrop';
 const Dropdown = props => {
 
     return (
-        <div style={{ width: '100%', height: '100%' }}>
+        <div style={{ width: '100%', height: '100%', ...props.showStyle }}>
             <DropdownBackdrop
                 show={props.show}
                 clicked={props.modalClosed} />

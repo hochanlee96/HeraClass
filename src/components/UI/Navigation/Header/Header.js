@@ -32,7 +32,7 @@ const Header = props => {
     }
 
     const loginHeader = (isLoggedIn
-        ? <div>
+        ? <div style={{ marginRight: '50px' }}>
             <p onClick={dropdownToggler}>{localStorage.getItem('username')}</p>
         </div>
         : <div className={classes.Item}>
@@ -51,23 +51,25 @@ const Header = props => {
         </div>)
 
     return (
-        <div className={classes.Header}>
-            <div className={classes.Item}>Logo</div>
-            <div className={classes.Item}>
-                <NavLink
-                    className={classes.Link}
-                    to='/class-list'
-                    exact
-                >View Class List</NavLink>
-                <NavLink
-                    className={classes.Link}
-                    to='/home'
-                    exact >
-                    Home
+        <div style={{ width: '100%', height: '100%' }}>
+            <div className={classes.Header}>
+                <div className={classes.Item}>Logo</div>
+                <div className={classes.Item}>
+                    <NavLink
+                        className={classes.Link}
+                        to='/class-list'
+                        exact
+                    >View Class List</NavLink>
+                    <NavLink
+                        className={classes.Link}
+                        to='/home'
+                        exact >
+                        Home
                 </NavLink>
+                </div>
+                {loginHeader}
             </div>
-            {loginHeader}
-            <div className={classes.Modal}>
+            <div className={classes.Modal} style={{ position: 'absolute', right: '-100px' }}>
                 <Modal show={showLogin} modalClosed={modalCloseHandler}>
                     <Login
                         history={props.history}
@@ -80,7 +82,7 @@ const Header = props => {
                         resetModal={() => setShowSignup(false)}
                         show={showSignup} />
                 </Modal>
-                <Dropdown show={dropdown} modalClosed={dropdownCloseHandler}>
+                <Dropdown showStyle={!dropdown ? { display: 'none' } : null} show={dropdown} modalClosed={dropdownCloseHandler}>
                     <NavLink onClick={() => setDropdown(false)} style={{ display: 'block' }} to='/my-page'>My page</NavLink>
                     <NavLink onClick={() => setDropdown(false)} style={{ display: 'block' }} to='/logout'>Log out</NavLink>
                 </Dropdown>

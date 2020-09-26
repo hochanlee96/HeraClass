@@ -32,10 +32,6 @@ const ClassDetail = props => {
     }, [classId])
 
 
-    // 
-    // const selectedClass = useSelector(state => state.allClasses.allClasses.find(cl => cl.id === classId));
-
-
     let detail = null;
     if (selectedClass) {
         const catList = selectedClass.category.map(cat => (
