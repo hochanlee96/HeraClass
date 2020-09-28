@@ -32,7 +32,7 @@ const Header = props => {
     }
 
     const loginHeader = (isLoggedIn
-        ? <div style={{ marginRight: '50px' }}>
+        ? <div style={{ marginRight: '50px', cursor: 'pointer' }}>
             <p onClick={dropdownToggler}>{localStorage.getItem('username')}</p>
         </div>
         : <div className={classes.Item}>
