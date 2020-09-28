@@ -83,8 +83,8 @@ const Header = props => {
                         show={showSignup} />
                 </Modal>
                 <Dropdown showStyle={!dropdown ? { display: 'none' } : null} show={dropdown} modalClosed={dropdownCloseHandler}>
-                    <NavLink onClick={() => setDropdown(false)} style={{ display: 'block' }} to='/my-page'>My page</NavLink>
-                    <NavLink onClick={() => setDropdown(false)} style={{ display: 'block' }} to='/logout'>Log out</NavLink>
+                    <NavLink className={classes.Nav} onClick={() => setDropdown(false)} style={{ display: 'block', margin: '10px 0', padding: '10px 10px', borderBottom: '1px solid rgba(0,0,0,0.5)' }} to='/my-page'>My page</NavLink>
+                    <NavLink className={classes.Nav} onClick={() => setDropdown(false)} style={{ display: 'block', margin: '10px 0', padding: '10px 10px', borderBottom: '1px solid rgba(0,0,0,0.5)' }} to='/logout'>Log out</NavLink>
                 </Dropdown>
             </div>
         </div>
