@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
+import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './ClassDetail.module.css';
 
 const ClassDetail = props => {
     const classId = props.match.params.classId;
     const [selectedClass, setFetchedClass] = useState();
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
 
     // try fetching
@@ -29,8 +32,16 @@ const ClassDetail = props => {
         }
     }
 
+    const favoriteToggler = () => {
+        //dispatch favorites
+        setIsFavorite(prev => !prev);
+    }
+
     useEffect(() => {
-        fetchClass(classId);
+        setIsLoading(true);
+        fetchClass(classId).then(() => {
+            setIsLoading(false);
+        });
     }, [classId])
 
 
@@ -45,10 +56,15 @@ const ClassDetail = props => {
                     <img src={selectedClass.imageUrl} alt='' className={classes.Image} />
                 </div>
                 <div className={classes.OverviewContainer} >
-                    <p><strong>{selectedClass.title}</strong></p>
-                    <p>주소: {selectedClass.address}</p>
-                    <p>전화번호: {selectedClass.details.tel}</p>
-                    <p>카테고리</p>
+                    <div className={classes.Description}>
+                        <div className={classes.TitleContainer}>
+                            <p><strong>{selectedClass.title}</strong></p>
+                            <button className={isFavorite ? classes.FavoriteButton : classes.Button} onClick={favoriteToggler}>favorite</button>
+                        </div>
+                    </div>
+                    <p className={classes.Description}>{selectedClass.address}</p>
+                    <p className={classes.Description}>{selectedClass.details.tel}</p>
+                    <p className={classes.Description}>카테고리</p>
                     {catList}
                 </div>
             </div >)
@@ -56,7 +72,7 @@ const ClassDetail = props => {
 
     return (
         <div style={{ width: '100%', height: '100%' }}>
-            {detail}
+            {isLoading ? <Spinner /> : detail}
         </div>
     )
 }

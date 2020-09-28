@@ -1,10 +1,19 @@
 .ClassCard{
-    background-color: aqua;
+    background-color: rgba(0,0,0,0.03);
+    cursor: pointer;
     width: 320px;
     height: 400px;
     display: inline-block;
     margin: 2px 2px;
     border-radius: 10px;
+    position: relative;
+    top: 0;
+    transition: top ease 0.5s;
+}
+
+.ClassCard:hover{
+    top: -5px;
+    box-shadow:1px 1px grey;
 }
 
 .ImageContainer{

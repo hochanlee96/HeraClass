@@ -1,7 +1,8 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import ClassCard from './ClassCard/ClassCard';
+import Spinner from '../UI/Spinner/Spinner';
 import classes from './ClassCardsContainer.module.css';
 
 import * as classActions from '../../store/actions/class-list';
@@ -9,6 +10,7 @@ import * as classActions from '../../store/actions/class-list';
 
 const ClassCardsContainer = props => {
 
+    const [isLoading, setIsLoading] = useState(false);
     const allClasses = useSelector(state => state.classList.allClasses);
 
     const dispatch = useDispatch();
@@ -23,7 +25,9 @@ const ClassCardsContainer = props => {
 
     //when this page is rendered, load classes
     useEffect(() => {
+        setIsLoading(true);
         loadClasses().then(() => {
+            setIsLoading(false)
         });
     }, [dispatch, loadClasses])
 
@@ -43,7 +47,7 @@ const ClassCardsContainer = props => {
 
     return (
         <div className={classes.ClassList}>
-            {classList}
+            {isLoading ? <Spinner /> : classList}
         </div>
     )
 }
