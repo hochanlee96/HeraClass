@@ -41,6 +41,7 @@ const ClassCardsContainer = props => {
                 imageUrl={classData.imageUrl}
                 title={classData.title}
                 address={classData.address}
+                category={classData.category}
             />
         )
     });
