@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import classes from './ClassDetail.module.css';
+
 const ClassDetail = props => {
     const classId = props.match.params.classId;
     const [selectedClass, setFetchedClass] = useState();
@@ -37,19 +39,23 @@ const ClassDetail = props => {
         const catList = selectedClass.category.map(cat => (
             <p key={cat}>{cat}</p>
         ))
-        detail = <div>
-            <img src={selectedClass.imageUrl} alt='' />
-            <p><strong>{selectedClass.title}</strong></p>
-            <p>주소: {selectedClass.address}</p>
-            <p>전화번호: {selectedClass.details.tel}</p>
-            <p>카테고리</p>
-            {catList}
-        </div>
+        detail = (
+            <div className={classes.DetailContainer}>
+                <div className={classes.ImageContainer}>
+                    <img src={selectedClass.imageUrl} alt='' className={classes.Image} />
+                </div>
+                <div className={classes.OverviewContainer} >
+                    <p><strong>{selectedClass.title}</strong></p>
+                    <p>주소: {selectedClass.address}</p>
+                    <p>전화번호: {selectedClass.details.tel}</p>
+                    <p>카테고리</p>
+                    {catList}
+                </div>
+            </div >)
     }
 
     return (
-        <div>
-            <p>This is the Class Detail container</p>
+        <div style={{ width: '100%', height: '100%' }}>
             {detail}
         </div>
     )

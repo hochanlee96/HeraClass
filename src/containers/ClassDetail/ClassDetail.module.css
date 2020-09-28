@@ -1,0 +1,117 @@
+.DetailContainer {
+    width: 75%;
+    margin: 10px auto;
+    min-height: 450px;
+}
+
+.ImageContainer {
+    box-sizing: border-box;
+    width: 50%;
+    display: inline-block;
+    overflow: hidden;
+    padding: 40px 30px;
+}
+
+.OverviewContainer {
+    box-sizing: border-box;
+    width: 50%;
+    padding: 40px 30px;
+    display: inline-block;
+    position: relative;
+    top: 0;
+    right: 0;
+    vertical-align: top;
+}
+
+.Image {
+    width: 750px;
+    height: 450px;
+}
+
+
+
+
+
+@media (max-width: 1200px) {
+    .DetailContainer {
+        width: 90%;
+        margin: 10px auto;
+        min-height: 450px;
+    }
+    
+    .ImageContainer {
+        box-sizing: border-box;
+        width: 50%;
+        display: inline-block;
+        overflow: hidden;
+        padding: 40px 30px;
+    }
+    
+    .OverviewContainer {
+        box-sizing: border-box;
+        width: 50%;
+        padding: 40px 30px;
+        display: inline-block;
+        position: relative;
+        top: 0;
+        right: 0;
+        vertical-align: top;
+    }
+}
+
+@media (max-width: 992px) {
+    .DetailContainer {
+        width: 90%;
+        margin: 10px auto;
+        min-height: 450px;
+    }
+    
+    .ImageContainer {
+        box-sizing: border-box;
+        width: 50%;
+        display: inline-block;
+        overflow: hidden;
+        padding: 40px 30px;
+    }
+    
+    .OverviewContainer {
+        box-sizing: border-box;
+        width: 50%;
+        padding: 40px 30px;
+        display: inline-block;
+        position: relative;
+        top: 0;
+        right: 0;
+        vertical-align: top;
+    }
+}
+
+@media (max-width: 768px) {
+    .DetailContainer {
+        width: 90%;
+        margin: 10px auto;
+        min-height: 450px;
+    }
+    
+    .ImageContainer {
+        box-sizing: border-box;
+        width: 100%;
+        overflow: hidden;
+        display: block;
+        padding: 40px 30px 20px 30px;
+    }
+    
+    .OverviewContainer {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 20px 30px;
+        position: relative;
+        top: 0;
+        right: 0;
+        display: block;
+    }
+    .Image{
+        width: 100%;
+        object-fit: cover;
+    }
+}
