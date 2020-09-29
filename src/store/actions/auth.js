@@ -2,6 +2,7 @@ export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
 export const FETCH_USER_DATA = 'FETCH_USER_DATA';
 export const CREATE_USER = 'CREATE_USER';
+export const UPDATE_FAVORITES = 'UPDATE_FAVORITES';
 
 let timer;
 
@@ -106,7 +107,7 @@ export const login = (email, password) => {
         }
 
         const resData = await response.json();
-        fetchUserData(resData.localId);
+        // fetchUserData(resData.localId);
         dispatch(authenticate(resData.idToken, resData.localId, parseInt(resData.expiresIn) * 1000));
         const expirationDate = new Date(new Date().getTime() + parseInt(resData.expiresIn) * 1000);
         localStorage.setItem('token', resData.idToken);
@@ -177,9 +178,15 @@ export const fetchUserData = userId => {
             }
 
             const resData = await response.json();
-            console.log(resData);
-            localStorage.setItem('username', resData.username)
-            dispatch({ type: FETCH_USER_DATA, userData: { username: resData.username } });
+            const fetchedFavorites = [];
+
+            for (const key in resData.favorites) {
+                fetchedFavorites.push(key)
+            }
+
+            localStorage.setItem('username', resData.username);
+            localStorage.setItem('favorites', fetchedFavorites);
+            dispatch({ type: FETCH_USER_DATA, userData: { username: resData.username, favorites: fetchedFavorites } });
         } catch (error) {
             throw error;
         }
@@ -196,7 +203,6 @@ export const createUser = (userId, username) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                // id: userId,
                 username: username,
                 favorites: null
             })
@@ -214,4 +220,44 @@ export const createUser = (userId, username) => {
     }
 }
 
+export const updateFavorites = (userId, classId, add) => {
+    return async dispatch => {
+        let response;
+        if (add) {
+            response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}/favorites/${classId}.json`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    classId
+                })
+            });
+            if (!response.ok) {
+                const errorResData = await response.json();
+                console.log(errorResData)
+                let message = 'Something went wrong...';
+                throw new Error(message);
+            }
 
+            const resData = await response.json();
+            dispatch({ type: UPDATE_FAVORITES, delete: false, favorites: resData.classId })
+        } else {
+            response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}/favorites/${classId}.json`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                const errorResData = await response.json();
+                console.log(errorResData)
+                let message = 'Something went wrong...';
+                throw new Error(message);
+            }
+
+            // const resData = await response.json();
+            dispatch({ type: UPDATE_FAVORITES, delete: true, favorites: classId })
+        }
+    }
+}

@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './ClassDetail.module.css';
+import * as authActions from '../../store/actions/auth';
 
 const ClassDetail = props => {
     const classId = props.match.params.classId;
     const [selectedClass, setFetchedClass] = useState();
-    const [isFavorite, setIsFavorite] = useState(false);
+    // const [isFavorite, setIsFavorite] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const isSignedIn = useSelector(state => state.auth.token !== null);
+    const isFavorite = useSelector(state => !!state.auth.userData.favorites.find(el => el === classId));
+    const userId = useSelector(state => state.auth.userId);
+
+    const dispatch = useDispatch();
 
 
     // try fetching
@@ -34,7 +41,17 @@ const ClassDetail = props => {
 
     const favoriteToggler = () => {
         //dispatch favorites
-        setIsFavorite(prev => !prev);
+        if (isSignedIn) {
+            if (isFavorite) {
+                dispatch(authActions.updateFavorites(userId, classId, false));
+            } else {
+                dispatch(authActions.updateFavorites(userId, classId, true))
+            }
+            // setIsFavorite(prev => !prev);
+            // console.log(favoritesList);
+        } else {
+            //modal leading to login
+        }
     }
 
     useEffect(() => {
