@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import classes from './MyPage.module.css';
-import Spinner from '../../components/UI/Spinner/Spinner';
 
 const MyPage = props => {
+    const [viewFavorites, setViewFavorites] = useState(false);
+
+    const viewFavoritesToggler = () => {
+        setViewFavorites(prev => !prev)
+    }
     return (
         <div className={classes.MyPage}>
             <p>This is My Page!</p>
-            <Spinner />
+            <button onClick={viewFavoritesToggler}>View My Favorite Classes</button>
+            {viewFavorites ? <p>Favorites</p> : <p>Hide</p>}
         </div>
     )
 }

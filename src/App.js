@@ -11,13 +11,17 @@ import MyPage from './containers/MyPage/MyPage';
 import * as authActions from './store/actions/auth';
 
 function App() {
-
+  const userId = localStorage.getItem('userId');
   const dispatch = useDispatch();
 
   //auto login or logout functionality when refreshed
   useEffect(() => {
     dispatch(authActions.authCheckState());
   }, [dispatch])
+
+  useEffect(() => {
+    dispatch(authActions.fetchUserData(userId));
+  }, [dispatch, userId])
 
   let routes = (
     <Switch>

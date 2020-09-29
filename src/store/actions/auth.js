@@ -26,6 +26,7 @@ export const logout = () => {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('userId');
     localStorage.removeItem('expiration');
+    localStorage.removeItem('favorites');
     return {
         type: LOGOUT
     }
@@ -178,20 +179,23 @@ export const fetchUserData = userId => {
             }
 
             const resData = await response.json();
-            const fetchedFavorites = [];
+            if (resData) {
+                const fetchedFavorites = [];
 
-            for (const key in resData.favorites) {
-                fetchedFavorites.push(key)
+                for (const key in resData.favorites) {
+                    fetchedFavorites.push(key)
+                }
+
+                localStorage.setItem('username', resData.username);
+                localStorage.setItem('favorites', fetchedFavorites);
+                dispatch({ type: FETCH_USER_DATA, userData: { username: resData.username, favorites: fetchedFavorites } });
             }
-
-            localStorage.setItem('username', resData.username);
-            localStorage.setItem('favorites', fetchedFavorites);
-            dispatch({ type: FETCH_USER_DATA, userData: { username: resData.username, favorites: fetchedFavorites } });
         } catch (error) {
             throw error;
         }
     }
 }
+
 
 
 export const createUser = (userId, username) => {
