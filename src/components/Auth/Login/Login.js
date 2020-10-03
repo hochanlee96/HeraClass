@@ -43,7 +43,7 @@ const Login = props => {
     }, [show]);
 
     return (
-        <div>
+        <>
             <p>Login</p>
             <p>{error}</p>
             <form onSubmit={submitHandler}>
@@ -51,7 +51,7 @@ const Login = props => {
                 <input className={classes.Input} type="password" placeholder="password" value={passwordInput} onChange={(event) => inputChangeHandler('password', event)} />
                 <button className={classes.Button} onClick={props.authContinued}>Login</button>
             </form>
-        </div>
+        </>
     )
 }
 

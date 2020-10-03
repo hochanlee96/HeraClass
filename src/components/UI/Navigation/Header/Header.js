@@ -51,8 +51,8 @@ const Header = props => {
         </div>)
 
     return (
-        <div style={{ width: '100%', height: '100%' }}>
-            <div className={classes.Header}>
+        <>
+            <nav className={classes.Header}>
                 <div className={classes.Item}>Logo</div>
                 <div className={classes.Item}>
                     <NavLink
@@ -68,11 +68,10 @@ const Header = props => {
                 </NavLink>
                 </div>
                 {loginHeader}
-            </div>
+            </nav>
             <div className={classes.Modal} style={{ position: 'absolute', right: '-100px' }}>
                 <Modal show={showLogin} modalClosed={modalCloseHandler}>
                     <Login
-                        history={props.history}
                         resetModal={() => setShowLogin(false)}
                         show={showLogin} />
                 </Modal>
@@ -87,7 +86,7 @@ const Header = props => {
                     <NavLink className={classes.Nav} onClick={() => setDropdown(false)} style={{ display: 'block', margin: '10px 0', padding: '10px 10px', borderBottom: '1px solid rgba(0,0,0,0.5)' }} to='/logout'>Log out</NavLink>
                 </Dropdown>
             </div>
-        </div>
+        </>
     )
 }
 

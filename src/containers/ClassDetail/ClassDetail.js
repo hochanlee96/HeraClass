@@ -51,6 +51,10 @@ const ClassDetail = props => {
             // console.log(favoritesList);
         } else {
             //modal leading to login
+            const ok = window.confirm("You need to login first! Do you want to login?");
+            if (ok) {
+                props.history.push('/auth');
+            }
         }
     }
 

@@ -8,6 +8,7 @@ const MyPage = props => {
     const viewFavoritesToggler = () => {
         setViewFavorites(prev => !prev)
     }
+
     return (
         <div className={classes.MyPage}>
             <p>This is My Page!</p>

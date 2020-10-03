@@ -5,13 +5,13 @@ import Header from '../../UI/Navigation/Header/Header';
 
 const Layout = props => {
     return (
-        <div>
+        <>
             <div className={classes.Header}>
                 <Header history={props.history} />
             </div>
             <div className={classes.Body}>{props.children}</div>
             <div className={classes.Footer}>Footer</div>
-        </div>
+        </>
     )
 }
 

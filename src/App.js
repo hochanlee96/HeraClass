@@ -8,6 +8,7 @@ import ClassList from './containers/ClassList/ClassList';
 import ClassDetail from './containers/ClassDetail/ClassDetail';
 import Logout from './components/Auth/Logout/Logout';
 import MyPage from './containers/MyPage/MyPage';
+import Auth from './containers/Auth/Auth';
 import * as authActions from './store/actions/auth';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
       <Route path="/detail/:classId" component={ClassDetail} />
       <Route path="/class-list" exact component={ClassList} />
       <Route path="/my-page" exact component={MyPage} />
+      <Route path="/auth" exact component={Auth} />
       <Route path="/logout" exact component={Logout} />
       <Route path="/" exact component={Home} />
       <Redirect to="/home" />

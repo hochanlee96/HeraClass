@@ -11,6 +11,7 @@ export const fetchClass = () => {
             }
 
             const resData = await response.json();
+            console.log(resData);
             const fetchedClasses = [];
 
             for (const key in resData) {
