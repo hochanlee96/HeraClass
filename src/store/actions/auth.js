@@ -1,3 +1,5 @@
+import { dbService } from '../../fbase';
+
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
 export const FETCH_USER_DATA = 'FETCH_USER_DATA';
@@ -176,23 +178,28 @@ export const refreshAuth = refreshToken => {
 export const fetchUserData = userId => {
     return async dispatch => {
         try {
-            const response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}.json`);
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
-            }
+            // const response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}.json`);
+            // if (!response.ok) {
+            //     throw new Error('Something went wrong!');
+            // }
 
-            const resData = await response.json();
-            if (resData) {
-                const fetchedFavorites = [];
+            // const resData = await response.json();
+            // if (resData) {
+            //     const fetchedFavorites = [];
 
-                for (const key in resData.favorites) {
-                    fetchedFavorites.push(key)
-                }
+            //     for (const key in resData.favorites) {
+            //         fetchedFavorites.push(key)
+            //     }
 
-                localStorage.setItem('username', resData.username);
+            const userRef = dbService.collection("users").doc(`${userId}`);
+            userRef.get().then(user => {
+                const fetchedUsername = user.data().username;
+                const fetchedFavorites = [...user.data().favorites];
+                localStorage.setItem('username', fetchedUsername);
                 localStorage.setItem('favorites', fetchedFavorites);
-                dispatch({ type: FETCH_USER_DATA, userData: { username: resData.username, favorites: fetchedFavorites } });
+                dispatch({ type: FETCH_USER_DATA, userData: { username: fetchedUsername, favorites: fetchedFavorites } });
             }
+            );
         } catch (error) {
             throw error;
         }
@@ -204,24 +211,25 @@ export const fetchUserData = userId => {
 export const createUser = (userId, username) => {
     return async dispatch => {
         console.log('create User right before dispatch')
-        const response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}.json`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: username,
-                favorites: null
-            })
-        });
+        // const response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}.json`, {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         username: username,
+        //         favorites: null
+        //     })
+        // });
 
-        if (!response.ok) {
-            let message = 'Something went wrong...';
-            throw new Error(message);
-        }
+        // if (!response.ok) {
+        //     let message = 'Something went wrong...';
+        //     throw new Error(message);
+        // }
 
-        const resData = await response.json();
-        console.log(resData);
+        // const resData = await response.json();
+        // console.log(resData);
+        await dbService.collection("users").doc(`${userId}`).set({ username: username, favorites: [] });
         localStorage.setItem('username', username)
         dispatch({ type: CREATE_USER, userData: { username: username } })
     }
