@@ -20,7 +20,9 @@ export default (state = initialState, action) => {
                 userData: { ...action.userData } // deep copy needed
             }
         case FETCH_USER_DATA:
-            const fetchedUserData = { username: action.userData.username, favorites: [...action.userData.favorites] }
+            const fetchedUserData = {
+                username: action.userData.username, favorites: [...action.userData.favorites]
+            }
             return {
                 ...state,
                 userData: fetchedUserData

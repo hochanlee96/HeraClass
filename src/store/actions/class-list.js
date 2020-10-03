@@ -35,7 +35,6 @@ export const fetchClass = () => {
                     cl.data().category,
                     cl.data().details
                 ))
-                console.log(classArray);
                 dispatch({ type: FETCH_CLASS, fetchedClasses: classArray });
             })
 

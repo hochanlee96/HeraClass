@@ -1,3 +1,4 @@
+import * as firebase from "firebase/app";
 import { dbService } from '../../fbase';
 
 export const AUTHENTICATE = 'AUTHENTICATE';
@@ -193,12 +194,17 @@ export const fetchUserData = userId => {
 
             const userRef = dbService.collection("users").doc(`${userId}`);
             userRef.get().then(user => {
+                console.log(user.data());
                 const fetchedUsername = user.data().username;
                 const fetchedFavorites = [...user.data().favorites];
                 localStorage.setItem('username', fetchedUsername);
                 localStorage.setItem('favorites', fetchedFavorites);
                 dispatch({ type: FETCH_USER_DATA, userData: { username: fetchedUsername, favorites: fetchedFavorites } });
             }
+                ///
+
+
+                ///
             );
         } catch (error) {
             throw error;
@@ -229,7 +235,7 @@ export const createUser = (userId, username) => {
 
         // const resData = await response.json();
         // console.log(resData);
-        await dbService.collection("users").doc(`${userId}`).set({ username: username, favorites: [] });
+        await dbService.collection("users").doc(`${userId}`).set({ username: username, favorites: {} });
         localStorage.setItem('username', username)
         dispatch({ type: CREATE_USER, userData: { username: username } })
     }
@@ -237,39 +243,46 @@ export const createUser = (userId, username) => {
 
 export const updateFavorites = (userId, classId, add) => {
     return async dispatch => {
-        let response;
+        // let response;
         if (add) {
-            response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}/favorites/${classId}.json`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    classId
-                })
+            dbService.collection('users').doc(`${userId}`).update({
+                favorites: firebase.firestore.FieldValue.arrayUnion(classId)
             });
-            if (!response.ok) {
-                const errorResData = await response.json();
-                console.log(errorResData)
-                let message = 'Something went wrong...';
-                throw new Error(message);
-            }
+            dispatch({ type: UPDATE_FAVORITES, delete: false, favorites: classId })
+            // response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}/favorites/${classId}.json`, {
+            //     method: 'PUT',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({
+            //         classId
+            //     })
+            // });
+            // if (!response.ok) {
+            //     const errorResData = await response.json();
+            //     console.log(errorResData)
+            //     let message = 'Something went wrong...';
+            //     throw new Error(message);
+            // }
 
-            const resData = await response.json();
-            dispatch({ type: UPDATE_FAVORITES, delete: false, favorites: resData.classId })
+            // const resData = await response.json();
+
         } else {
-            response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}/favorites/${classId}.json`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            dbService.collection('users').doc(`${userId}`).update({
+                favorites: firebase.firestore.FieldValue.arrayRemove(classId)
             });
-            if (!response.ok) {
-                const errorResData = await response.json();
-                console.log(errorResData)
-                let message = 'Something went wrong...';
-                throw new Error(message);
-            }
+            // response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}/favorites/${classId}.json`, {
+            //     method: 'DELETE',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     }
+            // });
+            // if (!response.ok) {
+            //     const errorResData = await response.json();
+            //     console.log(errorResData)
+            //     let message = 'Something went wrong...';
+            //     throw new Error(message);
+            // }
 
             // const resData = await response.json();
             dispatch({ type: UPDATE_FAVORITES, delete: true, favorites: classId })

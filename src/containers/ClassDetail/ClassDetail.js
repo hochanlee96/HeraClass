@@ -9,14 +9,19 @@ import * as authActions from '../../store/actions/auth';
 const ClassDetail = props => {
     const classId = props.match.params.classId;
     const [selectedClass, setFetchedClass] = useState();
-    // const [isFavorite, setIsFavorite] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const isSignedIn = useSelector(state => state.auth.token !== null);
-    const isFavorite = useSelector(state => !!state.auth.userData.favorites.find(el => el === classId));
+    const [isFavorite, setIsFavorite] = useState(false);
+    const isFav = useSelector(state => state.auth.userData.favorites.findIndex(cl => cl === classId) >= 0);
     const userId = useSelector(state => state.auth.userId);
 
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        if (isFav) {
+            setIsFavorite(true);
+        }
+    }, [isFav]);
 
     // try fetching
     const fetchClass = async classId => {
@@ -54,8 +59,10 @@ const ClassDetail = props => {
         if (isSignedIn) {
             if (isFavorite) {
                 dispatch(authActions.updateFavorites(userId, classId, false));
+                setIsFavorite(false);
             } else {
-                dispatch(authActions.updateFavorites(userId, classId, true))
+                dispatch(authActions.updateFavorites(userId, classId, true));
+                setIsFavorite(true);
             }
             // setIsFavorite(prev => !prev);
             // console.log(favoritesList);

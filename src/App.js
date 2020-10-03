@@ -21,7 +21,9 @@ function App() {
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(authActions.fetchUserData(userId));
+    if (userId) {
+      dispatch(authActions.fetchUserData(userId));
+    }
   }, [dispatch, userId])
 
   let routes = (
