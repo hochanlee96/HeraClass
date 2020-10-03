@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+import { dbService } from "./fbase";
 
 
 class Class {
@@ -62,7 +62,7 @@ const CLASSES = [
     )
 ];
 
-const addClass = Class => {
+const addClass = async (Class) => {
     // fetch("https://hercules-56a2b.firebaseio.com/class-list.json", {
     //     method: 'POST',
     //     headers: {
@@ -80,6 +80,14 @@ const addClass = Class => {
     // }).catch(err => {
     //     console.log("An error occurred when adding class ", Class.id);
     // })
+    const classObj = {
+        title: Class.title,
+        imageUrl: Class.imageUrl,
+        address: Class.address,
+        category: Class.category,
+        details: Class.details
+    }
+    await dbService.collection('classes').add(classObj);
 }
 
 CLASSES.forEach(cl => {

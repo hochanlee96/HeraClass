@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { dbService } from '../../fbase';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './ClassDetail.module.css';
 import * as authActions from '../../store/actions/auth';
@@ -20,20 +21,29 @@ const ClassDetail = props => {
     // try fetching
     const fetchClass = async classId => {
         try {
-            const response = await fetch(`https://hercules-56a2b.firebaseio.com/class-list/${classId}.json`);
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
-            }
+            // const response = await fetch(`https://hercules-56a2b.firebaseio.com/class-list/${classId}.json`);
+            // if (!response.ok) {
+            //     throw new Error('Something went wrong!');
+            // }
 
-            const resData = await response.json();
-            setFetchedClass({
-                title: resData.title,
-                imageUrl: resData.imageUrl,
-                address: resData.address,
-                details: { ...resData.details },
-                category: [...resData.category]
-            })
+            // const resData = await response.json();
+            // setFetchedClass({
+            //     title: resData.title,
+            //     imageUrl: resData.imageUrl,
+            //     address: resData.address,
+            //     details: { ...resData.details },
+            //     category: [...resData.category]
+            // })
 
+            const docRef = dbService.collection("classes").doc(`${classId}`);
+            docRef.get().then((doc) =>
+                setFetchedClass({
+                    title: doc.data().title,
+                    imageUrl: doc.data().imageUrl,
+                    address: doc.data().address,
+                    details: { ...doc.data().details },
+                    category: [...doc.data().category],
+                }));
         } catch (error) {
             throw error;
         }

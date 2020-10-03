@@ -72,6 +72,9 @@ export const register = (email, password) => {
         }
         const resData = await response.json();
 
+        // const data = await authService.createUserWithEmailAndPassword(email, password);
+        // console.log(data);
+
         dispatch(authenticate(resData.idToken, resData.localId, parseInt(resData.expiresIn) * 1000))
         const expirationDate = new Date().getTime() + parseInt(resData.expiresIn) * 1000;
         localStorage.setItem('token', resData.idToken);
