@@ -10,6 +10,9 @@ import thunk from 'redux-thunk';
 
 import classReducer from './store/reducers/class-list';
 import authReducer from './store/reducers/auth';
+import firebase from './fbase';
+
+console.log(firebase);
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
