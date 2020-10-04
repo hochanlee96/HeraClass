@@ -15,10 +15,8 @@ export default (state = initialState, action) => {
             const classIndex = state.allClasses.findIndex(cl => cl.id === action.classId);
             const updatedClasses = [...state.allClasses];
             if (action.add) {
-                console.log('111')
                 updatedClasses[classIndex].followers.push(action.userId);
             } else {
-                console.log('222')
                 updatedClasses[classIndex].followers.splice(action.userId, 1);
             }
             return {

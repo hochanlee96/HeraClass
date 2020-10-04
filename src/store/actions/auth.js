@@ -194,7 +194,6 @@ export const fetchUserData = userId => {
 
             const userRef = dbService.collection("users").doc(`${userId}`);
             userRef.get().then(user => {
-                console.log(user.data());
                 const fetchedUsername = user.data().username;
                 const fetchedFavorites = [...user.data().favorites];
                 localStorage.setItem('username', fetchedUsername);

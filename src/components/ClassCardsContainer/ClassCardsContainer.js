@@ -1,38 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 
 import ClassCard from './ClassCard/ClassCard';
-import Spinner from '../UI/Spinner/Spinner';
 import classes from './ClassCardsContainer.module.css';
-
-import * as classActions from '../../store/actions/class-list';
-
 
 const ClassCardsContainer = props => {
 
-    const [isLoading, setIsLoading] = useState(false);
-    const allClasses = useSelector(state => state.classList.allClasses);
-
-    const dispatch = useDispatch();
-
-    //fetch classes from the database
-    const loadClasses = useCallback(async () => {
-        try {
-            await dispatch(classActions.fetchClass());
-        } catch (error) {
-        }
-    }, [dispatch]);
-
-    //when this page is rendered, load classes
-    useEffect(() => {
-        setIsLoading(true);
-        loadClasses().then(() => {
-            setIsLoading(false)
-        });
-    }, [dispatch, loadClasses])
-
-
-    const classList = allClasses.map(classData => {
+    const classList = props.allClasses.map(classData => {
         return (
             <ClassCard
                 history={props.history}
@@ -48,7 +21,7 @@ const ClassCardsContainer = props => {
 
     return (
         <div className={classes.ClassList}>
-            {isLoading ? <Spinner /> : classList}
+            {classList}
         </div>
     )
 }

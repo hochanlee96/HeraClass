@@ -38,7 +38,6 @@ export const fetchClass = () => {
                 cl.data().details,
                 cl.data().followers
             )));
-            console.log(classArray);
             //이부분은 listener활용한 부분이라서 db가 바뀌면 자동으로 바뀜
             // dbService.collection("classes").onSnapshot(snapshot => {
             //     // console.log(snapshot.docs[0].data());

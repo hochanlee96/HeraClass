@@ -24,7 +24,6 @@ const ClassDetail = props => {
         }
     }, [isFav]);
 
-    console.log(isFavorite);
     // try fetching
     const fetchClass = async classId => {
         try {
