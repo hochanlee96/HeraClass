@@ -13,9 +13,18 @@ const MyPage = () => {
         <>
             <div className={classes.MyPage}>
                 <p>This is My Page!</p>
-                <Link to='/favorites'>
-                    Number of Favorite Classes : {numFavorites}
+                <ul>
+                    <li>
+                        <Link to='/favorites'>
+                            Number of Favorite Classes : {numFavorites}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to='/profile'>
+                            Edit Profile
                 </Link>
+                    </li>
+                </ul>
             </div>
         </>
     )
