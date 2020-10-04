@@ -15,6 +15,7 @@ const Header = props => {
     const [dropdown, setDropdown] = useState(false);
 
     const isLoggedIn = useSelector(state => state.auth.token !== null);
+    const username = useSelector(state => state.auth.userData.username);
 
     // const dispatch = useDispatch();
 
@@ -33,7 +34,7 @@ const Header = props => {
 
     const loginHeader = (isLoggedIn
         ? <div style={{ marginRight: '50px', cursor: 'pointer' }}>
-            <p onClick={dropdownToggler}>{localStorage.getItem('username')}</p>
+            <p onClick={dropdownToggler}>{username}</p>
         </div>
         : <div className={classes.Item}>
             <button
