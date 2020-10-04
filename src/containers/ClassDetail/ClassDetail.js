@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { dbService } from '../../fbase';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './ClassDetail.module.css';
+import * as classActions from '../../store/actions/class-list';
 import * as authActions from '../../store/actions/auth';
 
 const ClassDetail = props => {
@@ -12,8 +13,8 @@ const ClassDetail = props => {
     const [isLoading, setIsLoading] = useState(false);
     const isSignedIn = useSelector(state => state.auth.token !== null);
     const [isFavorite, setIsFavorite] = useState(false);
-    const isFav = useSelector(state => state.auth.userData.favorites.findIndex(cl => cl === classId) >= 0);
     const userId = useSelector(state => state.auth.userId);
+    const isFav = useSelector(state => state.auth.userData.favorites.findIndex(el => el === classId) >= 0);
 
     const dispatch = useDispatch();
 
@@ -23,6 +24,7 @@ const ClassDetail = props => {
         }
     }, [isFav]);
 
+    console.log(isFavorite);
     // try fetching
     const fetchClass = async classId => {
         try {
@@ -48,6 +50,7 @@ const ClassDetail = props => {
                     address: doc.data().address,
                     details: { ...doc.data().details },
                     category: [...doc.data().category],
+                    follwers: [...doc.data().followers]
                 }));
         } catch (error) {
             throw error;
@@ -56,12 +59,15 @@ const ClassDetail = props => {
 
     const favoriteToggler = () => {
         //dispatch favorites
+        console.log(isFav);
         if (isSignedIn) {
             if (isFavorite) {
-                dispatch(authActions.updateFavorites(userId, classId, false));
+                dispatch(classActions.updateFollower(classId, userId, false));
+                dispatch(authActions.updateFavorites(classId, userId, false));
                 setIsFavorite(false);
             } else {
-                dispatch(authActions.updateFavorites(userId, classId, true));
+                dispatch(classActions.updateFollower(classId, userId, true));
+                dispatch(authActions.updateFavorites(classId, userId, true));
                 setIsFavorite(true);
             }
             // setIsFavorite(prev => !prev);

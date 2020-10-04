@@ -1,7 +1,9 @@
 import Class from '../../models/class';
+import * as firebase from "firebase/app";
 import { dbService } from '../../fbase';
 
 export const FETCH_CLASS = 'FETCH_CLASS';
+export const UPDATE_FOLLOWER = 'UPDATE_FOLLOWER';
 
 export const fetchClass = () => {
     return async dispatch => {
@@ -33,7 +35,8 @@ export const fetchClass = () => {
                 cl.data().imageUrl,
                 cl.data().address,
                 cl.data().category,
-                cl.data().details
+                cl.data().details,
+                cl.data().followers
             )));
             console.log(classArray);
             //이부분은 listener활용한 부분이라서 db가 바뀌면 자동으로 바뀜
@@ -54,24 +57,22 @@ export const fetchClass = () => {
     }
 }
 
-// export const updateFollower = () => {
-//     return async dispatch => {
-//         try {
-//             dbService.collection("classes").onSnapshot(snapshot => {
-//                 const classArray = snapshot.docs.map(cl => new Class(
-//                     cl.id,
-//                     cl.data().title,
-//                     cl.data().imageUrl,
-//                     cl.data().address,
-//                     cl.data().category,
-//                     cl.data().details
-//                 ))
-//                 dispatch({ type: FETCH_CLASS, fetchedClasses: classArray });
-//             })
-
-//             // dispatch({ type: FETCH_CLASS, fetchedClasses: fetchedClasses });
-//         } catch (error) {
-//             throw error;
-//         }
-//     }
-// }
+export const updateFollower = (classId, userId, add) => {
+    return async dispatch => {
+        try {
+            if (add) {
+                dbService.collection("classes").doc(`${classId}`).update({
+                    followers: firebase.firestore.FieldValue.arrayUnion(userId)
+                });
+                dispatch({ type: UPDATE_FOLLOWER, add: true, classId: classId, userId: userId })
+            } else {
+                dbService.collection("classes").doc(`${classId}`).update({
+                    followers: firebase.firestore.FieldValue.arrayRemove(userId)
+                });
+                dispatch({ type: UPDATE_FOLLOWER, add: false, classId: classId, userId: userId })
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+}

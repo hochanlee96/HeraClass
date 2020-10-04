@@ -241,7 +241,7 @@ export const createUser = (userId, username) => {
     }
 }
 
-export const updateFavorites = (userId, classId, add) => {
+export const updateFavorites = (classId, userId, add) => {
     return async dispatch => {
         // let response;
         if (add) {
