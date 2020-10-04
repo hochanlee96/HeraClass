@@ -1,19 +1,24 @@
-.ClassCard{
-    background-color: rgba(0,0,0,0.03);
-    cursor: pointer;
+.Container {
     width: 320px;
     height: 400px;
-    display: inline-block;
-    margin: 2px 2px;
-    border-radius: 10px;
     position: relative;
     top: 0;
     transition: top ease 0.5s;
 }
 
-.ClassCard:hover{
+.Container:hover {
     top: -5px;
     box-shadow:1px 1px grey;
+}
+
+.ClassCard{
+    background-color: rgba(0,0,0,0.03);
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    margin: 2px 2px;
+    border-radius: 10px;
 }
 
 .ImageContainer{
@@ -42,18 +47,34 @@
 }
 
 .Button {
+    cursor: pointer;
     border: 1px solid black;
     border-radius: 10px;
     padding: 5px 5px;
     display: inline-block;
     margin: 10px 10px;
+    z-index: 100;
+    position: relative;
+    left: 230px;
+    bottom: 85px;
 }
 
 .FavoriteButton {
+    cursor: pointer;
     border: 1px solid black;
     border-radius: 10px;
     padding: 5px 5px;
     display: inline-block;
     margin: 10px 10px;
     background-color: yellow;
+    z-index: 100;
+    position: relative;
+    left: 230px;
+    bottom: 85px;
+}
+
+.Placeholder {
+    padding: 5px 5px;
+    display: inline-block;
+    margin: 10px 10px;
 }
