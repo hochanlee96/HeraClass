@@ -1,16 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import classes from './ClassCard.module.css';
+import * as classActions from '../../../store/actions/class-list';
+import * as authActions from '../../../store/actions/auth';
 
 const ClassCard = props => {
     const [isFav, setIsFav] = useState(false);
+    const isSignedIn = useSelector(state => state.auth.token !== null);
+    const userId = useSelector(state => state.auth.userId);
+
+    const dispatch = useDispatch();
 
     const clickHandler = classId => {
         props.history.push(`/detail/${classId}`);;
     }
+    const { isFavorite } = props;
 
-    const favToggler = () => {
-        setIsFav(prev => !prev);
+    useEffect(() => {
+        if (isFavorite) {
+            setIsFav(true);
+        }
+    }, [isFavorite]);
+
+    const favoriteToggler = classId => {
+        //dispatch favorites
+        if (isSignedIn) {
+            if (isFav) {
+                dispatch(classActions.updateFollower(classId, userId, false));
+                dispatch(authActions.updateFavorites(classId, userId, false));
+                setIsFav(false);
+            } else {
+                dispatch(classActions.updateFollower(classId, userId, true));
+                dispatch(authActions.updateFavorites(classId, userId, true));
+                setIsFav(true);
+            }
+            // setIsFavorite(prev => !prev);
+            // console.log(favoritesList);
+        } else {
+            //modal leading to login
+            const ok = window.confirm("You need to login first! Do you want to login?");
+            if (ok) {
+                props.history.push('/auth');
+            }
+        }
     }
 
     const categories = props.category.map(cat => <p key={cat} style={{ display: 'inline-block', margin: '5px 5px' }}>{cat}</p>)
@@ -32,7 +65,7 @@ const ClassCard = props => {
                     </div>
                 </div>
             </div>
-            <div onClick={favToggler} className={props.isFavorite && isFav ? classes.FavoriteButton : classes.Button}>Favorite</div>
+            <div onClick={() => favoriteToggler(props.classId)} className={isFav ? classes.FavoriteButton : classes.Button}>Favorite</div>
         </div>
     )
 }
