@@ -9,6 +9,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 const ClassList = props => {
 
     const allClasses = useSelector(state => state.classList.allClasses);
+    const userId = useSelector(state => state.auth.userId);
     const [isLoading, setIsLoading] = useState(false);
 
     const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const ClassList = props => {
         <div>
             <p>This is the Class List container</p>
             <div className={classes.MainContainer}>
-                {isLoading ? <Spinner /> : <ClassListContainer history={props.history} allClasses={allClasses} />}
+                {isLoading ? <Spinner /> : <ClassListContainer history={props.history} allClasses={allClasses} userId={userId} />}
             </div>
         </div>
     )

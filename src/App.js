@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 
 import Home from './containers/Home/Home';
@@ -14,7 +14,7 @@ import Profile from './containers/Profile/Profile';
 import * as authActions from './store/actions/auth';
 
 function App() {
-  const userId = localStorage.getItem('userId');
+  const userId = useSelector(state => state.auth.userId);
   const dispatch = useDispatch();
 
   //auto login or logout functionality when refreshed
@@ -41,6 +41,22 @@ function App() {
       <Route path="/" exact component={Home} />
       <Redirect to="/home" />
     </Switch>)
+
+  if (!userId) {
+    routes = (
+      <Switch>
+        <Route path="/home" exact component={Home} />
+        <Route path="/detail/:classId" component={ClassDetail} />
+        <Route path="/class-list" exact component={ClassList} />
+        <Route path="/my-page" exact component={Auth} />
+        <Route path="/favorites" exact component={Auth} />
+        <Route path="/profile" exact component={Auth} />
+        <Route path="/auth" exact component={Auth} />
+        <Route path="/logout" exact component={Logout} />
+        <Route path="/" exact component={Home} />
+        <Redirect to="/home" />
+      </Switch>)
+  }
 
   return (
     <Layout>

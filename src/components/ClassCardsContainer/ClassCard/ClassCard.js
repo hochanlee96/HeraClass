@@ -18,8 +18,11 @@ const ClassCard = props => {
             <div className={classes.Summary}>
                 <p className={classes.Title}>{props.title}</p>
                 <p>{props.address}</p>
-                <div>
-                    {categories}
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div style={{ display: "inline-block", margin: "10px 10px" }}>
+                        {categories}
+                    </div>
+                    <div onClick={() => console.log('clicked')} className={props.isFavorite ? classes.FavoriteButton : classes.Button}>Favorite</div>
                 </div>
             </div>
         </div>

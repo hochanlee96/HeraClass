@@ -6,6 +6,10 @@ import classes from './ClassCardsContainer.module.css';
 const ClassCardsContainer = props => {
 
     const classList = props.allClasses.map(classData => {
+        let isFavorite = false;
+        if (props.userId && (!!classData.followers.find(user => user === props.userId))) {
+            isFavorite = true;
+        }
         return (
             <ClassCard
                 history={props.history}
@@ -15,6 +19,7 @@ const ClassCardsContainer = props => {
                 title={classData.title}
                 address={classData.address}
                 category={classData.category}
+                isFavorite={isFavorite}
             />
         )
     });

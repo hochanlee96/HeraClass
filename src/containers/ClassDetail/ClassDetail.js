@@ -58,7 +58,6 @@ const ClassDetail = props => {
 
     const favoriteToggler = () => {
         //dispatch favorites
-        console.log(isFav);
         if (isSignedIn) {
             if (isFavorite) {
                 dispatch(classActions.updateFollower(classId, userId, false));
