@@ -43,7 +43,9 @@ const ClassDetail = props => {
                     details: { ...doc.data().details },
                     category: [...doc.data().category],
                     follwers: [...doc.data().followers]
-                }));
+                })).catch(err => {
+                    // console.log('Unable to reach');
+                });
         } catch (error) {
             throw error;
         }

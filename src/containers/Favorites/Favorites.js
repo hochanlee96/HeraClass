@@ -42,7 +42,7 @@ const Favorites = props => {
     return (
         <>
             <p>This is the Favorites page</p>
-            {isLoading ? <Spinner /> : favoriteClasses ? <ClassListContainer history={props.history} allClasses={favoriteClasses} /> : null}
+            {isLoading ? <Spinner /> : favoriteClasses ? <ClassListContainer history={props.history} allClasses={favoriteClasses} favPage={true} /> : null}
         </>
     )
 }

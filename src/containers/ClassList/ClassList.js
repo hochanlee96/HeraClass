@@ -34,7 +34,7 @@ const ClassList = props => {
         <div>
             <p>This is the Class List container</p>
             <div className={classes.MainContainer}>
-                {isLoading ? <Spinner /> : <ClassListContainer history={props.history} allClasses={allClasses} userId={userId} />}
+                {isLoading ? <Spinner /> : <ClassListContainer history={props.history} allClasses={allClasses} userId={userId} favPage={false} />}
             </div>
         </div>
     )

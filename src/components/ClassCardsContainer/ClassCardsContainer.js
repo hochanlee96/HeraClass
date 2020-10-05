@@ -28,6 +28,7 @@ const ClassCardsContainer = props => {
                 address={classData.address}
                 category={classData.category}
                 isFavorite={isFavorite}
+                favPage={props.favPage}
             />
         )
     });

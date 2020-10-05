@@ -45,14 +45,14 @@ const ClassCard = props => {
                     <p className={classes.Title}>{props.title}</p>
                     <p>{props.address}</p>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <div style={{ display: "inline-block", margin: "10px 10px" }}>
+                        <div style={{ display: "inline-block", margin: "10px 5px" }}>
                             {categories}
                         </div>
                         <div className={classes.Placeholder}></div>
                     </div>
                 </div>
             </div>
-            <div onClick={() => favoriteToggler(props.classId)} className={isFavorite ? classes.FavoriteButton : classes.Button}>Favorite</div>
+            {props.favPage ? null : <div onClick={() => favoriteToggler(props.classId)} className={isFavorite ? classes.FavoriteButton : classes.Button}>Favorite</div>}
         </div>
     )
 }

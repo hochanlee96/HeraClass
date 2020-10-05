@@ -36,7 +36,6 @@ function App() {
       <Route path="/my-page" exact component={MyPage} />
       <Route path="/favorites" exact component={Favorites} />
       <Route path="/profile" exact component={Profile} />
-      <Route path="/auth" exact component={Auth} />
       <Route path="/logout" exact component={Logout} />
       <Route path="/" exact component={Home} />
       <Redirect to="/home" />
