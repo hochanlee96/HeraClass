@@ -12,17 +12,10 @@ const ClassDetail = props => {
     const [selectedClass, setFetchedClass] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const isSignedIn = useSelector(state => state.auth.token !== null);
-    const [isFavorite, setIsFavorite] = useState(false);
     const userId = useSelector(state => state.auth.userId);
-    const isFav = useSelector(state => state.auth.userData.favorites.findIndex(el => el === classId) >= 0);
+    const isFavorite = useSelector(state => state.auth.userData.favorites.findIndex(el => el === classId) >= 0);
 
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        if (isFav) {
-            setIsFavorite(true);
-        }
-    }, [isFav]);
 
     // try fetching
     const fetchClass = async classId => {
@@ -57,21 +50,15 @@ const ClassDetail = props => {
     }
 
     const favoriteToggler = () => {
-        //dispatch favorites
         if (isSignedIn) {
             if (isFavorite) {
                 dispatch(classActions.updateFollower(classId, userId, false));
                 dispatch(authActions.updateFavorites(classId, userId, false));
-                setIsFavorite(false);
             } else {
                 dispatch(classActions.updateFollower(classId, userId, true));
                 dispatch(authActions.updateFavorites(classId, userId, true));
-                setIsFavorite(true);
             }
-            // setIsFavorite(prev => !prev);
-            // console.log(favoritesList);
         } else {
-            //modal leading to login
             const ok = window.confirm("You need to login first! Do you want to login?");
             if (ok) {
                 props.history.push('/auth');
@@ -90,7 +77,7 @@ const ClassDetail = props => {
     let detail = null;
     if (selectedClass) {
         const catList = selectedClass.category.map(cat => (
-            <p key={cat}>{cat}</p>
+            <p style={{ display: "inline-block", margin: '30px 10px' }} key={cat}>{cat}</p>
         ))
         detail = (
             <div className={classes.DetailContainer}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import classes from './ClassCard.module.css';
@@ -6,7 +6,6 @@ import * as classActions from '../../../store/actions/class-list';
 import * as authActions from '../../../store/actions/auth';
 
 const ClassCard = props => {
-    const [isFav, setIsFav] = useState(false);
     const isSignedIn = useSelector(state => state.auth.token !== null);
     const userId = useSelector(state => state.auth.userId);
 
@@ -17,28 +16,16 @@ const ClassCard = props => {
     }
     const { isFavorite } = props;
 
-    useEffect(() => {
-        if (isFavorite) {
-            setIsFav(true);
-        }
-    }, [isFavorite]);
-
     const favoriteToggler = classId => {
-        //dispatch favorites
         if (isSignedIn) {
-            if (isFav) {
+            if (isFavorite) {
                 dispatch(classActions.updateFollower(classId, userId, false));
                 dispatch(authActions.updateFavorites(classId, userId, false));
-                setIsFav(false);
             } else {
                 dispatch(classActions.updateFollower(classId, userId, true));
                 dispatch(authActions.updateFavorites(classId, userId, true));
-                setIsFav(true);
             }
-            // setIsFavorite(prev => !prev);
-            // console.log(favoritesList);
         } else {
-            //modal leading to login
             const ok = window.confirm("You need to login first! Do you want to login?");
             if (ok) {
                 props.history.push('/auth');
@@ -65,7 +52,7 @@ const ClassCard = props => {
                     </div>
                 </div>
             </div>
-            <div onClick={() => favoriteToggler(props.classId)} className={isFav ? classes.FavoriteButton : classes.Button}>Favorite</div>
+            <div onClick={() => favoriteToggler(props.classId)} className={isFavorite ? classes.FavoriteButton : classes.Button}>Favorite</div>
         </div>
     )
 }
