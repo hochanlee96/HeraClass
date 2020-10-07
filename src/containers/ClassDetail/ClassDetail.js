@@ -6,11 +6,13 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './ClassDetail.module.css';
 import * as classActions from '../../store/actions/class-list';
 import * as authActions from '../../store/actions/auth';
+import NaverMap from '../../components/Map/NaverMap';
 
 const ClassDetail = props => {
     const classId = props.match.params.classId;
-    const [selectedClass, setFetchedClass] = useState();
+    const [fetchedClass, setFetchedClass] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [coordinates, setCoordinates] = useState(null);
     const isSignedIn = useSelector(state => state.auth.token !== null);
     const userId = useSelector(state => state.auth.userId);
     const isFavorite = useSelector(state => state.auth.userData.favorites.findIndex(el => el === classId) >= 0);
@@ -35,22 +37,24 @@ const ClassDetail = props => {
             // })
 
             const docRef = dbService.collection("classes").doc(`${classId}`);
-            docRef.get().then((doc) =>
+            docRef.get().then((doc) => {
+                console.log(doc.data());
                 setFetchedClass({
                     title: doc.data().title,
                     imageUrl: doc.data().imageUrl,
                     address: doc.data().address,
                     details: { ...doc.data().details },
                     category: [...doc.data().category],
-                    follwers: [...doc.data().followers]
-                })).catch(err => {
-                    // console.log('Unable to reach');
+                    follwers: [...doc.data().followers],
                 });
+                setCoordinates({ lat: doc.data().coordinates.latitude, lng: doc.data().coordinates.longitude })
+            }).catch(err => {
+                // console.log('Unable to reach');
+            });
         } catch (error) {
             throw error;
         }
     }
-
     const favoriteToggler = () => {
         if (isSignedIn) {
             if (isFavorite) {
@@ -77,33 +81,39 @@ const ClassDetail = props => {
 
 
     let detail = null;
-    if (selectedClass) {
-        const catList = selectedClass.category.map(cat => (
+    if (fetchedClass) {
+        const catList = fetchedClass.category.map(cat => (
             <p style={{ display: "inline-block", margin: '30px 10px' }} key={cat}>{cat}</p>
         ))
         detail = (
             <div className={classes.DetailContainer}>
                 <div className={classes.ImageContainer}>
-                    <img src={selectedClass.imageUrl} alt='' className={classes.Image} />
+                    <img src={fetchedClass.imageUrl} alt='' className={classes.Image} />
                 </div>
                 <div className={classes.OverviewContainer} >
                     <div className={classes.Description}>
                         <div className={classes.TitleContainer}>
-                            <p><strong>{selectedClass.title}</strong></p>
+                            <p><strong>{fetchedClass.title}</strong></p>
                             <button className={isFavorite ? classes.FavoriteButton : classes.Button} onClick={favoriteToggler}>favorite</button>
                         </div>
                     </div>
-                    <p className={classes.Description}>{selectedClass.address}</p>
-                    <p className={classes.Description}>{selectedClass.details.tel}</p>
+                    <p className={classes.Description}>{fetchedClass.address}</p>
+                    <p className={classes.Description}>{fetchedClass.details.tel}</p>
                     <p className={classes.Description}>카테고리</p>
                     {catList}
                 </div>
             </div >)
     }
 
+    let map = null;
+    if (coordinates) {
+        map = <NaverMap title={fetchedClass.title} lat={coordinates.lat} lng={coordinates.lng} />
+    }
+
     return (
         <div style={{ width: '100%', height: '100%' }}>
             {isLoading ? <Spinner /> : detail}
+            {map}
         </div>
     )
 }
