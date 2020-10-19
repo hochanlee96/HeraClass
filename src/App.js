@@ -11,6 +11,9 @@ import MyPage from './containers/MyPage/MyPage';
 import Auth from './containers/Auth/Auth';
 import Favorites from './containers/Favorites/Favorites';
 import Profile from './containers/Profile/Profile';
+import About from './containers/About/About';
+import Pricing from './containers/Pricing/Pricing';
+import Contact from './containers/Contact/Contact';
 import * as authActions from './store/actions/auth';
 
 function App() {
@@ -31,6 +34,9 @@ function App() {
   let routes = (
     <Switch>
       <Route path="/home" exact component={Home} />
+      <Route path="/about" exact component={About} />
+      <Route path="/pricing" exact component={Pricing} />
+      <Route path="/contact" exact component={Contact} />
       <Route path="/detail/:classId" component={ClassDetail} />
       <Route path="/class-list" exact component={ClassList} />
       <Route path="/my-page" exact component={MyPage} />
@@ -45,6 +51,9 @@ function App() {
     routes = (
       <Switch>
         <Route path="/home" exact component={Home} />
+        <Route path="/about" exact component={About} />
+        <Route path="/pricing" exact component={Pricing} />
+        <Route path="/contact" exact component={Contact} />
         <Route path="/detail/:classId" component={ClassDetail} />
         <Route path="/class-list" exact component={ClassList} />
         <Route path="/my-page" exact component={Auth} />

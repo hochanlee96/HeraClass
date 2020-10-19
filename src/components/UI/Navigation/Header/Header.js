@@ -53,23 +53,58 @@ const Header = props => {
 
     return (
         <>
-            <nav className={classes.Header}>
-                <div className={classes.Item}>Logo</div>
-                <div className={classes.Item}>
-                    <NavLink
-                        className={classes.Link}
-                        to='/class-list'
-                        exact
-                    >View Class List</NavLink>
+            <div className={classes.Header}>
+                <div className={classes.Logo}>
                     <NavLink
                         className={classes.Link}
                         to='/home'
                         exact >
-                        Home
-                </NavLink>
+                        Logo
+                    </NavLink>
                 </div>
-                {loginHeader}
-            </nav>
+                <nav className={classes.Navigation}>
+                    <div className={classes.Item}>
+                        <NavLink
+                            className={classes.Link}
+                            to='/home'
+                            exact >
+                            Home
+                    </NavLink>
+                    </div>
+                    <div className={classes.Item}>
+                        <NavLink
+                            className={classes.Link}
+                            to='/about'
+                            exact >
+                            How to use
+                    </NavLink>
+                    </div>
+                    <div className={classes.Item}>
+                        <NavLink
+                            className={classes.Link}
+                            to='/pricing'
+                            exact >
+                            Pricing
+                    </NavLink>
+                    </div>
+                    <div className={classes.Item}>
+                        <NavLink
+                            className={classes.Link}
+                            to='/contact'
+                            exact >
+                            Contact Us
+                    </NavLink>
+                    </div>
+                    <div className={classes.Item}>
+                        <NavLink
+                            className={classes.Link}
+                            to='/class-list'
+                            exact
+                        >View Class List</NavLink>
+                    </div>
+                    {loginHeader}
+                </nav>
+            </div>
             <div className={classes.Modal} style={{ position: 'absolute', right: '-100px' }}>
                 <Modal show={showLogin} modalClosed={modalCloseHandler}>
                     <Login

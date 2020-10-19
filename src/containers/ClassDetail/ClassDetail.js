@@ -15,9 +15,17 @@ const ClassDetail = props => {
     const [coordinates, setCoordinates] = useState(null);
     const isSignedIn = useSelector(state => state.auth.token !== null);
     const userId = useSelector(state => state.auth.userId);
-    const isFavorite = useSelector(state => state.auth.userData.favorites.findIndex(el => el === classId) >= 0);
+    const [isFavorite, setIsFavorite] = useState(false);
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (!fetchedClass) {
+            setIsFavorite(false)
+        } else if (userId && fetchedClass.followers.findIndex(item => item === userId) >= 0) {
+            setIsFavorite(true)
+        }
+    }, [fetchedClass, userId])
 
     // try fetching
     const fetchClass = async classId => {
@@ -38,14 +46,13 @@ const ClassDetail = props => {
 
             const docRef = dbService.collection("classes").doc(`${classId}`);
             docRef.get().then((doc) => {
-                console.log(doc.data());
                 setFetchedClass({
                     title: doc.data().title,
                     imageUrl: doc.data().imageUrl,
                     address: doc.data().address,
                     details: { ...doc.data().details },
                     category: [...doc.data().category],
-                    follwers: [...doc.data().followers],
+                    followers: [...doc.data().followers],
                 });
                 setCoordinates({ lat: doc.data().coordinates.latitude, lng: doc.data().coordinates.longitude })
             }).catch(err => {
@@ -60,9 +67,11 @@ const ClassDetail = props => {
             if (isFavorite) {
                 dispatch(classActions.updateFollower(classId, userId, false));
                 dispatch(authActions.updateFavorites(classId, userId, false));
+                setIsFavorite(false);
             } else {
                 dispatch(classActions.updateFollower(classId, userId, true));
                 dispatch(authActions.updateFavorites(classId, userId, true));
+                setIsFavorite(true);
             }
         } else {
             const ok = window.confirm("You need to login first! Do you want to login?");
@@ -71,7 +80,6 @@ const ClassDetail = props => {
             }
         }
     }
-
     useEffect(() => {
         setIsLoading(true);
         fetchClass(classId).then(() => {
