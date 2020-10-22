@@ -30,7 +30,9 @@ const ClassDetail = props => {
     // try fetching
     const fetchClass = async classId => {
         try {
-            // const response = await fetch(`https://hercules-56a2b.firebaseio.com/class-list/${classId}.json`);
+
+            //서버이용해서 fetch class
+            // const response = await fetch(`http://localhost:3001/class-list/${classId}`);
             // if (!response.ok) {
             //     throw new Error('Something went wrong!');
             // }
@@ -43,7 +45,9 @@ const ClassDetail = props => {
             //     details: { ...resData.details },
             //     category: [...resData.category]
             // })
+            // setCoordinates({ lat: resData.coordinates.latitude, lng: resData.coordinates.longitude })
 
+            //firebase를 이용해서 fetch class
             const docRef = dbService.collection("classes").doc(`${classId}`);
             docRef.get().then((doc) => {
                 setFetchedClass({
@@ -56,7 +60,7 @@ const ClassDetail = props => {
                 });
                 setCoordinates({ lat: doc.data().coordinates.latitude, lng: doc.data().coordinates.longitude })
             }).catch(err => {
-                // console.log('Unable to reach');
+                console.log('Unable to reach');
             });
         } catch (error) {
             throw error;

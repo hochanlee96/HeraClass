@@ -100,7 +100,7 @@ const Header = props => {
                             className={classes.Link}
                             to='/class-list'
                             exact
-                        >View Class List</NavLink>
+                        >Search Class</NavLink>
                     </div>
                     {loginHeader}
                 </nav>

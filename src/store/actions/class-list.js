@@ -8,12 +8,13 @@ export const UPDATE_FOLLOWER = 'UPDATE_FOLLOWER';
 export const fetchClass = () => {
     return async dispatch => {
         try {
-            // const response = await fetch("https://hercules-56a2b.firebaseio.com/class-list.json");
+            //서버이용하기
+            // const response = await fetch("http://localhost:3001/class-list");
             // if (!response.ok) {
             //     throw new Error('Something went wrong!');
             // }
-
             // const resData = await response.json();
+            // console.log(resData);
             // // console.log(resData);
             // const fetchedClasses = [];
 
@@ -27,6 +28,9 @@ export const fetchClass = () => {
             //         resData[key].details
             //     ));
             // }
+            // dispatch({ type: FETCH_CLASS, fetchedClasses: fetchedClasses });
+
+            //firebase 이용하기
             const fetchedClasses = await dbService.collection("classes").get();
             const classArray = [];
             fetchedClasses.forEach(cl => classArray.push(new Class(
@@ -38,17 +42,6 @@ export const fetchClass = () => {
                 cl.data().details,
                 cl.data().followers
             )));
-            //이부분은 listener활용한 부분이라서 db가 바뀌면 자동으로 바뀜
-            // dbService.collection("classes").onSnapshot(snapshot => {
-            //     // console.log(snapshot.docs[0].data());
-            //     const classArray = snapshot.docs.map(cl => new Class(
-            //         cl.id,
-            //         cl.data().title,
-            //         cl.data().imageUrl,
-            //         cl.data().address,
-            //         cl.data().category,
-            //         cl.data().details
-            //     ))
             dispatch({ type: FETCH_CLASS, fetchedClasses: classArray });
         } catch (error) {
             throw error;
