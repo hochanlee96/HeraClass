@@ -9,31 +9,60 @@ export const UPDATE_FAVORITES = 'UPDATE_FAVORITES';
 
 let timer;
 
-export const authenticate = (token, userId, expiryTime) => {
+export const authenticate = (userData) => {
     return dispatch => {
-        dispatch(setLogoutTimer(expiryTime));
+        clearLogoutTimer();
+        dispatch(setLogoutTimer(userData.expires));
         dispatch(
             {
                 type: AUTHENTICATE,
-                token: token,
-                userId: userId,
+                userData: userData
             }
         );
     }
 }
 
 export const logout = () => {
-    clearLogoutTimer();
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('expiration');
-    localStorage.removeItem('favorites');
-    return {
-        type: LOGOUT
+    return async dispatch => {
+        const response = await fetch("http://localhost:3001/logout", {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include'
+        });
+        const resData = await response.json()
+        console.log(resData);
+        clearLogoutTimer();
+        dispatch({ type: LOGOUT });
+
     }
 }
+// {
+//     clearLogoutTimer();
+//     localStorage.removeItem('token');
+//     localStorage.removeItem('username');
+//     localStorage.removeItem('refreshToken');
+//     localStorage.removeItem('userId');
+//     localStorage.removeItem('expiration');
+//     localStorage.removeItem('favorites');
+//     return {
+//         type: LOGOUT
+//     }
+// }
+
+// const clearLogoutTimer = () => {
+//     if (timer) {
+//         clearTimeout(timer);
+//     }
+// };
+
+// const setLogoutTimer = expirationTime => {
+//     return dispatch => {
+//         timer = setTimeout(() => {
+//             dispatch(logout());
+//         }, expirationTime);
+//     }
+// }
 
 const clearLogoutTimer = () => {
     if (timer) {
@@ -41,11 +70,13 @@ const clearLogoutTimer = () => {
     }
 };
 
-const setLogoutTimer = expirationTime => {
+const setLogoutTimer = expires => {
     return dispatch => {
+        const now = new Date().getTime()
+        const expireTime = new Date(expires).getTime()
         timer = setTimeout(() => {
             dispatch(logout());
-        }, expirationTime);
+        }, expireTime - now);
     }
 }
 
@@ -88,11 +119,7 @@ export const register = (email, username, password) => {
         }
         // const resData = await response.json();
         const resData = await response.json();
-        console.log(resData.expires)
-        const now = new Date().getTime();
-        const expireDate = new Date(resData.expires).getTime();
-        console.log(typeof (resData.expires))
-        console.log(expireDate - now);
+        dispatch(authenticate(resData))
 
 
         // dispatch(authenticate(resData.idToken, resData.localId, parseInt(resData.expiresIn) * 1000))
@@ -118,8 +145,6 @@ export const login = (email, password) => {
                 password: password,
             })
         });
-        const resData = await response.json();
-        console.log(resData)
         // const response = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAYs8Y1rgKGc-Nzxz3KuPY87hFlMqFYWAo", {
         //     method: 'POST',
         //     headers: {
@@ -132,18 +157,20 @@ export const login = (email, password) => {
         //     })
         // });
 
-        // if (!response.ok) {
-        //     const errorResData = await response.json();
-        //     const errorId = errorResData.error.message;
-        //     let message = 'Something went wrong...';
-        //     if (errorId === 'EMAIL_NOT_FOUND') {
-        //         message = 'This email could not be found!'
-        //     } else if (errorId === 'INVALID_PASSWORD') {
-        //         message = 'This password is not valid!'
-        //     }
-        //     throw new Error(message);
-        // }
+        if (!response.ok) {
+            const errorResData = await response.json();
+            const errorId = errorResData.error.message;
+            let message = 'Something went wrong...';
+            if (errorId === 'EMAIL_NOT_FOUND') {
+                message = 'This email could not be found!'
+            } else if (errorId === 'INVALID_PASSWORD') {
+                message = 'This password is not valid!'
+            }
+            throw new Error(message);
+        }
 
+        const resData = await response.json();
+        dispatch(authenticate(resData));
         // const resData = await response.json();
         // // fetchUserData(resData.localId);
         // dispatch(authenticate(resData.idToken, resData.localId, parseInt(resData.expiresIn) * 1000));
@@ -156,24 +183,42 @@ export const login = (email, password) => {
 }
 
 export const authCheckState = () => {
-    return dispatch => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            dispatch(logout());
+    return async dispatch => {
+        const response = await fetch("http://localhost:3001/user-data", {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        });
+        console.log('authcheckstate')
+        const resData = await response.json();
+        console.log('resdata', resData);
+        if (resData) {
+            console.log('loggd in')
+            dispatch(authenticate(resData));
         } else {
-            const expirationDate = localStorage.getItem('expiration');
-            if (expirationDate < new Date().getTime()) {
-                dispatch(logout());
-            } else {
-                //refresh()
-                dispatch(refreshAuth(localStorage.getItem('refreshToken')));
-                // const token = localStorage.getItem('token');
-                // const userId = localStorage.getItem('userId');
-                // localStorage.setItem('expiration', new Date().getTime() + 3600000);
-                // dispatch(authenticate(token, userId));
-            }
+            console.log('session expired');
+            dispatch(logout());
         }
     }
+    // {
+    //     const token = localStorage.getItem('token');
+    //     if (!token) {
+    //         dispatch(logout());
+    //     } else {
+    //         const expirationDate = localStorage.getItem('expiration');
+    //         if (expirationDate < new Date().getTime()) {
+    //             dispatch(logout());
+    //         } else {
+    //             //refresh()
+    //             dispatch(refreshAuth(localStorage.getItem('refreshToken')));
+    //             // const token = localStorage.getItem('token');
+    //             // const userId = localStorage.getItem('userId');
+    //             // localStorage.setItem('expiration', new Date().getTime() + 3600000);
+    //             // dispatch(authenticate(token, userId));
+    //         }
+    //     }
+    // }
 }
 //refresh();
 export const refreshAuth = refreshToken => {

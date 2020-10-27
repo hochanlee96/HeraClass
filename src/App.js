@@ -17,7 +17,8 @@ import Contact from './containers/Contact/Contact';
 import * as authActions from './store/actions/auth';
 
 function App() {
-  const userId = useSelector(state => state.auth.userId);
+  const username = useSelector(state => state.auth.username);
+  console.log(username);
   const dispatch = useDispatch();
 
   //auto login or logout functionality when refreshed
@@ -25,11 +26,11 @@ function App() {
     dispatch(authActions.authCheckState());
   }, [dispatch])
 
-  useEffect(() => {
-    if (userId) {
-      dispatch(authActions.fetchUserData(userId));
-    }
-  }, [dispatch, userId])
+  // useEffect(() => {
+  //   if (username) {
+  //     console.log('username')
+  //   }
+  // }, [dispatch, username])
 
   let routes = (
     <Switch>
@@ -47,7 +48,7 @@ function App() {
       <Redirect to="/home" />
     </Switch>)
 
-  if (!userId) {
+  if (!username) {
     routes = (
       <Switch>
         <Route path="/home" exact component={Home} />
