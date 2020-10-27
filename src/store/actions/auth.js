@@ -50,19 +50,32 @@ const setLogoutTimer = expirationTime => {
 }
 
 
-export const register = (email, password) => {
+export const register = (email, username, password) => {
     return async dispatch => {
-        const response = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAYs8Y1rgKGc-Nzxz3KuPY87hFlMqFYWAo", {
+        const response = await fetch("http://localhost:3001/register", {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({
                 email: email,
+                username: username,
                 password: password,
-                returnSecureToken: true
             })
         });
+
+        // const response = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAYs8Y1rgKGc-Nzxz3KuPY87hFlMqFYWAo", {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         email: email,
+        //         password: password,
+        //         returnSecureToken: true
+        //     })
+        // });
 
         if (!response.ok) {
             const errorResData = await response.json();
@@ -73,54 +86,72 @@ export const register = (email, password) => {
             }
             throw new Error(message);
         }
+        // const resData = await response.json();
         const resData = await response.json();
+        console.log(resData.expires)
+        const now = new Date().getTime();
+        const expireDate = new Date(resData.expires).getTime();
+        console.log(typeof (resData.expires))
+        console.log(expireDate - now);
 
-        // const data = await authService.createUserWithEmailAndPassword(email, password);
-        // console.log(data);
 
-        dispatch(authenticate(resData.idToken, resData.localId, parseInt(resData.expiresIn) * 1000))
-        const expirationDate = new Date().getTime() + parseInt(resData.expiresIn) * 1000;
-        localStorage.setItem('token', resData.idToken);
-        localStorage.setItem('refreshToken', resData.refreshToken);
-        localStorage.setItem('userId', resData.localId);
-        localStorage.setItem('expiration', expirationDate);
+        // dispatch(authenticate(resData.idToken, resData.localId, parseInt(resData.expiresIn) * 1000))
+        // const expirationDate = new Date().getTime() + parseInt(resData.expiresIn) * 1000;
+        // localStorage.setItem('token', resData.idToken);
+        // localStorage.setItem('refreshToken', resData.refreshToken);
+        // localStorage.setItem('userId', resData.localId);
+        // localStorage.setItem('expiration', expirationDate);
     }
 }
 
 export const login = (email, password) => {
     return async dispatch => {
-        const response = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAYs8Y1rgKGc-Nzxz3KuPY87hFlMqFYWAo", {
+        const response = await fetch("http://localhost:3001/login", {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                // 'Access-Control-Allow-Origin': '*'
             },
+            credentials: 'include',
             body: JSON.stringify({
                 email: email,
                 password: password,
-                returnSecureToken: true
             })
         });
-
-        if (!response.ok) {
-            const errorResData = await response.json();
-            const errorId = errorResData.error.message;
-            let message = 'Something went wrong...';
-            if (errorId === 'EMAIL_NOT_FOUND') {
-                message = 'This email could not be found!'
-            } else if (errorId === 'INVALID_PASSWORD') {
-                message = 'This password is not valid!'
-            }
-            throw new Error(message);
-        }
-
         const resData = await response.json();
-        // fetchUserData(resData.localId);
-        dispatch(authenticate(resData.idToken, resData.localId, parseInt(resData.expiresIn) * 1000));
-        const expirationDate = new Date(new Date().getTime() + parseInt(resData.expiresIn) * 1000);
-        localStorage.setItem('token', resData.idToken);
-        localStorage.setItem('refreshToken', resData.refreshToken);
-        localStorage.setItem('userId', resData.localId);
-        localStorage.setItem('expiration', expirationDate);
+        console.log(resData)
+        // const response = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAYs8Y1rgKGc-Nzxz3KuPY87hFlMqFYWAo", {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         email: email,
+        //         password: password,
+        //         returnSecureToken: true
+        //     })
+        // });
+
+        // if (!response.ok) {
+        //     const errorResData = await response.json();
+        //     const errorId = errorResData.error.message;
+        //     let message = 'Something went wrong...';
+        //     if (errorId === 'EMAIL_NOT_FOUND') {
+        //         message = 'This email could not be found!'
+        //     } else if (errorId === 'INVALID_PASSWORD') {
+        //         message = 'This password is not valid!'
+        //     }
+        //     throw new Error(message);
+        // }
+
+        // const resData = await response.json();
+        // // fetchUserData(resData.localId);
+        // dispatch(authenticate(resData.idToken, resData.localId, parseInt(resData.expiresIn) * 1000));
+        // const expirationDate = new Date(new Date().getTime() + parseInt(resData.expiresIn) * 1000);
+        // localStorage.setItem('token', resData.idToken);
+        // localStorage.setItem('refreshToken', resData.refreshToken);
+        // localStorage.setItem('userId', resData.localId);
+        // localStorage.setItem('expiration', expirationDate);
     }
 }
 

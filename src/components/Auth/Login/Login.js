@@ -25,7 +25,7 @@ const Login = props => {
         try {
             await dispatch(authActions.login(emailInput, passwordInput));
             const userId = localStorage.getItem('userId');
-            await dispatch(authActions.fetchUserData(userId));
+            // await dispatch(authActions.fetchUserData(userId));
             props.resetModal();
         } catch (err) {
             setError(err.message);
