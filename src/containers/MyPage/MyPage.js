@@ -7,7 +7,7 @@ import classes from './MyPage.module.css';
 
 const MyPage = () => {
 
-    const numFavorites = useSelector(state => state.auth.userData.favorites.length);
+    const numFavorites = useSelector(state => state.auth.favorites.length);
 
     return (
         <>

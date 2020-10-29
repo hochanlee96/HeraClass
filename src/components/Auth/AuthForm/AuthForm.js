@@ -27,12 +27,8 @@ const AuthForm = props => {
         try {
             if (isSignin) {
                 await dispatch(authActions.login(emailInput, passwordInput));
-                const userId = localStorage.getItem('userId');
-                await dispatch(authActions.fetchUserData(userId));
             } else {
                 await dispatch(authActions.register(emailInput, passwordInput));
-                const userId = localStorage.getItem('userId');
-                await dispatch(authActions.createUser(userId, usernameInput));
             }
             setUsernameInput('');
             setEmailInput('');

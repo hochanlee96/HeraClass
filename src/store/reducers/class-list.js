@@ -15,9 +15,9 @@ export default (state = initialState, action) => {
             const classIndex = state.allClasses.findIndex(cl => cl.id === action.classId);
             const updatedClasses = [...state.allClasses];
             if (action.add) {
-                updatedClasses[classIndex].followers.push(action.userId);
+                updatedClasses[classIndex].followers.push(action.userEmail);
             } else {
-                updatedClasses[classIndex].followers.splice(action.userId, 1);
+                updatedClasses[classIndex].followers.splice(action.userEmail, 1);
             }
             return {
                 allClasses: updatedClasses

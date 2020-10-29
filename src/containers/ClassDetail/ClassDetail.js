@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { dbService } from '../../fbase';
+// import { dbService } from '../../fbase';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './ClassDetail.module.css';
 import * as classActions from '../../store/actions/class-list';
+import { FETCH_CLASS } from '../../store/actions/class-list';
 import * as authActions from '../../store/actions/auth';
+import Class from '../../models/class';
 import NaverMap from '../../components/Map/NaverMap';
 
 const ClassDetail = props => {
@@ -13,8 +15,8 @@ const ClassDetail = props => {
     const [fetchedClass, setFetchedClass] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
-    const isSignedIn = useSelector(state => state.auth.token !== null);
-    const userId = useSelector(state => state.auth.userId);
+    const isSignedIn = useSelector(state => state.auth.email !== '');
+    const userEmail = useSelector(state => state.auth.email);
     const [isFavorite, setIsFavorite] = useState(false);
 
     const dispatch = useDispatch();
@@ -22,59 +24,63 @@ const ClassDetail = props => {
     useEffect(() => {
         if (!fetchedClass) {
             setIsFavorite(false)
-        } else if (userId && fetchedClass.followers.findIndex(item => item === userId) >= 0) {
+        } else if (userEmail && fetchedClass.followers.findIndex(item => item === userEmail) >= 0) {
             setIsFavorite(true)
         }
-    }, [fetchedClass, userId])
+    }, [fetchedClass, userEmail])
 
     // try fetching
-    const fetchClass = async classId => {
+    const fetchClass = useCallback(async classId => {
         try {
 
             //서버이용해서 fetch class
-            // const response = await fetch(`http://localhost:3001/class-list/${classId}`);
-            // if (!response.ok) {
-            //     throw new Error('Something went wrong!');
-            // }
+            const response = await fetch(`http://localhost:3001/class-list/${classId}`);
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
 
-            // const resData = await response.json();
-            // setFetchedClass({
-            //     title: resData.title,
-            //     imageUrl: resData.imageUrl,
-            //     address: resData.address,
-            //     details: { ...resData.details },
-            //     category: [...resData.category]
-            // })
-            // setCoordinates({ lat: resData.coordinates.latitude, lng: resData.coordinates.longitude })
+            const resData = await response.json();
+            const classData = new Class(
+                resData._id,
+                resData.title,
+                resData.imageUrl,
+                resData.address,
+                resData.category,
+                resData.details,
+                resData.followers
+            );
+            setFetchedClass(classData)
+            dispatch({ type: FETCH_CLASS, fetchedClasses: [classData] });
+            setCoordinates({ lat: resData.coordinates.latitude, lng: resData.coordinates.longitude })
 
             //firebase를 이용해서 fetch class
-            const docRef = dbService.collection("classes").doc(`${classId}`);
-            docRef.get().then((doc) => {
-                setFetchedClass({
-                    title: doc.data().title,
-                    imageUrl: doc.data().imageUrl,
-                    address: doc.data().address,
-                    details: { ...doc.data().details },
-                    category: [...doc.data().category],
-                    followers: [...doc.data().followers],
-                });
-                setCoordinates({ lat: doc.data().coordinates.latitude, lng: doc.data().coordinates.longitude })
-            }).catch(err => {
-                console.log('Unable to reach');
-            });
+            // const docRef = dbService.collection("classes").doc(`${classId}`);
+            // docRef.get().then((doc) => {
+            //     setFetchedClass({
+            //         title: doc.data().title,
+            //         imageUrl: doc.data().imageUrl,
+            //         address: doc.data().address,
+            //         details: { ...doc.data().details },
+            //         category: [...doc.data().category],
+            //         followers: [...doc.data().followers],
+            //     });
+            //     setCoordinates({ lat: doc.data().coordinates.latitude, lng: doc.data().coordinates.longitude })
+            // }).catch(err => {
+            //     console.log('Unable to reach');
+            // });
         } catch (error) {
             throw error;
         }
-    }
+    }, [dispatch])
     const favoriteToggler = () => {
         if (isSignedIn) {
             if (isFavorite) {
-                dispatch(classActions.updateFollower(classId, userId, false));
-                dispatch(authActions.updateFavorites(classId, userId, false));
+                dispatch(classActions.updateFollower(classId, userEmail, false));
+                dispatch(authActions.updateFavorites(classId, false));
                 setIsFavorite(false);
             } else {
-                dispatch(classActions.updateFollower(classId, userId, true));
-                dispatch(authActions.updateFavorites(classId, userId, true));
+                dispatch(classActions.updateFollower(classId, userEmail, true));
+                dispatch(authActions.updateFavorites(classId, true));
                 setIsFavorite(true);
             }
         } else {
@@ -89,7 +95,7 @@ const ClassDetail = props => {
         fetchClass(classId).then(() => {
             setIsLoading(false);
         });
-    }, [classId])
+    }, [classId, fetchClass])
 
 
     let detail = null;

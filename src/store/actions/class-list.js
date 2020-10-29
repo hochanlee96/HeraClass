@@ -1,6 +1,6 @@
 import Class from '../../models/class';
-import * as firebase from "firebase/app";
-import { dbService } from '../../fbase';
+// import * as firebase from "firebase/app";
+// import { dbService } from '../../fbase';
 
 export const FETCH_CLASS = 'FETCH_CLASS';
 export const UPDATE_FOLLOWER = 'UPDATE_FOLLOWER';
@@ -22,15 +22,15 @@ export const fetchClass = () => {
 
             for (const key in resData) {
                 fetchedClasses.push(new Class(
-                    key,
+                    resData[key]._id,
                     resData[key].title,
                     resData[key].imageUrl,
                     resData[key].address,
                     resData[key].category,
-                    resData[key].details
+                    resData[key].details,
+                    resData[key].followers
                 ));
             }
-            dispatch({ type: FETCH_CLASS, fetchedClasses: fetchedClasses });
 
             //firebase 이용하기
             // const fetchedClasses = await dbService.collection("classes").get();
@@ -44,26 +44,61 @@ export const fetchClass = () => {
             //     cl.data().details,
             //     cl.data().followers
             // )));
-            // dispatch({ type: FETCH_CLASS, fetchedClasses: classArray });
+            dispatch({ type: FETCH_CLASS, fetchedClasses: fetchedClasses });
         } catch (error) {
             throw error;
         }
     }
 }
 
-export const updateFollower = (classId, userId, add) => {
+export const updateFollower = (classId, userEmail, add) => {
     return async dispatch => {
         try {
             if (add) {
-                dbService.collection("classes").doc(`${classId}`).update({
-                    followers: firebase.firestore.FieldValue.arrayUnion(userId)
+                //서버이용
+                const response = await fetch('http://localhost:3001/class-list/update-followers', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        classId: classId,
+                        add: true
+                    })
                 });
-                dispatch({ type: UPDATE_FOLLOWER, add: true, classId: classId, userId: userId })
+                if (response.ok) {
+                    dispatch({ type: UPDATE_FOLLOWER, add: true, classId: classId, userEmail: userEmail })
+                }
+
+                //firebase 이용
+                // dbService.collection("classes").doc(`${classId}`).update({
+                //     followers: firebase.firestore.FieldValue.arrayUnion(userId)
+                // });
+
+
             } else {
-                dbService.collection("classes").doc(`${classId}`).update({
-                    followers: firebase.firestore.FieldValue.arrayRemove(userId)
+                //서버이용
+                const response = await fetch('http://localhost:3001/class-list/update-followers', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        classId: classId,
+                        add: false
+                    })
                 });
-                dispatch({ type: UPDATE_FOLLOWER, add: false, classId: classId, userId: userId })
+                if (response.ok) {
+                    dispatch({ type: UPDATE_FOLLOWER, add: false, classId: classId, userEmail: userEmail })
+                }
+                //firebase 이용
+                // dbService.collection("classes").doc(`${classId}`).update({
+                //     followers: firebase.firestore.FieldValue.arrayRemove(userId)
+                // });
+
+
             }
         } catch (error) {
             throw error;

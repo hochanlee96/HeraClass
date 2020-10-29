@@ -27,8 +27,6 @@ const Register = props => {
         event.preventDefault();
         try {
             await dispatch(authActions.register(emailInput, usernameInput, passwordInput));
-            const userId = localStorage.getItem('userId');
-            await dispatch(authActions.createUser(userId, usernameInput));
             props.resetModal();
         } catch (err) {
             setError(err.message);

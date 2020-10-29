@@ -6,8 +6,8 @@ import * as classActions from '../../../store/actions/class-list';
 import * as authActions from '../../../store/actions/auth';
 
 const ClassCard = props => {
-    const isSignedIn = useSelector(state => state.auth.token !== null);
-    const userId = useSelector(state => state.auth.userId);
+    const isSignedIn = useSelector(state => state.auth.email !== '');
+    const userEmail = useSelector(state => state.auth.email);
 
     const dispatch = useDispatch();
 
@@ -19,11 +19,11 @@ const ClassCard = props => {
     const favoriteToggler = classId => {
         if (isSignedIn) {
             if (isFavorite) {
-                dispatch(classActions.updateFollower(classId, userId, false));
-                dispatch(authActions.updateFavorites(classId, userId, false));
+                dispatch(classActions.updateFollower(classId, userEmail, false));
+                dispatch(authActions.updateFavorites(classId, false));
             } else {
-                dispatch(classActions.updateFollower(classId, userId, true));
-                dispatch(authActions.updateFavorites(classId, userId, true));
+                dispatch(classActions.updateFollower(classId, userEmail, true));
+                dispatch(authActions.updateFavorites(classId, true));
             }
         } else {
             const ok = window.confirm("You need to login first! Do you want to login?");

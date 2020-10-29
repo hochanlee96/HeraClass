@@ -18,7 +18,6 @@ import * as authActions from './store/actions/auth';
 
 function App() {
   const username = useSelector(state => state.auth.username);
-  console.log(username);
   const dispatch = useDispatch();
 
   //auto login or logout functionality when refreshed
@@ -26,11 +25,6 @@ function App() {
     dispatch(authActions.authCheckState());
   }, [dispatch])
 
-  // useEffect(() => {
-  //   if (username) {
-  //     console.log('username')
-  //   }
-  // }, [dispatch, username])
 
   let routes = (
     <Switch>

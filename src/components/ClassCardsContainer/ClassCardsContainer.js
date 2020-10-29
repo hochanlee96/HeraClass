@@ -7,15 +7,15 @@ const ClassCardsContainer = props => {
 
     const [isSignedIn, setIsSignedIn] = useState(false);
 
-    const { userId } = props;
+    const { userEmail } = props;
 
     useEffect(() => {
-        userId ? setIsSignedIn(true) : setIsSignedIn(false);
-    }, [userId])
+        userEmail ? setIsSignedIn(true) : setIsSignedIn(false);
+    }, [userEmail])
 
     const classList = props.allClasses.map(classData => {
         let isFavorite = false;
-        if (isSignedIn && (!!classData.followers.find(user => user === props.userId))) {
+        if (isSignedIn && (!!classData.followers.find(user => user === props.userEmail))) {
             isFavorite = true;
         }
         return (

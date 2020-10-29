@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
@@ -16,13 +16,6 @@ const Header = props => {
 
     const isLoggedIn = useSelector(state => state.auth.username !== '');
     const username = useSelector(state => state.auth.username);
-
-    // const dispatch = useDispatch();
-    // useEffect(() => {
-    //     if (isLoggedIn === '') {
-    //         console.log('logged out')
-    //     }
-    // }, [isLoggedIn])
 
     const modalCloseHandler = () => {
         setShowLogin(false);
