@@ -8,8 +8,9 @@ const AuthForm = props => {
     const [emailInput, setEmailInput] = useState('');
     const [usernameInput, setUsernameInput] = useState('');
     const [passwordInput, setPasswordInput] = useState('');
+    const [isSignin, setIsSignin] = useState(true);
     const [error, setError] = useState();
-    const { isSignin, history } = props;
+    const { history } = props;
     const dispatch = useDispatch();
 
     const inputChangeHandler = (identifier, event) => {
@@ -20,6 +21,10 @@ const AuthForm = props => {
         } else if (identifier === 'password') {
             setPasswordInput(event.target.value);
         }
+    }
+
+    const authToggler = () => {
+        setIsSignin(prev => !prev)
     }
 
     const submitHandler = async event => {
@@ -50,6 +55,7 @@ const AuthForm = props => {
                 <input className={classes.Input} type="password" placeholder="password" value={passwordInput} onChange={(event) => inputChangeHandler('password', event)} />
                 <button className={classes.Button} onClick={submitHandler}>{isSignin ? 'Log In' : 'Register'}</button>
             </form>
+            <button onClick={authToggler}>Switch to {isSignin ? "Sign Up" : "Log In"}</button>
         </>
     )
 }

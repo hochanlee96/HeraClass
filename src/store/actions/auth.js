@@ -30,11 +30,10 @@ export const logout = () => {
             },
             credentials: 'include'
         });
-        const resData = await response.json()
-        console.log(resData);
-        clearLogoutTimer();
-        dispatch({ type: LOGOUT });
-
+        if (response.ok) {
+            clearLogoutTimer();
+            dispatch({ type: LOGOUT });
+        }
     }
 }
 
@@ -86,6 +85,7 @@ export const register = (email, username, password) => {
 
 export const login = (email, password) => {
     return async dispatch => {
+
         const response = await fetch("http://localhost:3001/login", {
             method: 'POST',
             headers: {
@@ -98,8 +98,10 @@ export const login = (email, password) => {
             })
         });
 
-        if (!response.ok) {
+
+        if (response.status !== 200) {
             const errorResData = await response.json();
+            console.log('err', errorResData)
             const errorId = errorResData.error.message;
             let message = 'Something went wrong...';
             if (errorId === 'EMAIL_NOT_FOUND') {
@@ -108,10 +110,13 @@ export const login = (email, password) => {
                 message = 'This password is not valid!'
             }
             throw new Error(message);
+
         }
 
         const resData = await response.json();
+        console.log('!!!', resData);
         dispatch(authenticate(resData));
+
 
     }
 }
@@ -124,14 +129,11 @@ export const authCheckState = () => {
             },
             credentials: 'include',
         });
-        console.log('authcheckstate')
         const resData = await response.json();
-        console.log('resdata', resData);
         if (resData) {
             console.log('loggd in')
             dispatch(authenticate(resData));
         } else {
-            console.log('session expired');
             dispatch(logout());
         }
     }
