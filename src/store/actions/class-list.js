@@ -28,7 +28,8 @@ export const fetchClass = () => {
                     resData[key].address,
                     resData[key].category,
                     resData[key].details,
-                    resData[key].followers
+                    resData[key].followers,
+                    { ...resData[key].coordinates }
                 ));
             }
 

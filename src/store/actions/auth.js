@@ -130,8 +130,7 @@ export const authCheckState = () => {
             credentials: 'include',
         });
         const resData = await response.json();
-        if (resData) {
-            console.log('loggd in')
+        if (!resData.error) {
             dispatch(authenticate(resData));
         } else {
             dispatch(logout());

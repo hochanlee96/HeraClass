@@ -14,7 +14,6 @@ const ClassDetail = props => {
     const classId = props.match.params.classId;
     const [fetchedClass, setFetchedClass] = useState();
     const [isLoading, setIsLoading] = useState(false);
-    const [coordinates, setCoordinates] = useState(null);
     const isSignedIn = useSelector(state => state.auth.email !== '');
     const userEmail = useSelector(state => state.auth.email);
     const [isFavorite, setIsFavorite] = useState(false);
@@ -47,11 +46,11 @@ const ClassDetail = props => {
                 resData.address,
                 resData.category,
                 resData.details,
-                resData.followers
+                resData.followers,
+                { ...resData.coordinates }
             );
             setFetchedClass(classData)
             dispatch({ type: FETCH_CLASS, fetchedClasses: [classData] });
-            setCoordinates({ lat: resData.coordinates.latitude, lng: resData.coordinates.longitude })
 
             //firebase를 이용해서 fetch class
             // const docRef = dbService.collection("classes").doc(`${classId}`);
@@ -124,8 +123,8 @@ const ClassDetail = props => {
     }
 
     let map = null;
-    if (coordinates) {
-        map = <NaverMap title={fetchedClass.title} lat={coordinates.lat} lng={coordinates.lng} />
+    if (fetchedClass && fetchedClass.coordinates) {
+        map = <NaverMap title={[fetchedClass.title]} coordinates={[{ ...fetchedClass.coordinates }]} center={{ ...fetchedClass.coordinates }} zoom={18} />
     }
 
     return (
