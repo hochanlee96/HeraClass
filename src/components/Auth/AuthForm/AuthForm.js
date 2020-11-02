@@ -35,9 +35,9 @@ const AuthForm = props => {
             } else {
                 await dispatch(authActions.register(emailInput, passwordInput));
             }
-            setUsernameInput('');
-            setEmailInput('');
-            setPasswordInput('');
+            // setUsernameInput('');
+            // setEmailInput('');
+            // setPasswordInput('');
             history.goBack();
 
         } catch (err) {

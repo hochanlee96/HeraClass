@@ -21,7 +21,7 @@ const MyPage = () => {
                     </li>
                     <li>
                         <Link to='/profile'>
-                            Edit Profile
+                            My Profile
                 </Link>
                     </li>
                 </ul>
