@@ -9,6 +9,7 @@ import { FETCH_CLASS } from '../../store/actions/class-list';
 import * as authActions from '../../store/actions/auth';
 import Class from '../../models/class';
 import NaverMap from '../../components/Map/NaverMap';
+import ReviewContainer from '../../components/Reviews/ReviewContainer';
 
 const ClassDetail = props => {
     const classId = props.match.params.classId;
@@ -44,6 +45,7 @@ const ClassDetail = props => {
             }
 
             const resData = await response.json();
+            console.log(resData);
             const classData = new Class(
                 resData._id,
                 resData.title,
@@ -52,7 +54,9 @@ const ClassDetail = props => {
                 resData.category,
                 resData.details,
                 resData.followers,
-                { ...resData.coordinates }
+                { ...resData.coordinates },
+                null,
+                [...resData.reviews]
             );
             setFetchedClass(classData)
             dispatch({ type: FETCH_CLASS, fetchedClasses: [classData] });
@@ -129,13 +133,13 @@ const ClassDetail = props => {
 
     let map = null;
     if (fetchedClass && fetchedClass.coordinates) {
-        map = <NaverMap title={[fetchedClass.title]} coordinates={[{ ...fetchedClass.coordinates }]} center={{ ...fetchedClass.coordinates }} zoom={18} />
+        map = <NaverMap title={[fetchedClass.title]} coordinates={[{ ...fetchedClass.coordinates }]} center={{ ...fetchedClass.coordinates }} zoom={18} printCenter={(center) => console.log(center)} />
     }
-
     return (
         <div style={{ width: '100%', height: '100%' }}>
             {isLoading ? <Spinner /> : detail}
             {map}
+            {fetchedClass ? <ReviewContainer reviews={fetchedClass.reviews} classId={classId} userEmail={userEmail} /> : null}
         </div>
     )
 }

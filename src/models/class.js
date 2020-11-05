@@ -1,5 +1,5 @@
 class Class {
-    constructor(id, title, imageUrl, address, category, details, followers, coordinates, postedBy) {
+    constructor(id, title, imageUrl, address, category, details, followers, coordinates, postedBy, reviews) {
         this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
@@ -9,6 +9,7 @@ class Class {
         this.followers = followers;
         this.coordinates = coordinates;
         this.postedBy = postedBy;
+        this.reviews = reviews;
     }
 }
 
