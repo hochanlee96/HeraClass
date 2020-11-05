@@ -11,7 +11,7 @@ const Favorites = props => {
     const [favoriteClasses, setFavoriteClasses] = useState(null);
 
     const fetchClasses = useCallback(async () => {
-        const response = await fetch('http://localhost:3001/class-list/favorite', {
+        const response = await fetch('http://localhost:3001/user/class-list/favorite', {
             headers: {
                 'Content-Type': 'application/json'
             },

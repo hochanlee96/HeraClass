@@ -9,7 +9,7 @@ export const fetchClass = () => {
     return async dispatch => {
         try {
             //서버이용하기
-            const response = await fetch("http://localhost:3001/class-list", {
+            const response = await fetch("http://localhost:3001/user/class-list", {
                 credentials: 'include'
             });
             if (!response.ok) {
@@ -57,7 +57,7 @@ export const updateFollower = (classId, userEmail, add) => {
         try {
             if (add) {
                 //서버이용
-                const response = await fetch('http://localhost:3001/class-list/update-followers', {
+                const response = await fetch('http://localhost:3001/user/class-list/update-followers', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -80,7 +80,7 @@ export const updateFollower = (classId, userEmail, add) => {
 
             } else {
                 //서버이용
-                const response = await fetch('http://localhost:3001/class-list/update-followers', {
+                const response = await fetch('http://localhost:3001/user/class-list/update-followers', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'

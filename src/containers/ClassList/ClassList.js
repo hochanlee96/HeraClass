@@ -43,7 +43,7 @@ const ClassList = props => {
             }
         })
 
-        navermap = <NaverMap title={classTitles} coordinates={classCoordinates} center={center} zoom={13} printCenter={center => setCenter({ latitude: center._lat, longitude: center._lng })} />
+        navermap = <NaverMap title={classTitles} coordinates={classCoordinates} center={center} zoom={13} printCenter={center => { console.log(center); setCenter({ latitude: center._lat, longitude: center._lng }) }} />
     }
 
     return (

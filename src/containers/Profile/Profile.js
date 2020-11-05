@@ -9,7 +9,7 @@ const Profile = props => {
 
     const fetchUserData = useCallback(async () => {
         try {
-            const response = await fetch("http://localhost:3001/user-data", {
+            const response = await fetch("http://localhost:3001/user/user-data", {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -32,7 +32,7 @@ const Profile = props => {
     }
 
     const editProfile = async (username) => {
-        const response = await fetch("http://localhost:3001/edit", {
+        const response = await fetch("http://localhost:3001/user/edit", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

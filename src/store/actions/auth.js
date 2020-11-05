@@ -24,7 +24,7 @@ export const authenticate = (userData) => {
 
 export const logout = () => {
     return async dispatch => {
-        const response = await fetch("http://localhost:3001/logout", {
+        const response = await fetch("http://localhost:3001/user/auth/logout", {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -56,7 +56,7 @@ const setLogoutTimer = expires => {
 
 export const register = (email, username, password) => {
     return async dispatch => {
-        const response = await fetch("http://localhost:3001/register", {
+        const response = await fetch("http://localhost:3001/user/auth/register", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ export const register = (email, username, password) => {
 export const login = (email, password) => {
     return async dispatch => {
 
-        const response = await fetch("http://localhost:3001/login", {
+        const response = await fetch("http://localhost:3001/user/auth/login", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -123,7 +123,7 @@ export const login = (email, password) => {
 
 export const authCheckState = () => {
     return async dispatch => {
-        const response = await fetch("http://localhost:3001/user-data", {
+        const response = await fetch("http://localhost:3001/user/auth/user-data", {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -173,7 +173,7 @@ export const updateFavorites = (classId, add) => {
             // dbService.collection('users').doc(`${userId}`).update({
             //     favorites: firebase.firestore.FieldValue.arrayUnion(classId)
             // });
-            const response = await fetch('http://localhost:3001/update-favorites', {
+            const response = await fetch('http://localhost:3001/user/auth/update-favorites', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -208,7 +208,7 @@ export const updateFavorites = (classId, add) => {
 
         } else {
 
-            const response = await fetch('http://localhost:3001/update-favorites', {
+            const response = await fetch('http://localhost:3001/user/auth/update-favorites', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

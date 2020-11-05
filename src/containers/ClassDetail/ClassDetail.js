@@ -33,7 +33,12 @@ const ClassDetail = props => {
         try {
 
             //서버이용해서 fetch class
-            const response = await fetch(`http://localhost:3001/class-list/${classId}`);
+            const response = await fetch(`http://localhost:3001/user/class-list/${classId}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
             if (!response.ok) {
                 throw new Error('Something went wrong!');
             }
