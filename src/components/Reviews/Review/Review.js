@@ -4,7 +4,7 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 
 import * as authActions from '../../../store/actions/auth';
 
-const Review = ({ reviewId, username, rating, review, date, isOwner }) => {
+const Review = ({ editingHandler, reviewEdited, reviewDeleted, reviewId, username, rating, review, date, isOwner }) => {
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -22,6 +22,7 @@ const Review = ({ reviewId, username, rating, review, date, isOwner }) => {
         setRatingInput(tempRatingInput);
         setReviewInput(tempReviewInput);
         setIsEdit(false);
+        editingHandler();
     }
 
     const onChange = event => {
@@ -32,14 +33,38 @@ const Review = ({ reviewId, username, rating, review, date, isOwner }) => {
         }
     }
 
-    const submitEditedReview = event => {
+    const submitEditedReview = async event => {
         event.preventDefault();
-        //async edit request
+        const response = await fetch(`http://localhost:3001/user/review/${reviewId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                review: reviewInput,
+                rating: ratingInput
+            })
+        });
+        const resData = await response.json();
+        if (resData.error === 'not signed in') {
+            const ok = window.confirm("You need to login first! Do you want to login?");
+            if (ok) {
+                dispatch(authActions.logout());
+                history.push('/auth');
+            }
+        } else {
+            reviewEdited(resData);
+            setIsEdit(false);
+            editingHandler();
+            history.push(`/detail/${classId}`)
+        }
     }
 
-    const editReview = async () => {
+    const editReview = () => {
         setTempRatingInput(ratingInput);
         setTempReviewInput(reviewInput);
+        editingHandler();
         setIsEdit(true);
     }
 
@@ -50,7 +75,7 @@ const Review = ({ reviewId, username, rating, review, date, isOwner }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            credentials: 'include'
+            credentials: 'include',
         });
 
         const resData = await response.json();
@@ -61,18 +86,19 @@ const Review = ({ reviewId, username, rating, review, date, isOwner }) => {
                 history.push('/auth');
             }
         } else {
+            reviewDeleted()
             history.push(`/detail/${classId}`)
         }
     }
 
     let reviewContent = <div>
         <p>Username: {username}</p>
-        <p>Rating: {rating}</p>
-        <p>Review: {review}</p>
+        <p>Rating: {ratingInput}</p>
+        <p>Review: {reviewInput}</p>
         <p>Date: {date}</p>
     </div>;
     if (isEdit) {
-        reviewContent = <div><form onSubmit={submitEditedReview}>
+        reviewContent = <div><form onSubmit={(submitEditedReview)}>
             <label>Rating</label>
             <input type='number' value={ratingInput} name="rating" onChange={onChange} />
             <label>Review</label>

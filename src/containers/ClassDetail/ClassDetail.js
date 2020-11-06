@@ -139,7 +139,7 @@ const ClassDetail = props => {
         <div style={{ width: '100%', height: '100%' }}>
             {isLoading ? <Spinner /> : detail}
             {map}
-            {fetchedClass ? <ReviewContainer reviews={fetchedClass.reviews} classId={classId} userEmail={userEmail} /> : null}
+            {fetchedClass ? <ReviewContainer classId={classId} userEmail={userEmail} /> : null}
         </div>
     )
 }
