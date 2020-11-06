@@ -1,27 +1,37 @@
 import React, { useState, useEffect, useCallback } from 'react';
-
+import { useDispatch } from 'react-redux';
 // import { dbService } from '../../fbase';
+
+import * as authActions from '../../store/actions/auth';
 
 const Profile = props => {
     const [usernameInput, setUsernameInput] = useState('');
+    const [tempUsername, setTempUsername] = useState(usernameInput);
     const [email, setEmail] = useState('');
     const [edit, setEdit] = useState(false);
 
+    const dispatch = useDispatch();
+
     const fetchUserData = useCallback(async () => {
         try {
-            const response = await fetch("http://localhost:3001/user/user-data", {
+            const response = await fetch("http://localhost:3001/user/auth/user-data", {
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include',
             });
             const resData = await response.json();
-            setUsernameInput(resData.username);
-            setEmail(resData.email);
+            if (resData.error === "not signed in") {
+                dispatch(authActions.logout());
+            }
+            else {
+                setUsernameInput(resData.username);
+                setEmail(resData.email);
+            }
         } catch (err) {
             console.log(err)
         }
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
         fetchUserData();
@@ -32,7 +42,7 @@ const Profile = props => {
     }
 
     const editProfile = async (username) => {
-        const response = await fetch("http://localhost:3001/user/edit", {
+        const response = await fetch("http://localhost:3001/user/auth/edit", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -42,25 +52,41 @@ const Profile = props => {
                 username: username
             })
         });
-
         if (response.status !== 200) {
-            console.log('error')
+            console.log('an error has occured');
+        }
+        const resData = await response.json()
+        if (resData.error === "not signed in") {
+            dispatch(authActions.logout());
+        } else {
+            setEdit(false);
         }
     }
 
     const onSubmitHandler = event => {
-        setEdit(false);
         event.preventDefault();
-        const ok = window.confirm("Change username?");
-        if (ok) {
-            editProfile(usernameInput);
-            props.history.go(0);
-            //maybe show flash
+        if (usernameInput !== tempUsername) {
+            const ok = window.confirm("Change username?");
+            if (ok) {
+                editProfile(usernameInput);
+                // props.history.go(0);
+                //maybe show flash
+            } else {
+                cancelEdit();
+            }
+        } else {
+            setEdit(false);
         }
     }
 
     const editButton = () => {
+        setTempUsername(usernameInput);
         setEdit(true);
+    }
+
+    const cancelEdit = () => {
+        setUsernameInput(tempUsername);
+        setEdit(false);
     }
 
     let editContent = <form onSubmit={onSubmitHandler}>
@@ -78,7 +104,8 @@ const Profile = props => {
         <>
             <p>This is User Profile page</p>
             {edit ? editContent : userInfo}
-            {edit ? null : <button onClick={editButton}>Edit</button>}
+            {edit ? <button onClick={cancelEdit}>Go back</button>
+                : <button onClick={editButton}>Edit</button>}
         </>
     )
 }
