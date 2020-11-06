@@ -35,29 +35,38 @@ const Review = ({ editingHandler, reviewEdited, reviewDeleted, reviewId, usernam
 
     const submitEditedReview = async event => {
         event.preventDefault();
-        const response = await fetch(`http://localhost:3001/user/review/${reviewId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-                review: reviewInput,
-                rating: ratingInput
-            })
-        });
-        const resData = await response.json();
-        if (resData.error === 'not signed in') {
-            const ok = window.confirm("You need to login first! Do you want to login?");
-            if (ok) {
-                dispatch(authActions.logout());
-                history.push('/auth');
+        const updatedReview = {};
+        if ((reviewInput !== tempReviewInput) || (ratingInput !== tempRatingInput)) {
+            if (reviewInput !== tempReviewInput) {
+                updatedReview.review = reviewInput
             }
-        } else {
-            reviewEdited(resData);
-            setIsEdit(false);
-            editingHandler();
-            history.push(`/detail/${classId}`)
+            if (ratingInput !== tempRatingInput) {
+                updatedReview.rating = ratingInput
+            }
+            const response = await fetch(`http://localhost:3001/user/review/${reviewId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(updatedReview)
+            });
+            const resData = await response.json();
+            if (resData.error === 'not signed in') {
+                const ok = window.confirm("You need to login first! Do you want to login?");
+                if (ok) {
+                    dispatch(authActions.logout());
+                    history.push('/auth');
+                }
+            } else {
+                reviewEdited(resData);
+                setIsEdit(false);
+                editingHandler();
+                history.push(`/detail/${classId}`)
+            }
+        }
+        else {
+            cancelEdit();
         }
     }
 

@@ -41,7 +41,6 @@ const ReviewContainer = ({ classId, userEmail }) => {
     }
 
     let reviewArray = null;
-    console.log(reviews);
     if (reviews) {
         reviewArray = reviews.map((review, index) => (
             <Review key={index} reviewId={review._id} username={review.author.username} rating={review.rating} review={review.review} date={review.date.toString()} isOwner={review.author.email === userEmail} reviewEdited={(newReview) => reviewEdited(index, newReview)} reviewDeleted={() => reviewDeleted(index)} editingHandler={editingHandler} />

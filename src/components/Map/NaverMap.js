@@ -9,7 +9,7 @@ export const NaverAPIMap = (props) => {
         <Marker
             key={co.latitude}
             position={{ lat: co.latitude, lng: co.longitude }}
-            animation={2}
+            animation={0}
             onClick={() => { alert(props.title[0]); }} />
     ))
 
