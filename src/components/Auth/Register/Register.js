@@ -55,6 +55,7 @@ const Register = props => {
                 <input className={classes.Input} type="password" placeholder="password" value={passwordInput} onChange={(event) => inputChangeHandler('password', event)} />
                 <button className={classes.Button} onClick={props.authContinued}>Sign Up</button>
             </form>
+            <a href={"http://localhost:3001/user/auth/google"}>Login with Google</a>
         </div>
     )
 }

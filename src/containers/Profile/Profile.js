@@ -70,12 +70,15 @@ const Profile = props => {
             if (ok) {
                 editProfile(usernameInput);
                 // props.history.go(0);
-                //maybe show flash
+                setEdit(false);
             } else {
                 cancelEdit();
             }
         } else {
-            setEdit(false);
+            const ok = window.confirm("there's nothing to change...keep editting?");
+            if (!ok) {
+                setEdit(false);
+            }
         }
     }
 

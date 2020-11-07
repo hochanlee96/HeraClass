@@ -79,6 +79,7 @@ export const register = (email, username, password) => {
             throw new Error(message);
         }
         const resData = await response.json();
+        console.log(resData)
         dispatch(authenticate(resData))
     }
 }
@@ -98,7 +99,6 @@ export const login = (email, password) => {
             })
         });
 
-
         if (response.status !== 200) {
             const errorResData = await response.json();
             console.log('err', errorResData)
@@ -110,12 +110,13 @@ export const login = (email, password) => {
                 message = 'This password is not valid!'
             }
             throw new Error(message);
-
         }
 
         const resData = await response.json();
-        console.log('!!!', resData);
-        dispatch(authenticate(resData));
+        console.log('login status', resData);
+        if (!resData.error) {
+            dispatch(authenticate(resData));
+        }
 
 
     }
