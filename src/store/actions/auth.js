@@ -56,6 +56,7 @@ const setLogoutTimer = expires => {
 
 export const register = (email, username, password) => {
     return async dispatch => {
+        console.log('register');
         const response = await fetch("http://localhost:3001/user/auth/register", {
             method: 'POST',
             headers: {
@@ -69,18 +70,12 @@ export const register = (email, username, password) => {
             })
         });
 
-        if (!response.ok) {
-            const errorResData = await response.json();
-            const errorId = errorResData.error.message;
-            let message = 'Something went wrong...';
-            if (errorId === 'EMAIL_EXISTS') {
-                message = 'This email exists already!'
-            }
-            throw new Error(message);
-        }
         const resData = await response.json();
-        console.log(resData)
-        dispatch(authenticate(resData))
+        if (!resData.error) {
+            dispatch(authenticate(resData));
+        } else {
+            throw new Error(resData.error);
+        }
     }
 }
 
@@ -99,23 +94,11 @@ export const login = (email, password) => {
             })
         });
 
-        if (response.status !== 200) {
-            const errorResData = await response.json();
-            console.log('err', errorResData)
-            const errorId = errorResData.error.message;
-            let message = 'Something went wrong...';
-            if (errorId === 'EMAIL_NOT_FOUND') {
-                message = 'This email could not be found!'
-            } else if (errorId === 'INVALID_PASSWORD') {
-                message = 'This password is not valid!'
-            }
-            throw new Error(message);
-        }
-
         const resData = await response.json();
-        console.log('login status', resData);
         if (!resData.error) {
             dispatch(authenticate(resData));
+        } else {
+            throw new Error(resData.error);
         }
 
 

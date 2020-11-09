@@ -56,6 +56,7 @@ const Register = props => {
                 <button className={classes.Button} onClick={props.authContinued}>Sign Up</button>
             </form>
             <a href={"http://localhost:3001/user/auth/google"}>Login with Google</a>
+            <a href={"http://localhost:3001/user/auth/facebook"}>Login with Facebook</a>
         </div>
     )
 }

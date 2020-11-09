@@ -32,7 +32,7 @@ const AuthForm = () => {
             if (isSignin) {
                 await dispatch(authActions.login(emailInput, passwordInput));
             } else {
-                await dispatch(authActions.register(emailInput, passwordInput));
+                await dispatch(authActions.register(emailInput, usernameInput, passwordInput));
             }
         } catch (err) {
             setError(err.message);
@@ -50,7 +50,7 @@ const AuthForm = () => {
                 <button className={classes.Button} onClick={submitHandler}>{isSignin ? 'Log In' : 'Register'}</button>
             </form>
             <button onClick={authToggler}>Switch to {isSignin ? "Sign Up" : "Log In"}</button>
-            {isSignin ? <a href={"http://localhost:3001/user/auth/google"}>google login</a> : null}
+            {isSignin ? <> <a href={"http://localhost:3001/user/auth/google"}>Login with Google</a> <a href={"http://localhost:3001/user/auth/facebook"}>Login with Facebook</a></> : null}
         </>
     )
 }
