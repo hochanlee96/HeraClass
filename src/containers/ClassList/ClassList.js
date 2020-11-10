@@ -34,6 +34,7 @@ const ClassList = props => {
 
     let navermap;
     if (allClasses) {
+        console.log('avg', allClasses)
         const classTitles = [];
         const classCoordinates = [];
         allClasses.forEach(cl => {

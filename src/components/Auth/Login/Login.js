@@ -30,6 +30,10 @@ const Login = props => {
         }
     }
 
+    // const showPopup = () => {
+    //     window.open("http://localhost:3001/user/auth/google", "a", "width=400, height=300, left=100, top=50")
+    // }
+
     const { show } = props;
 
     useEffect(() => {
@@ -51,6 +55,7 @@ const Login = props => {
             </form>
             <a href={"http://localhost:3001/user/auth/google"}>Login with Google</a>
             <a href={"http://localhost:3001/user/auth/facebook"}>Login with Facebook</a>
+            {/* <input type="button" value="google pop-up" onClick={showPopup} /> */}
         </>
     )
 }

@@ -29,6 +29,7 @@ const ClassCardsContainer = props => {
                 category={classData.category}
                 isFavorite={isFavorite}
                 favPage={props.favPage}
+                avgRating={classData.avgRating}
             />
         )
     });

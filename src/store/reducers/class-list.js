@@ -7,6 +7,7 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case FETCH_CLASS:
+            console.log(action.fetchedClasses);
             return {
                 ...state,
                 allClasses: action.fetchedClasses

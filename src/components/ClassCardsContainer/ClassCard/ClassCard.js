@@ -43,6 +43,7 @@ const ClassCard = props => {
                 </div>
                 <div className={classes.Summary}>
                     <p className={classes.Title}>{props.title}</p>
+                    <p>{props.avgRating ? `average rating : ${props.avgRating}` : "No rating yet"}</p>
                     <p>{props.address}</p>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div style={{ display: "inline-block", margin: "10px 5px" }}>
