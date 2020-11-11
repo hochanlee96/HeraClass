@@ -13,7 +13,11 @@ const ClassCardsContainer = props => {
         userEmail ? setIsSignedIn(true) : setIsSignedIn(false);
     }, [userEmail])
 
-    const classList = props.allClasses.map(classData => {
+    const sortedClass = props.allClasses.sort((a, b) => {
+        return a.distance - b.distance
+    }).filter(cl => cl.distance <= props.maxDistance)
+
+    const classList = sortedClass.map(classData => {
         let isFavorite = false;
         if (isSignedIn && (!!classData.followers.find(user => user === props.userEmail))) {
             isFavorite = true;
@@ -30,8 +34,11 @@ const ClassCardsContainer = props => {
                 isFavorite={isFavorite}
                 favPage={props.favPage}
                 avgRating={classData.avgRating}
+                distance={classData.distance}
+                nReviews={classData.nReviews}
             />
         )
+
     });
 
     return (

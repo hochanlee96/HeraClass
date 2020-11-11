@@ -1,5 +1,5 @@
 class SimpleStudio {
-    constructor(id, title, imageUrl, simpleAddress, category, followers, coordinates, postedBy, reviews) {
+    constructor(id, title, imageUrl, simpleAddress, category, followers, coordinates, postedBy, reviews, distance) {
         this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
@@ -11,6 +11,7 @@ class SimpleStudio {
         this.reviews = reviews;
         this.nReviews = reviews.length;
         this.avgRating = this.avgRating();
+        this.distance = distance;
     }
 
     avgRating() {
