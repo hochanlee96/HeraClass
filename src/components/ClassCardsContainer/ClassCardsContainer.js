@@ -7,15 +7,19 @@ const ClassCardsContainer = props => {
 
     const [isSignedIn, setIsSignedIn] = useState(false);
 
-    const { userEmail } = props;
+    const { userEmail, onlyFavorites } = props;
 
     useEffect(() => {
         userEmail ? setIsSignedIn(true) : setIsSignedIn(false);
     }, [userEmail])
 
-    const sortedClass = props.allClasses.sort((a, b) => {
-        return a.distance - b.distance
-    }).filter(cl => cl.distance <= props.maxDistance)
+
+    let sortedClass = props.allClasses;
+    if (!onlyFavorites) {
+        sortedClass.sort((a, b) => {
+            return a.distance - b.distance
+        })
+    }
 
     const classList = sortedClass.map(classData => {
         let isFavorite = false;

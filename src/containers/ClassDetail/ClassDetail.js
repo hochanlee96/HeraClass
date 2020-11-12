@@ -7,7 +7,7 @@ import classes from './ClassDetail.module.css';
 import * as classActions from '../../store/actions/class-list';
 import { FETCH_CLASS } from '../../store/actions/class-list';
 import * as authActions from '../../store/actions/auth';
-import Class from '../../models/class';
+import DetailedStudio from '../../models/studio/detailedStudio';
 import NaverMap from '../../components/Map/NaverMap';
 import ReviewContainer from '../../components/Reviews/ReviewContainer';
 
@@ -18,6 +18,7 @@ const ClassDetail = props => {
     const isSignedIn = useSelector(state => state.auth.email !== '');
     const userEmail = useSelector(state => state.auth.email);
     const [isFavorite, setIsFavorite] = useState(false);
+    const [loadedClass, setLoadedClass] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -46,20 +47,22 @@ const ClassDetail = props => {
 
             const resData = await response.json();
             console.log(resData);
-            const classData = new Class(
+            const classData = new DetailedStudio(
                 resData._id,
                 resData.title,
                 resData.imageUrl,
                 resData.address,
-                resData.category,
-                resData.details,
-                resData.followers,
+                [...resData.category],
+                { ...resData.details },
+                [...resData.followers],
                 { ...resData.coordinates },
-                null,
+                resData.postedBy,
                 [...resData.reviews]
             );
+            console.log("classData", classData);
             setFetchedClass(classData)
             dispatch({ type: FETCH_CLASS, fetchedClasses: [classData] });
+            setLoadedClass(true);
 
             //firebase를 이용해서 fetch class
             // const docRef = dbService.collection("classes").doc(`${classId}`);
@@ -139,7 +142,7 @@ const ClassDetail = props => {
         <div style={{ width: '100%', height: '100%' }}>
             {isLoading ? <Spinner /> : detail}
             {map}
-            {fetchedClass ? <ReviewContainer classId={classId} userEmail={userEmail} /> : null}
+            {loadedClass ? <ReviewContainer classId={classId} userEmail={userEmail} /> : null}
         </div>
     )
 }

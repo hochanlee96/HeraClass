@@ -11,7 +11,7 @@ const ReviewContainer = ({ classId, userEmail }) => {
     const fetchedClass = useSelector(state => { return state.classList.allClasses[0] })
 
     useEffect(() => {
-        if (fetchedClass && fetchedClass.reviews) {
+        if (fetchedClass) {
             setReviews([...fetchedClass.reviews])
         }
     }, [fetchedClass])

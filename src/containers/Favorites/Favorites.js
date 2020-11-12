@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // import { dbService } from '../../fbase';
 import * as authActions from '../../store/actions/auth';
-import Class from '../../models/class';
+import DetailedStudio from '../../models/studio/detailedStudio';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import ClassListContainer from '../../components/ClassCardsContainer/ClassCardsContainer';
 
@@ -11,7 +11,7 @@ import ClassListContainer from '../../components/ClassCardsContainer/ClassCardsC
 const Favorites = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [favoriteClasses, setFavoriteClasses] = useState(null);
-
+    const userEmail = useSelector(state => state.auth.email);
     const dispatch = useDispatch();
 
     const fetchClasses = useCallback(async () => {
@@ -29,7 +29,7 @@ const Favorites = props => {
             console.log(resData);
             resData.forEach(cl => {
                 classArray.push(
-                    new Class(
+                    new DetailedStudio(
                         cl._id,
                         cl.title,
                         cl.imageUrl,
@@ -38,7 +38,7 @@ const Favorites = props => {
                         { ...cl.details },
                         [...cl.followers],
                         { ...cl.coordinates },
-                        null,
+                        cl.postedBy,
                         [...cl.reviews]
                     ))
             })
@@ -70,10 +70,12 @@ const Favorites = props => {
         fetchClasses().then(() => setIsLoading(false));
     }, [fetchClasses])
 
+    console.log(favoriteClasses)
+
     return (
         <>
             <p>This is the Favorites page</p>
-            {isLoading ? <Spinner /> : favoriteClasses ? <ClassListContainer history={props.history} allClasses={favoriteClasses} favPage={true} /> : null}
+            {isLoading ? <Spinner /> : favoriteClasses ? <ClassListContainer onlyFavorites userEmail={userEmail} history={props.history} allClasses={favoriteClasses} favPage={true} /> : null}
         </>
     )
 }

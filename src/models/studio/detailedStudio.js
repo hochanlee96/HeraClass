@@ -1,10 +1,11 @@
 class DetailedStudio {
-    constructor(id, title, imageUrl, simpleAddress, category, followers, coordinates, postedBy, reviews) {
+    constructor(id, title, imageUrl, detailedAddress, category, details, followers, coordinates, postedBy, reviews) {
         this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
-        this.address = simpleAddress;
+        this.address = detailedAddress;
         this.category = category;
+        this.details = details;
         this.followers = followers;
         this.coordinates = coordinates;
         this.postedBy = postedBy;
