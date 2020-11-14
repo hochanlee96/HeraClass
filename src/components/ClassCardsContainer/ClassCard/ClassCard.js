@@ -12,7 +12,8 @@ const ClassCard = props => {
     const dispatch = useDispatch();
 
     const clickHandler = classId => {
-        props.history.push(`/detail/${classId}`);;
+        props.history.push(`/detail/${classId}`);
+        // window.open(`http://localhost:3000/detail/${classId}`)
     }
     const { isFavorite } = props;
 

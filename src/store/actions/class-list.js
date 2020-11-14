@@ -10,6 +10,33 @@ const computeDistance = (myLocation, studioLocation) => {
     return 12742 * Math.asin(Math.sqrt(a));
 }
 
+export const fetchKeyword = (currentLocation, keyword) => {
+    return async dispatch => {
+        const response = await fetch(`http://localhost:3001/user/class-list/search/keyword/${keyword}`, {
+            credentials: 'include'
+        });
+        const resData = await response.json();
+        console.log(resData);
+        const fetchedClasses = [];
+
+        for (const key in resData) {
+            fetchedClasses.push(new SimpleStudio(
+                resData[key]._id,
+                resData[key].title,
+                resData[key].imageUrl,
+                resData[key].bigAddress,
+                [...resData[key].category],
+                [...resData[key].followers],
+                { ...resData[key].coordinates },
+                resData[key].postedBy,
+                [...resData[key].reviews],
+                computeDistance(currentLocation, resData[key].coordinates)
+            ));
+        }
+        dispatch({ type: FETCH_CLASS, fetchedClasses: fetchedClasses });
+    }
+}
+
 export const fetchClass = (currentLocation, maxDistance) => {
     return async dispatch => {
         try {
