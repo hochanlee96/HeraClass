@@ -44,7 +44,7 @@ const StudioSearch = props => {
             setTimer(setTimeout(() => {
                 console.log("input", searchKeyword)
                 search(searchKeyword)
-            }, 1000))
+            }, 500))
         }
     }, [searchKeyword, search])
 
