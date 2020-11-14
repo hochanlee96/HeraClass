@@ -4,17 +4,17 @@ import { useSelector } from 'react-redux';
 import NewReview from './Review/NewReview';
 import Review from './Review/Review';
 
-const ReviewContainer = ({ classId, userEmail }) => {
+const ReviewContainer = ({ studioId, userEmail }) => {
 
     const [reviews, setReviews] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
-    const fetchedClass = useSelector(state => { return state.classList.allClasses[0] })
+    const fetchedStudio = useSelector(state => { return state.studioList.allStudios[0] })
 
     useEffect(() => {
-        if (fetchedClass) {
-            setReviews([...fetchedClass.reviews])
+        if (fetchedStudio) {
+            setReviews([...fetchedStudio.reviews])
         }
-    }, [fetchedClass])
+    }, [fetchedStudio])
 
     const reviewAdded = newReview => {
         setReviews(prev => [newReview, ...prev])
@@ -49,7 +49,7 @@ const ReviewContainer = ({ classId, userEmail }) => {
 
     return (<>
         <p>Reviews</p>
-        {isEditing ? null : <NewReview classId={classId} reviewAdded={(newReview) => reviewAdded(newReview)} />}
+        {isEditing ? null : <NewReview studioId={studioId} reviewAdded={(newReview) => reviewAdded(newReview)} />}
         {reviewArray}
     </>);
 }

@@ -1,6 +1,6 @@
 import SimpleStudio from '../../models/studio/simpleStudio';
 
-export const FETCH_CLASS = 'FETCH_CLASS';
+export const FETCH_STUDIO = 'FETCH_STUDIO';
 export const UPDATE_FOLLOWER = 'UPDATE_FOLLOWER';
 
 const computeDistance = (myLocation, studioLocation) => {
@@ -12,15 +12,15 @@ const computeDistance = (myLocation, studioLocation) => {
 
 export const fetchKeyword = (currentLocation, keyword) => {
     return async dispatch => {
-        const response = await fetch(`http://localhost:3001/user/class-list/search/keyword/${keyword}`, {
+        const response = await fetch(`http://localhost:3001/user/studio-search/search/keyword/${keyword}`, {
             credentials: 'include'
         });
         const resData = await response.json();
         console.log(resData);
-        const fetchedClasses = [];
+        const fetchedStudios = [];
 
         for (const key in resData) {
-            fetchedClasses.push(new SimpleStudio(
+            fetchedStudios.push(new SimpleStudio(
                 resData[key]._id,
                 resData[key].title,
                 resData[key].imageUrl,
@@ -33,11 +33,11 @@ export const fetchKeyword = (currentLocation, keyword) => {
                 computeDistance(currentLocation, resData[key].coordinates)
             ));
         }
-        dispatch({ type: FETCH_CLASS, fetchedClasses: fetchedClasses });
+        dispatch({ type: FETCH_STUDIO, fetchedStudios: fetchedStudios });
     }
 }
 
-export const fetchClass = (currentLocation, maxDistance) => {
+export const fetchStudios = (currentLocation, maxDistance) => {
     return async dispatch => {
         try {
             //서버이용하기
@@ -48,7 +48,7 @@ export const fetchClass = (currentLocation, maxDistance) => {
                 maxLng: Number(currentLocation.longitude) + coordDistance[maxDistance],
                 minLng: Number(currentLocation.longitude) - coordDistance[maxDistance],
             }
-            const response = await fetch(`http://localhost:3001/user/class-list/search/${boundary.maxLat}&${boundary.minLat}&${boundary.maxLng}&${boundary.minLng}`, {
+            const response = await fetch(`http://localhost:3001/user/studio-search/search/${boundary.maxLat}&${boundary.minLat}&${boundary.maxLng}&${boundary.minLng}`, {
                 credentials: 'include'
             });
             if (!response.ok) {
@@ -57,10 +57,10 @@ export const fetchClass = (currentLocation, maxDistance) => {
             const resData = await response.json();
             console.log(resData);
             // console.log(resData);
-            const fetchedClasses = [];
+            const fetchedStudios = [];
 
             for (const key in resData) {
-                fetchedClasses.push(new SimpleStudio(
+                fetchedStudios.push(new SimpleStudio(
                     resData[key]._id,
                     resData[key].title,
                     resData[key].imageUrl,
@@ -73,48 +73,48 @@ export const fetchClass = (currentLocation, maxDistance) => {
                     computeDistance(currentLocation, resData[key].coordinates)
                 ));
             }
-            dispatch({ type: FETCH_CLASS, fetchedClasses: fetchedClasses });
+            dispatch({ type: FETCH_STUDIO, fetchedStudios: fetchedStudios });
         } catch (error) {
             throw error;
         }
     }
 }
 
-export const updateFollower = (classId, userEmail, add) => {
+export const updateFollower = (studioId, userEmail, add) => {
     return async dispatch => {
         try {
             if (add) {
                 //서버이용
-                const response = await fetch('http://localhost:3001/user/class-list/update-followers', {
+                const response = await fetch('http://localhost:3001/user/studio-search/update-followers', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     credentials: 'include',
                     body: JSON.stringify({
-                        classId: classId,
+                        studioId: studioId,
                         add: true
                     })
                 });
                 if (response.ok) {
-                    dispatch({ type: UPDATE_FOLLOWER, add: true, classId: classId, userEmail: userEmail })
+                    dispatch({ type: UPDATE_FOLLOWER, add: true, studioId: studioId, userEmail: userEmail })
                 }
 
             } else {
                 //서버이용
-                const response = await fetch('http://localhost:3001/user/class-list/update-followers', {
+                const response = await fetch('http://localhost:3001/user/studio-search/update-followers', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     credentials: 'include',
                     body: JSON.stringify({
-                        classId: classId,
+                        studioId: studioId,
                         add: false
                     })
                 });
                 if (response.ok) {
-                    dispatch({ type: UPDATE_FOLLOWER, add: false, classId: classId, userEmail: userEmail })
+                    dispatch({ type: UPDATE_FOLLOWER, add: false, studioId: studioId, userEmail: userEmail })
                 }
 
             }

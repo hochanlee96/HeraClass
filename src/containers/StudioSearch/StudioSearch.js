@@ -1,15 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import ClassListContainer from '../../components/ClassCardsContainer/ClassCardsContainer';
-import classes from './ClassList.module.css';
-import * as classActions from '../../store/actions/class-list';
+import StudioListContainer from '../../components/StudioCardsContainer/StudioCardsContainer';
+import classes from './StudioSearch.module.css';
+import * as studioActions from '../../store/actions/studio-search';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import NaverMap from '../../components/Map/NaverMap';
 
-const ClassList = props => {
+const StudioSearch = props => {
     const defaultCenter = { latitude: "37.5624917", longitude: "126.9724786" }
-    const allClasses = useSelector(state => state.classList.allClasses);
+    const allStudios = useSelector(state => state.studioList.allStudios);
     const userEmail = useSelector(state => state.auth.email);
     const [isLoading, setIsLoading] = useState(false);
     const [center, setCenter] = useState(defaultCenter);
@@ -20,7 +20,7 @@ const ClassList = props => {
     const [isEditingAddress, setisEditingAddress] = useState(false);
     const [addressInput, setAddressInput] = useState('');
     const [coordinates, setCoordinates] = useState(null);
-    const [classTitles, setClassTitles] = useState(null);
+    const [studioTitles, setStudioTitles] = useState(null);
     const [searchKeyword, setSearchKeyword] = useState('');
     const [timer, setTimer] = useState(null);
 
@@ -36,12 +36,7 @@ const ClassList = props => {
     }
 
     const search = useCallback(async keyword => {
-        // const response = await fetch(`http://localhost:3001/user/class-list/search/keyword/${keyword}`, {
-        //     credentials: 'include'
-        // });
-        // const resData = await response.json();
-        // console.log(resData)
-        dispatch(classActions.fetchKeyword(currentLocation, keyword))
+        dispatch(studioActions.fetchKeyword(currentLocation, keyword))
     }, [dispatch, currentLocation])
 
     useEffect(() => {
@@ -78,9 +73,9 @@ const ClassList = props => {
     }
 
     //fetch classes from the database
-    const loadClasses = useCallback(async () => {
+    const loadStudios = useCallback(async () => {
         try {
-            await dispatch(classActions.fetchClass(currentLocation, maxDistance));
+            await dispatch(studioActions.fetchStudios(currentLocation, maxDistance));
         } catch (error) {
         }
     }, [dispatch, currentLocation, maxDistance]);
@@ -99,50 +94,38 @@ const ClassList = props => {
     //when this page is rendered, load classes
     useEffect(() => {
         setIsLoading(true);
-        loadClasses().then(() => {
+        loadStudios().then(() => {
             setIsLoading(false)
         });
-    }, [dispatch, loadClasses])
+    }, [dispatch, loadStudios])
 
     useEffect(() => {
-        if (allClasses) {
-            const classTitles = [];
-            const classCoordinates = [];
-            allClasses.forEach(cl => {
-                classTitles.push(cl.title)
-                if (cl.coordinates) {
-                    classCoordinates.push({ ...cl.coordinates })
+        if (allStudios) {
+            const studioTitles = [];
+            const studioCoordinates = [];
+            allStudios.forEach(studio => {
+                studioTitles.push(studio.title)
+                if (studio.coordinates) {
+                    studioCoordinates.push({ ...studio.coordinates })
                 }
             })
-            setClassTitles(classTitles);
-            setCoordinates(classCoordinates);
+            setStudioTitles(studioTitles);
+            setCoordinates(studioCoordinates);
 
         }
-    }, [allClasses])
+    }, [allStudios])
 
     let navermap = null;
     if (coordinates) {
-        navermap = <NaverMap title={classTitles} coordinates={coordinates} center={currentLocation} zoom={13} printCenter={center => { setCenter({ latitude: center._lat, longitude: center._lng }) }} />
+        navermap = <NaverMap title={studioTitles} coordinates={coordinates} center={currentLocation} zoom={13} printCenter={center => { setCenter({ latitude: center._lat, longitude: center._lng }) }} />
     }
     console.log(center);
-    // if (allClasses) {
-    //     const classTitles = [];
-    //     const classCoordinates = [];
-    //     allClasses.forEach(cl => {
-    //         classTitles.push(cl.title)
-    //         if (cl.coordinates) {
-    //             classCoordinates.push({ ...cl.coordinates })
-    //         }
-    //     })
-
-    //     navermap = <NaverMap title={classTitles} coordinates={classCoordinates} center={center} zoom={13} printCenter={center => { setCenter({ latitude: center._lat, longitude: center._lng }) }} />
-    // }
 
     return (
         <div>
             <label>검색창</label>
             <input type="text" placeholder="검색어를 입력하세요" value={searchKeyword} onChange={onChange} name="search" />
-            <p>This is the Class List container</p>
+            <p>This is the Studio Search page</p>
             {isEditingAddress ? <input type='text' placeholder="새로운 위치를 입력하세요" value={addressInput} onChange={onChange} name="address" />
                 : isLoading ? null : <p>현재위치 : {currentAddress}</p>}
             <button onClick={searchCurrentLocation}>현재 위치 검색하기</button>
@@ -181,11 +164,11 @@ const ClassList = props => {
                 }}>20km</p>
             </> : null}
             <div className={classes.MainContainer}>
-                {isLoading ? <Spinner /> : <ClassListContainer history={props.history} allClasses={allClasses} userEmail={userEmail} favPage={false} currentLocation={currentLocation} maxDistance={maxDistance} />}
+                {isLoading ? <Spinner /> : <StudioListContainer history={props.history} allStudios={allStudios} userEmail={userEmail} favPage={false} currentLocation={currentLocation} maxDistance={maxDistance} />}
             </div>
             {navermap}
         </div>
     )
 }
 
-export default ClassList;
+export default StudioSearch;

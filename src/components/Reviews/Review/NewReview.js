@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import * as authActions from '../../../store/actions/auth';
 
-const NewReview = ({ reviewAdded, classId }) => {
+const NewReview = ({ reviewAdded, studioId }) => {
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -25,7 +25,7 @@ const NewReview = ({ reviewAdded, classId }) => {
 
     const onSubmit = async event => {
         event.preventDefault();
-        const response = await fetch(`http://localhost:3001/user/review/${classId}`, {
+        const response = await fetch(`http://localhost:3001/user/review/${studioId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ const NewReview = ({ reviewAdded, classId }) => {
             reviewAdded(resData);
             setReviewInput('');
             setRatingInput('');
-            history.push(`/detail/${classId}`);
+            history.push(`/detail/${studioId}`);
         }
     }
     return (<>

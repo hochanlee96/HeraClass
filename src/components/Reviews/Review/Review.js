@@ -10,7 +10,7 @@ const Review = ({ editingHandler, reviewEdited, reviewDeleted, reviewId, usernam
     const history = useHistory();
     const match = useRouteMatch();
 
-    const classId = match.params.classId;
+    const studioId = match.params.studioId;
 
     const [isEdit, setIsEdit] = useState(false);
     const [tempRatingInput, setTempRatingInput] = useState('');
@@ -62,7 +62,7 @@ const Review = ({ editingHandler, reviewEdited, reviewDeleted, reviewId, usernam
                 reviewEdited(resData);
                 setIsEdit(false);
                 editingHandler();
-                history.push(`/detail/${classId}`)
+                history.push(`/detail/${studioId}`)
             }
         }
         else {
@@ -79,7 +79,7 @@ const Review = ({ editingHandler, reviewEdited, reviewDeleted, reviewId, usernam
 
     const deleteReview = async () => {
         //async delete request
-        const response = await fetch(`http://localhost:3001/user/review/${classId}/${reviewId}`, {
+        const response = await fetch(`http://localhost:3001/user/review/${studioId}/${reviewId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ const Review = ({ editingHandler, reviewEdited, reviewDeleted, reviewId, usernam
             }
         } else {
             reviewDeleted()
-            history.push(`/detail/${classId}`)
+            history.push(`/detail/${studioId}`)
         }
     }
 

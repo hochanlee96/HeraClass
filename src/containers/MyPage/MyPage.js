@@ -16,7 +16,7 @@ const MyPage = () => {
                 <ul>
                     <li>
                         <Link to='/favorites'>
-                            Number of Favorite Classes : {numFavorites}
+                            Number of Favorite Studios : {numFavorites}
                         </Link>
                     </li>
                     <li>

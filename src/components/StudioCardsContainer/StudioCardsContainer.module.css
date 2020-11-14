@@ -1,4 +1,4 @@
-.ClassList {
+.StudioList {
     display:flex;
     flex-wrap: wrap;
     justify-content: left;
@@ -6,7 +6,7 @@
 }
 
 @media (max-width: 1214px) {
-    .ClassList {
+    .StudioList {
         display:flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -14,7 +14,7 @@
     }
 }
 /* @media (max-width: 992px) {
-    .ClassList {
+    .StudioList {
         display:flex;
         flex-wrap: wrap;
         justify-content: center;

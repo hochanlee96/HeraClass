@@ -14,7 +14,7 @@
     box-shadow: 1px 1px grey;
 }
 
-.ClassCard{
+.StudioCard{
     background-color: rgba(0,0,0,0.03);
     cursor: pointer;
     width: 100%;
@@ -97,7 +97,7 @@
     box-shadow: 1px 1px grey;
 }
 
-.ClassCard{
+.StudioCard{
     background-color: rgba(0,0,0,0.03);
     cursor: pointer;
     width: 100%;
@@ -180,7 +180,7 @@
     box-shadow: 1px 1px grey;
 }
 
-.ClassCard{
+.StudioCard{
     background-color: rgba(0,0,0,0.03);
     cursor: pointer;
     width: 100%;
@@ -264,7 +264,7 @@
     box-shadow: 1px 1px grey;
 }
 
-.ClassCard{
+.StudioCard{
     background-color: rgba(0,0,0,0.03);
     cursor: pointer;
     width: 100%;

@@ -149,14 +149,9 @@ export const authCheckState = () => {
 //     }
 // }
 
-export const updateFavorites = (classId, add) => {
+export const updateFavorites = (studioId, add) => {
     return async dispatch => {
-        // let response;
         if (add) {
-            //firebase 이용시
-            // dbService.collection('users').doc(`${userId}`).update({
-            //     favorites: firebase.firestore.FieldValue.arrayUnion(classId)
-            // });
             const response = await fetch('http://localhost:3001/user/auth/update-favorites', {
                 method: 'PUT',
                 headers: {
@@ -164,31 +159,17 @@ export const updateFavorites = (classId, add) => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
-                    classId: classId,
+                    studioId: studioId,
                     add: true
                 })
             });
-            // const resData = await response;
-            // console.log(resData);
-
-            // response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}/favorites/${classId}.json`, {
-            //     method: 'PUT',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         classId
-            //     })
-            // });
             if (!response.ok) {
                 const errorResData = await response.json();
                 console.log(errorResData)
                 let message = 'Something went wrong...';
                 throw new Error(message);
             }
-            dispatch({ type: UPDATE_FAVORITES, delete: false, favorites: classId })
-
-            // const resData = await response.json();
+            dispatch({ type: UPDATE_FAVORITES, delete: false, favorites: studioId })
 
         } else {
 
@@ -199,29 +180,17 @@ export const updateFavorites = (classId, add) => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
-                    classId: classId,
+                    studioId: studioId,
                     add: false
                 })
             });
-            //firebase 사용
-            // dbService.collection('users').doc(`${userId}`).update({
-            //     favorites: firebase.firestore.FieldValue.arrayRemove(classId)
-            // });
-            // response = await fetch(`https://hercules-56a2b.firebaseio.com/users/${userId}/favorites/${classId}.json`, {
-            //     method: 'DELETE',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     }
-            // });
             if (!response.ok) {
                 const errorResData = await response.json();
                 console.log(errorResData)
                 let message = 'Something went wrong...';
                 throw new Error(message);
             }
-
-            // const resData = await response.json();
-            dispatch({ type: UPDATE_FAVORITES, delete: true, favorites: classId })
+            dispatch({ type: UPDATE_FAVORITES, delete: true, favorites: studioId })
         }
     }
 }

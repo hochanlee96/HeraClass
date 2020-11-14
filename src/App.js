@@ -4,8 +4,8 @@ import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 
 import Home from './containers/Home/Home';
 import Layout from './components/hoc/Layout/Layout';
-import ClassList from './containers/ClassList/ClassList';
-import ClassDetail from './containers/ClassDetail/ClassDetail';
+import StudioSearch from './containers/StudioSearch/StudioSearch';
+import StudioDetail from './containers/StudioDetail/StudioDetail';
 import Logout from './components/Auth/Logout/Logout';
 import MyPage from './containers/MyPage/MyPage';
 import Auth from './containers/Auth/Auth';
@@ -32,8 +32,8 @@ function App() {
       <Route path="/about" exact component={About} />
       <Route path="/pricing" exact component={Pricing} />
       <Route path="/contact" exact component={Contact} />
-      <Route path="/detail/:classId" component={ClassDetail} />
-      <Route path="/class-list" exact component={ClassList} />
+      <Route path="/detail/:studioId" component={StudioDetail} />
+      <Route path="/studio-search" exact component={StudioSearch} />
       <Route path="/my-page" exact component={MyPage} />
       <Route path="/favorites" exact component={Favorites} />
       <Route path="/profile" exact component={Profile} />
@@ -49,8 +49,8 @@ function App() {
         <Route path="/about" exact component={About} />
         <Route path="/pricing" exact component={Pricing} />
         <Route path="/contact" exact component={Contact} />
-        <Route path="/detail/:classId" component={ClassDetail} />
-        <Route path="/class-list" exact component={ClassList} />
+        <Route path="/detail/:studioId" component={StudioDetail} />
+        <Route path="/studio-search" exact component={StudioSearch} />
         <Route path="/my-page" exact component={Auth} />
         <Route path="/favorites" exact component={Auth} />
         <Route path="/profile" exact component={Auth} />

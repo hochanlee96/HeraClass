@@ -1,30 +1,30 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import classes from './ClassCard.module.css';
-import * as classActions from '../../../store/actions/class-list';
+import classes from './StudioCard.module.css';
+import * as studioActions from '../../../store/actions/studio-search';
 import * as authActions from '../../../store/actions/auth';
 
-const ClassCard = props => {
+const StudioCard = props => {
     const isSignedIn = useSelector(state => state.auth.email !== '');
     const userEmail = useSelector(state => state.auth.email);
 
     const dispatch = useDispatch();
 
-    const clickHandler = classId => {
-        props.history.push(`/detail/${classId}`);
+    const clickHandler = studioId => {
+        props.history.push(`/detail/${studioId}`);
         // window.open(`http://localhost:3000/detail/${classId}`)
     }
     const { isFavorite } = props;
 
-    const favoriteToggler = classId => {
+    const favoriteToggler = studioId => {
         if (isSignedIn) {
             if (isFavorite) {
-                dispatch(classActions.updateFollower(classId, userEmail, false));
-                dispatch(authActions.updateFavorites(classId, false));
+                dispatch(studioActions.updateFollower(studioId, userEmail, false));
+                dispatch(authActions.updateFavorites(studioId, false));
             } else {
-                dispatch(classActions.updateFollower(classId, userEmail, true));
-                dispatch(authActions.updateFavorites(classId, true));
+                dispatch(studioActions.updateFollower(studioId, userEmail, true));
+                dispatch(authActions.updateFavorites(studioId, true));
             }
         } else {
             const ok = window.confirm("You need to login first! Do you want to login?");
@@ -38,7 +38,7 @@ const ClassCard = props => {
 
     return (
         <div className={classes.Container}>
-            <div className={classes.ClassCard} onClick={() => clickHandler(props.classId)}>
+            <div className={classes.StudioCard} onClick={() => clickHandler(props.studioId)}>
                 <div className={classes.ImageContainer}>
                     <img className={classes.Image} src={props.imageUrl} alt='' />
                 </div>
@@ -58,9 +58,9 @@ const ClassCard = props => {
                     </div>
                 </div>
             </div>
-            {props.favPage ? null : <div onClick={() => favoriteToggler(props.classId)} className={isFavorite ? classes.FavoriteButton : classes.Button}>Favorite</div>}
+            {props.favPage ? null : <div onClick={() => favoriteToggler(props.studioId)} className={isFavorite ? classes.FavoriteButton : classes.Button}>Favorite</div>}
         </div>
     )
 }
 
-export default ClassCard;
+export default StudioCard;

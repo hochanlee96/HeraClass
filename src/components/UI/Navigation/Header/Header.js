@@ -96,9 +96,9 @@ const Header = props => {
                     <div className={classes.Item}>
                         <NavLink
                             className={classes.Link}
-                            to='/class-list'
+                            to='/studio-search'
                             exact
-                        >Search Class</NavLink>
+                        >Search Studios</NavLink>
                     </div>
                     {loginHeader}
                 </nav>

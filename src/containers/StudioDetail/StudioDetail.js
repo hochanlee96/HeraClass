@@ -3,39 +3,39 @@ import { useSelector, useDispatch } from 'react-redux';
 
 // import { dbService } from '../../fbase';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import classes from './ClassDetail.module.css';
-import * as classActions from '../../store/actions/class-list';
-import { FETCH_CLASS } from '../../store/actions/class-list';
+import classes from './StudioDetail.module.css';
+import * as studioActions from '../../store/actions/studio-search';
+import { FETCH_STUDIO } from '../../store/actions/studio-search';
 import * as authActions from '../../store/actions/auth';
 import DetailedStudio from '../../models/studio/detailedStudio';
 import NaverMap from '../../components/Map/NaverMap';
 import ReviewContainer from '../../components/Reviews/ReviewContainer';
 
-const ClassDetail = props => {
-    const classId = props.match.params.classId;
-    const [fetchedClass, setFetchedClass] = useState();
+const StudioDetail = props => {
+    const studioId = props.match.params.studioId;
+    const [fetchedStudio, setFetchedStudio] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const isSignedIn = useSelector(state => state.auth.email !== '');
     const userEmail = useSelector(state => state.auth.email);
     const [isFavorite, setIsFavorite] = useState(false);
-    const [loadedClass, setLoadedClass] = useState(false);
+    const [loadedStudio, setLoadedStudio] = useState(false);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!fetchedClass) {
+        if (!fetchedStudio) {
             setIsFavorite(false)
-        } else if (userEmail && fetchedClass.followers.findIndex(item => item === userEmail) >= 0) {
+        } else if (userEmail && fetchedStudio.followers.findIndex(item => item === userEmail) >= 0) {
             setIsFavorite(true)
         }
-    }, [fetchedClass, userEmail])
+    }, [fetchedStudio, userEmail])
 
     // try fetching
-    const fetchClass = useCallback(async classId => {
+    const fetchStudio = useCallback(async studioId => {
         try {
 
             //서버이용해서 fetch class
-            const response = await fetch(`http://localhost:3001/user/class-list/${classId}`, {
+            const response = await fetch(`http://localhost:3001/user/studio-search/${studioId}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -46,8 +46,8 @@ const ClassDetail = props => {
             }
 
             const resData = await response.json();
-            console.log(resData);
-            const classData = new DetailedStudio(
+            console.log('searched Studio', resData);
+            const studioData = new DetailedStudio(
                 resData._id,
                 resData.title,
                 resData.imageUrl,
@@ -59,39 +59,25 @@ const ClassDetail = props => {
                 resData.postedBy,
                 [...resData.reviews]
             );
-            console.log("classData", classData);
-            setFetchedClass(classData)
-            dispatch({ type: FETCH_CLASS, fetchedClasses: [classData] });
-            setLoadedClass(true);
+            console.log("Studio Data", studioData);
+            setFetchedStudio(studioData)
+            dispatch({ type: FETCH_STUDIO, fetchedStudios: [studioData] });
+            setLoadedStudio(true);
 
-            //firebase를 이용해서 fetch class
-            // const docRef = dbService.collection("classes").doc(`${classId}`);
-            // docRef.get().then((doc) => {
-            //     setFetchedClass({
-            //         title: doc.data().title,
-            //         imageUrl: doc.data().imageUrl,
-            //         address: doc.data().address,
-            //         details: { ...doc.data().details },
-            //         category: [...doc.data().category],
-            //         followers: [...doc.data().followers],
-            //     });
-            //     setCoordinates({ lat: doc.data().coordinates.latitude, lng: doc.data().coordinates.longitude })
-            // }).catch(err => {
-            //     console.log('Unable to reach');
-            // });
         } catch (error) {
             throw error;
         }
     }, [dispatch])
+
     const favoriteToggler = () => {
         if (isSignedIn) {
             if (isFavorite) {
-                dispatch(classActions.updateFollower(classId, userEmail, false));
-                dispatch(authActions.updateFavorites(classId, false));
+                dispatch(studioActions.updateFollower(studioId, userEmail, false));
+                dispatch(authActions.updateFavorites(studioId, false));
                 setIsFavorite(false);
             } else {
-                dispatch(classActions.updateFollower(classId, userEmail, true));
-                dispatch(authActions.updateFavorites(classId, true));
+                dispatch(studioActions.updateFollower(studioId, userEmail, true));
+                dispatch(authActions.updateFavorites(studioId, true));
                 setIsFavorite(true);
             }
         } else {
@@ -103,31 +89,31 @@ const ClassDetail = props => {
     }
     useEffect(() => {
         setIsLoading(true);
-        fetchClass(classId).then(() => {
+        fetchStudio(studioId).then(() => {
             setIsLoading(false);
         });
-    }, [classId, fetchClass])
+    }, [studioId, fetchStudio])
 
 
     let detail = null;
-    if (fetchedClass) {
-        const catList = fetchedClass.category.map(cat => (
+    if (fetchedStudio) {
+        const catList = fetchedStudio.category.map(cat => (
             <p style={{ display: "inline-block", margin: '30px 10px' }} key={cat}>{cat}</p>
         ))
         detail = (
             <div className={classes.DetailContainer}>
                 <div className={classes.ImageContainer}>
-                    <img src={fetchedClass.imageUrl} alt='' className={classes.Image} />
+                    <img src={fetchedStudio.imageUrl} alt='' className={classes.Image} />
                 </div>
                 <div className={classes.OverviewContainer} >
                     <div className={classes.Description}>
                         <div className={classes.TitleContainer}>
-                            <p><strong>{fetchedClass.title}</strong></p>
+                            <p><strong>{fetchedStudio.title}</strong></p>
                             <button className={isFavorite ? classes.FavoriteButton : classes.Button} onClick={favoriteToggler}>favorite</button>
                         </div>
                     </div>
-                    <p className={classes.Description}>{fetchedClass.address}</p>
-                    <p className={classes.Description}>{fetchedClass.details.tel}</p>
+                    <p className={classes.Description}>{fetchedStudio.address}</p>
+                    <p className={classes.Description}>{fetchedStudio.details.tel}</p>
                     <p className={classes.Description}>카테고리</p>
                     {catList}
                 </div>
@@ -135,16 +121,16 @@ const ClassDetail = props => {
     }
 
     let map = null;
-    if (fetchedClass && fetchedClass.coordinates) {
-        map = <NaverMap title={[fetchedClass.title]} coordinates={[{ ...fetchedClass.coordinates }]} center={{ ...fetchedClass.coordinates }} zoom={18} printCenter={(center) => console.log(center)} />
+    if (fetchedStudio && fetchedStudio.coordinates) {
+        map = <NaverMap title={[fetchedStudio.title]} coordinates={[{ ...fetchedStudio.coordinates }]} center={{ ...fetchedStudio.coordinates }} zoom={18} printCenter={(center) => console.log(center)} />
     }
     return (
         <div style={{ width: '100%', height: '100%' }}>
             {isLoading ? <Spinner /> : detail}
             {map}
-            {loadedClass ? <ReviewContainer classId={classId} userEmail={userEmail} /> : null}
+            {loadedStudio ? <ReviewContainer studioId={studioId} userEmail={userEmail} /> : null}
         </div>
     )
 }
 
-export default ClassDetail;
+export default StudioDetail;
