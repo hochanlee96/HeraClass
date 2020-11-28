@@ -13,7 +13,7 @@ const StudioSearch = props => {
     const userEmail = useSelector(state => state.auth.email);
     const [isLoading, setIsLoading] = useState(false);
     const [center, setCenter] = useState(defaultCenter);
-    const [currentLocation, setCurrentLocation] = useState({ latitude: '37.5577767', longitude: '126.9575868' })
+    const [currentLocation, setCurrentLocation] = useState({ latitude: '37.5577770', longitude: '126.9575865' })
     const [currentAddress, setCurrentAddress] = useState('서울 서대문구 북아현동');
     const [maxDistance, setMaxDistance] = useState('20');
     const [showDistances, setShowDistances] = useState(false);
@@ -22,6 +22,7 @@ const StudioSearch = props => {
     const [coordinates, setCoordinates] = useState(null);
     const [studioTitles, setStudioTitles] = useState(null);
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [keywordTouched, setKeywordTouched] = useState(false);
     const [searchingLocation, setSearchingLocation] = useState(false);
     const [timer, setTimer] = useState(null);
 
@@ -32,13 +33,25 @@ const StudioSearch = props => {
             setAddressInput(event.target.value)
         } else if (event.target.name === 'search') {
             setSearchKeyword(event.target.value);
+            setKeywordTouched(true);
             clearTimeout(timer);
         }
     }
 
     const search = useCallback(async keyword => {
-        dispatch(studioActions.fetchKeyword(currentLocation, keyword))
-    }, [dispatch, currentLocation])
+        if (keyword) {
+            dispatch(studioActions.fetchStudios({ currentLocation: { ...currentLocation }, keyword, maxDistance }))
+        } else {
+            dispatch(studioActions.fetchStudios({ currentLocation: { ...currentLocation }, maxDistance: maxDistance }))
+        }
+    }, [dispatch, currentLocation, maxDistance])
+
+    useEffect(() => {
+        if (!keywordTouched) {
+            setIsLoading(true);
+            search().then(() => { setIsLoading(false) })
+        }
+    }, [search, keywordTouched])
 
     useEffect(() => {
         if (searchKeyword !== '') {
@@ -46,12 +59,19 @@ const StudioSearch = props => {
                 console.log("input", searchKeyword)
                 setIsLoading(true);
                 search(searchKeyword).then(setIsLoading(false))
-            }, 500))
+            }, 1000))
         }
-    }, [searchKeyword, search])
+        else if (keywordTouched) {
+            setTimer(setTimeout(() => {
+                setIsLoading(true);
+                search().then(setIsLoading(false))
+            }, 1000))
+        }
+    }, [searchKeyword, keywordTouched, search])
+
+
 
     const reverseGeocoding = useCallback(async currentLocation => {
-        // const currentLocation = { latitude: "37.6870252", longitude: "126.6949921" }
         const response = await fetch(`http://localhost:3001/map/reverse-geolocation/${currentLocation.latitude}&${currentLocation.longitude}`, {
             credentials: 'include'
         });
@@ -77,12 +97,6 @@ const StudioSearch = props => {
     }
 
     //fetch classes from the database
-    const loadStudios = useCallback(async () => {
-        try {
-            await dispatch(studioActions.fetchStudios(currentLocation, maxDistance));
-        } catch (error) {
-        }
-    }, [dispatch, currentLocation, maxDistance]);
 
     const geocoding = async addressInput => {
         const response = await fetch(`http://localhost:3001/map/${addressInput}`, {
@@ -101,13 +115,6 @@ const StudioSearch = props => {
 
     }
 
-    //when this page is rendered, load classes
-    useEffect(() => {
-        setIsLoading(true);
-        loadStudios().then(() => {
-            setIsLoading(false)
-        });
-    }, [dispatch, loadStudios])
 
     useEffect(() => {
         if (allStudios) {

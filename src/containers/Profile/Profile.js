@@ -72,7 +72,7 @@ const Profile = props => {
             const ok = window.confirm("Change username?");
             if (ok) {
                 editProfile(usernameInput);
-                props.history.go(0);
+                history.go(0);
                 setEdit(false);
             } else {
                 cancelEdit();

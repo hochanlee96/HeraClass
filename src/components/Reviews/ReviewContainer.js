@@ -15,7 +15,7 @@ const ReviewContainer = ({ studioId, userEmail }) => {
             const sortedReviews = fetchedStudio.reviews.sort((a, b) => {
                 return new Date(b.date).getTime() - new Date(a.date).getTime()
             })
-            setReviews([...fetchedStudio.reviews])
+            setReviews([...sortedReviews])
         }
     }, [fetchedStudio])
 

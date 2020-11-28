@@ -10,45 +10,59 @@ const computeDistance = (myLocation, studioLocation) => {
     return 12742 * Math.asin(Math.sqrt(a));
 }
 
-export const fetchKeyword = (currentLocation, keyword) => {
-    return async dispatch => {
-        const response = await fetch(`http://localhost:3001/user/studio-search/search/keyword/${keyword}`, {
-            credentials: 'include'
-        });
-        const resData = await response.json();
-        console.log(resData);
-        const fetchedStudios = [];
+// export const fetchKeyword = (currentLocation, keyword) => {
+//     return async dispatch => {
+//         const response = await fetch(`http://localhost:3001/user/studio-search/search/keyword/${keyword}`, {
+//             credentials: 'include'
+//         });
+//         const resData = await response.json();
+//         console.log(resData);
+//         const fetchedStudios = [];
 
-        for (const key in resData) {
-            fetchedStudios.push(new SimpleStudio(
-                resData[key]._id,
-                resData[key].title,
-                resData[key].imageUrl,
-                resData[key].bigAddress,
-                [...resData[key].category],
-                [...resData[key].followers],
-                { ...resData[key].coordinates },
-                resData[key].postedBy,
-                [...resData[key].reviews],
-                computeDistance(currentLocation, resData[key].coordinates)
-            ));
-        }
-        dispatch({ type: FETCH_STUDIO, fetchedStudios: fetchedStudios });
+//         for (const key in resData) {
+//             fetchedStudios.push(new SimpleStudio(
+//                 resData[key]._id,
+//                 resData[key].title,
+//                 resData[key].imageUrl,
+//                 resData[key].bigAddress,
+//                 [...resData[key].category],
+//                 [...resData[key].followers],
+//                 { ...resData[key].coordinates },
+//                 resData[key].postedBy,
+//                 [...resData[key].reviews],
+//                 computeDistance(currentLocation, resData[key].coordinates)
+//             ));
+//         }
+//         dispatch({ type: FETCH_STUDIO, fetchedStudios: fetchedStudios });
+//     }
+// }
+
+const filterToQueryString = filter => {
+    console.log('filter', filter)
+    let queryString = 'center=' + filter.currentLocation.latitude + ',' + filter.currentLocation.longitude;
+    console.log(queryString);
+    if (filter.keyword) {
+        queryString = queryString + '&keyword=' + filter.keyword
     }
+    if (filter.maxDistance) {
+        queryString = queryString + '&maxDistance=' + filter.maxDistance
+    }
+    return queryString;
 }
 
-export const fetchStudios = (currentLocation, maxDistance) => {
+export const fetchStudios = searchFilter => {
     return async dispatch => {
         try {
+            const queryString = filterToQueryString(searchFilter);
             //서버이용하기
-            const coordDistance = { '1': 0.013, '5': 0.045, '10': 0.09, '20': 0.9 }
-            const boundary = {
-                maxLat: Number(currentLocation.latitude) + coordDistance[maxDistance],
-                minLat: Number(currentLocation.latitude) - coordDistance[maxDistance],
-                maxLng: Number(currentLocation.longitude) + coordDistance[maxDistance],
-                minLng: Number(currentLocation.longitude) - coordDistance[maxDistance],
-            }
-            const response = await fetch(`http://localhost:3001/user/studio-search/search?maxLat=${boundary.maxLat}&minLat=${boundary.minLat}&maxLng=${boundary.maxLng}&minLng=${boundary.minLng}`, {
+            // const coordDistance = { '1': 0.013, '5': 0.045, '10': 0.09, '20': 0.9 }
+            // const boundary = {
+            //     maxLat: Number(currentLocation.latitude) + coordDistance[maxDistance],
+            //     minLat: Number(currentLocation.latitude) - coordDistance[maxDistance],
+            //     maxLng: Number(currentLocation.longitude) + coordDistance[maxDistance],
+            //     minLng: Number(currentLocation.longitude) - coordDistance[maxDistance],
+            // }
+            const response = await fetch(`http://localhost:3001/user/studio-search/search?${queryString}`, {
                 credentials: 'include'
             });
             if (!response.ok) {
@@ -69,7 +83,7 @@ export const fetchStudios = (currentLocation, maxDistance) => {
                     { ...resData[key].coordinates },
                     resData[key].postedBy,
                     [...resData[key].reviews],
-                    computeDistance(currentLocation, resData[key].coordinates)
+                    computeDistance(searchFilter.currentLocation, resData[key].coordinates)
                 ));
             }
             dispatch({ type: FETCH_STUDIO, fetchedStudios: fetchedStudios });
