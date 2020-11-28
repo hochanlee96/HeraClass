@@ -19,18 +19,20 @@ const ReviewContainer = ({ studioId, userEmail }) => {
         }
     }, [fetchedStudio])
 
-    const reviewEdited = (reviewIndex, newReview) => {
+    const reviewEdited = (reviewId, newReview) => {
         setReviews(prev => {
             const updatedReviews = [...prev];
+            const reviewIndex = prev.findIndex(review => review._id === reviewId);
             updatedReviews[reviewIndex] = { ...newReview }
             return updatedReviews;
         })
     }
 
-    const reviewDeleted = (reviewIndex) => {
+    const reviewDeleted = (reviewId) => {
         setReviews(prev => {
             const updatedReviews = [...prev]
-            updatedReviews.splice(reviewIndex, 1)
+            const reviewIndex = prev.findIndex(review => review._id === reviewId);
+            updatedReviews.splice(reviewIndex, 1);
             return updatedReviews;
         })
     }
@@ -42,7 +44,7 @@ const ReviewContainer = ({ studioId, userEmail }) => {
     let reviewArray = null;
     if (reviews) {
         reviewArray = reviews.map((review, index) => (
-            <Review key={index} reviewId={review._id} username={review.author.username} rating={review.rating} review={review.review} date={review.date.toString()} isOwner={review.author.email === userEmail} reviewEdited={(newReview) => reviewEdited(index, newReview)} reviewDeleted={() => reviewDeleted(index)} editingHandler={editingHandler} />
+            <Review key={review._id} reviewId={review._id} username={review.author.username} rating={review.rating} review={review.review} date={review.date.toString()} isOwner={review.author.email === userEmail} reviewEdited={(newReview) => reviewEdited(review._id, newReview)} reviewDeleted={() => reviewDeleted(review._id)} editingHandler={editingHandler} />
         ))
     }
 
