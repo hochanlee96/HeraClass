@@ -48,14 +48,13 @@ export const fetchStudios = (currentLocation, maxDistance) => {
                 maxLng: Number(currentLocation.longitude) + coordDistance[maxDistance],
                 minLng: Number(currentLocation.longitude) - coordDistance[maxDistance],
             }
-            const response = await fetch(`http://localhost:3001/user/studio-search/search/${boundary.maxLat}&${boundary.minLat}&${boundary.maxLng}&${boundary.minLng}`, {
+            const response = await fetch(`http://localhost:3001/user/studio-search/search?maxLat=${boundary.maxLat}&minLat=${boundary.minLat}&maxLng=${boundary.maxLng}&minLng=${boundary.minLng}`, {
                 credentials: 'include'
             });
             if (!response.ok) {
                 throw new Error('Something went wrong!');
             }
             const resData = await response.json();
-            console.log(resData);
             // console.log(resData);
             const fetchedStudios = [];
 

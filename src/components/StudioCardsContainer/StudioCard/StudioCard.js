@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouteMatch } from 'react-router-dom';
 
 import classes from './StudioCard.module.css';
 import * as studioActions from '../../../store/actions/studio-search';
@@ -10,6 +11,7 @@ const StudioCard = props => {
     const userEmail = useSelector(state => state.auth.email);
 
     const dispatch = useDispatch();
+    const match = useRouteMatch();
 
     const clickHandler = studioId => {
         props.history.push(`/detail/${studioId}`);
@@ -30,6 +32,7 @@ const StudioCard = props => {
             const ok = window.confirm("You need to login first! Do you want to login?");
             if (ok) {
                 props.history.push('/auth');
+                dispatch({ type: authActions.SET_REDIRECT_PATH, redirect_path: match.url })
             }
         }
     }

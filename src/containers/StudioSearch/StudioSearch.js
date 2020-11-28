@@ -22,6 +22,7 @@ const StudioSearch = props => {
     const [coordinates, setCoordinates] = useState(null);
     const [studioTitles, setStudioTitles] = useState(null);
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [searchingLocation, setSearchingLocation] = useState(false);
     const [timer, setTimer] = useState(null);
 
     const dispatch = useDispatch();
@@ -43,29 +44,32 @@ const StudioSearch = props => {
         if (searchKeyword !== '') {
             setTimer(setTimeout(() => {
                 console.log("input", searchKeyword)
-                search(searchKeyword)
+                setIsLoading(true);
+                search(searchKeyword).then(setIsLoading(false))
             }, 500))
         }
     }, [searchKeyword, search])
 
     const reverseGeocoding = useCallback(async currentLocation => {
+        // const currentLocation = { latitude: "37.6870252", longitude: "126.6949921" }
         const response = await fetch(`http://localhost:3001/map/reverse-geolocation/${currentLocation.latitude}&${currentLocation.longitude}`, {
             credentials: 'include'
         });
         const resData = await response.json();
-        console.log('resData', resData);
+        console.log(resData);
         //error handling
         setCurrentAddress(resData.area1.alias + " " + resData.area2.name + " " + resData.area3.name);
     }, [])
-
     const searchCurrentLocation = () => {
         if ("geolocation" in navigator) {
             console.log("Geolocation Available");
             navigator.geolocation.getCurrentPosition(position => {
                 const location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
+                console.log(position);
                 setCurrentLocation(location);
                 reverseGeocoding(location);
                 setisEditingAddress(false);
+                setSearchingLocation(false);
             })
         } else {
             console.log("default location");
@@ -85,10 +89,16 @@ const StudioSearch = props => {
             credentials: 'include'
         });
         const resData = await response.json();
-        setCurrentAddress(resData[0].roadAddress);
-        setCurrentLocation({ longitude: Number(resData[0].x), latitude: Number(resData[0].y) })
-        setisEditingAddress(false);
-        console.log('resData', resData);
+        console.log('resdata', resData);
+        if (resData.length === 0) {
+            //어떻게 할지...
+            window.alert("위치를 검색할 수 없습니다. 더 자세히 입력해주세요");
+        } else {
+            setCurrentAddress(resData[0].roadAddress);
+            setCurrentLocation({ longitude: Number(resData[0].x), latitude: Number(resData[0].y) })
+            setisEditingAddress(false);
+        }
+
     }
 
     //when this page is rendered, load classes
@@ -119,18 +129,24 @@ const StudioSearch = props => {
     if (coordinates) {
         navermap = <NaverMap title={studioTitles} coordinates={coordinates} center={currentLocation} zoom={13} printCenter={center => { setCenter({ latitude: center._lat, longitude: center._lng }) }} />
     }
-    console.log(center);
+
+    let locationSearchComponent = (<>
+        {isEditingAddress ? <input type='text' placeholder="새로운 위치를 입력하세요" value={addressInput} onChange={onChange} name="address" />
+            : searchingLocation ? <p>searching...</p> : <p>현재위치 : {currentAddress}</p>}
+        {!isEditingAddress ? <button onClick={() => {
+            setSearchingLocation(true);
+            searchCurrentLocation();
+        }}>현재 위치 검색하기</button> : null}
+        <button onClick={() => setisEditingAddress(prev => !prev)}>{isEditingAddress ? "원래대로" : "위치 재설정"}</button>
+        {isEditingAddress ? <button onClick={() => geocoding(addressInput)}>위치 검색하기</button> : null}
+    </>)
 
     return (
         <div>
             <label>검색창</label>
             <input type="text" placeholder="검색어를 입력하세요" value={searchKeyword} onChange={onChange} name="search" />
             <p>This is the Studio Search page</p>
-            {isEditingAddress ? <input type='text' placeholder="새로운 위치를 입력하세요" value={addressInput} onChange={onChange} name="address" />
-                : isLoading ? null : <p>현재위치 : {currentAddress}</p>}
-            <button onClick={searchCurrentLocation}>현재 위치 검색하기</button>
-            <button onClick={() => setisEditingAddress(prev => !prev)}>{isEditingAddress ? "원래대로" : "위치 재설정"}</button>
-            {isEditingAddress ? <button onClick={() => geocoding(addressInput)}>위치 검색하기</button> : null}
+            {locationSearchComponent}
             <p onClick={() => setShowDistances(prev => !prev)}>{maxDistance} km</p>
 
             {showDistances ? <>

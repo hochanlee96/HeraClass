@@ -7,7 +7,6 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case FETCH_STUDIO:
-            console.log('fetched', action.fetchedStudios);
             return {
                 ...state,
                 allStudios: [...action.fetchedStudios]

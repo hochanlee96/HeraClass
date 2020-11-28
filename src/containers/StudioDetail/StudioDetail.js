@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 
 // import { dbService } from '../../fbase';
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -12,6 +13,10 @@ import NaverMap from '../../components/Map/NaverMap';
 import ReviewContainer from '../../components/Reviews/ReviewContainer';
 
 const StudioDetail = props => {
+
+    const history = useHistory();
+    const match = useRouteMatch();
+
     const studioId = props.match.params.studioId;
     const [fetchedStudio, setFetchedStudio] = useState();
     const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +62,8 @@ const StudioDetail = props => {
                 [...resData.followers],
                 { ...resData.coordinates },
                 resData.postedBy,
-                [...resData.reviews]
+                [...resData.reviews],
+                [...resData.events]
             );
             console.log("Studio Data", studioData);
             setFetchedStudio(studioData)
@@ -84,6 +90,7 @@ const StudioDetail = props => {
             const ok = window.confirm("You need to login first! Do you want to login?");
             if (ok) {
                 props.history.push('/auth');
+                dispatch({ type: authActions.SET_REDIRECT_PATH, redirect_path: match.url })
             }
         }
     }
@@ -94,6 +101,34 @@ const StudioDetail = props => {
         });
     }, [studioId, fetchStudio])
 
+    const joinEvent = async eventId => {
+        //
+        if (isSignedIn) {
+            const response = await fetch(`http://localhost:3001/event/${eventId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    join: true
+                })
+            });
+            if (response.status === 200) {
+                console.log("added");
+            }
+            const resData = await response.json();
+            console.log(resData);
+            console.log(eventId);
+            history.go(0);
+        } else {
+            const ok = window.confirm("Do you want to log in first?");
+            if (ok) {
+                history.push('/auth');
+                dispatch({ type: authActions.SET_REDIRECT_PATH, redirect_path: match.url })
+            }
+        }
+    }
 
     let detail = null;
     if (fetchedStudio) {
@@ -124,10 +159,36 @@ const StudioDetail = props => {
     if (fetchedStudio && fetchedStudio.coordinates) {
         map = <NaverMap title={[fetchedStudio.title]} coordinates={[{ ...fetchedStudio.coordinates }]} center={{ ...fetchedStudio.coordinates }} zoom={18} printCenter={(center) => console.log(center)} />
     }
+
+    let events = null;
+    if (fetchedStudio && fetchedStudio.events) {
+        events = fetchedStudio.events.map(event => {
+            let enrolled = false;
+            if (userEmail && event.students.findIndex(studentEmail => studentEmail === userEmail) > -1) {
+                enrolled = true;
+            }
+            return (
+                <div key={event._id}>
+                    <p>title : {event.title}</p>
+                    <p>trainer: {event.trainer}</p>
+                    <p>date: {event.date}</p>
+                    <p>duration: {event.duration}</p>
+                    <p>difficulty: {event.difficulty}</p>
+                    <p>category: {event.category}</p>
+                    <p>capacity: {event.capacity}</p>
+                    <p># students enrolled: {event.students.length}</p>
+                    {enrolled ? <p>You are enrolled in this event!</p> : <button onClick={() => joinEvent(event._id)}>Join</button>}
+                </div>
+            )
+        })
+    }
     return (
         <div style={{ width: '100%', height: '100%' }}>
             {isLoading ? <Spinner /> : detail}
             {map}
+            <p><strong>Events</strong>
+            </p>
+            {events}
             {loadedStudio ? <ReviewContainer studioId={studioId} userEmail={userEmail} /> : null}
         </div>
     )

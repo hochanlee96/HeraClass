@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import * as authActions from '../../../store/actions/auth';
 
-const NewReview = ({ reviewAdded, studioId }) => {
+const NewReview = ({ studioId }) => {
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -46,10 +46,10 @@ const NewReview = ({ reviewAdded, studioId }) => {
         } else {
             //this has to be refreshed
             console.log('res', resData)
-            reviewAdded(resData);
             setReviewInput('');
             setRatingInput('');
-            history.push(`/detail/${studioId}`);
+            // history.push(`/detail/${studioId}`);
+            history.go(0);
         }
     }
     return (<>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import * as authActions from '../../../store/actions/auth';
 import classes from './AuthForm.module.css';
@@ -10,7 +11,9 @@ const AuthForm = () => {
     const [passwordInput, setPasswordInput] = useState('');
     const [isSignin, setIsSignin] = useState(true);
     const [error, setError] = useState();
+    const redirect_path = useSelector(state => state.auth.redirect);
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const inputChangeHandler = (identifier, event) => {
         if (identifier === 'email') {
@@ -26,14 +29,15 @@ const AuthForm = () => {
         setIsSignin(prev => !prev)
     }
 
-    const submitHandler = async event => {
+    const submitHandler = event => {
         event.preventDefault();
         try {
             if (isSignin) {
-                await dispatch(authActions.login(emailInput, passwordInput));
+                dispatch(authActions.login(emailInput, passwordInput));
             } else {
-                await dispatch(authActions.register(emailInput, usernameInput, passwordInput));
+                dispatch(authActions.register(emailInput, usernameInput, passwordInput));
             }
+            history.push(redirect_path)
         } catch (err) {
             setError(err.message);
         }

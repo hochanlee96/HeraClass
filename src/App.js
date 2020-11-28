@@ -14,6 +14,7 @@ import Profile from './containers/Profile/Profile';
 import About from './containers/About/About';
 import Pricing from './containers/Pricing/Pricing';
 import Contact from './containers/Contact/Contact';
+import Events from './containers/Events/Events';
 import * as authActions from './store/actions/auth';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
       <Route path="/studio-search" exact component={StudioSearch} />
       <Route path="/my-page" exact component={MyPage} />
       <Route path="/favorites" exact component={Favorites} />
+      <Route path="/events" exact component={Events} />
       <Route path="/profile" exact component={Profile} />
       <Route path="/logout" exact component={Logout} />
       <Route path="/" exact component={Home} />
@@ -53,6 +55,7 @@ function App() {
         <Route path="/studio-search" exact component={StudioSearch} />
         <Route path="/my-page" exact component={Auth} />
         <Route path="/favorites" exact component={Auth} />
+        <Route path="/events" exact component={Auth} />
         <Route path="/profile" exact component={Auth} />
         <Route path="/auth" exact component={Auth} />
         <Route path="/logout" exact component={Logout} />

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 // import { dbService } from '../../fbase';
 
 import * as authActions from '../../store/actions/auth';
@@ -11,6 +12,7 @@ const Profile = props => {
     const [edit, setEdit] = useState(false);
 
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const fetchUserData = useCallback(async () => {
         try {
@@ -60,6 +62,7 @@ const Profile = props => {
             dispatch(authActions.logout());
         } else {
             setEdit(false);
+
         }
     }
 
@@ -69,7 +72,7 @@ const Profile = props => {
             const ok = window.confirm("Change username?");
             if (ok) {
                 editProfile(usernameInput);
-                // props.history.go(0);
+                props.history.go(0);
                 setEdit(false);
             } else {
                 cancelEdit();

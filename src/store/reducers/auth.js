@@ -1,10 +1,12 @@
-import { AUTHENTICATE, LOGOUT, UPDATE_FAVORITES } from '../actions/auth';
+import { AUTHENTICATE, LOGOUT, UPDATE_FAVORITES, SET_REDIRECT_PATH } from '../actions/auth';
 
 const initialState = {
     email: '',
     username: '',
     favorites: [],
+    enrolled: [],
     expires: null,
+    redirect: ''
 }
 
 export default (state = initialState, action) => {
@@ -14,7 +16,13 @@ export default (state = initialState, action) => {
                 ...state,
                 email: action.userData.email,
                 username: action.userData.username,
-                favorites: [...action.userData.favorites]
+                favorites: [...action.userData.favorites],
+                enrolled: [...action.userData.enrolled]
+            }
+        case SET_REDIRECT_PATH:
+            return {
+                ...state,
+                redirect: action.redirect_path
             }
         case UPDATE_FAVORITES:
             const updatedFavorites = [...state.favorites];

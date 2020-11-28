@@ -8,6 +8,7 @@ import classes from './MyPage.module.css';
 const MyPage = () => {
 
     const numFavorites = useSelector(state => state.auth.favorites.length);
+    const numEvents = useSelector(state => state.auth.enrolled.length);
 
     return (
         <>
@@ -22,7 +23,12 @@ const MyPage = () => {
                     <li>
                         <Link to='/profile'>
                             My Profile
-                </Link>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to='/events'>
+                            Number of Events Enrolled : {numEvents}
+                        </Link>
                     </li>
                 </ul>
             </div>

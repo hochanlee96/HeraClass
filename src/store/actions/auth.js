@@ -1,11 +1,9 @@
-// import * as firebase from "firebase/app";
-// import { dbService } from '../../fbase';
-
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
 export const FETCH_USER_DATA = 'FETCH_USER_DATA';
 export const CREATE_USER = 'CREATE_USER';
 export const UPDATE_FAVORITES = 'UPDATE_FAVORITES';
+export const SET_REDIRECT_PATH = 'SET_REDIRECT_PATH';
 
 let timer;
 

@@ -1,5 +1,5 @@
 class DetailedStudio {
-    constructor(id, title, imageUrl, detailedAddress, category, details, followers, coordinates, postedBy, reviews) {
+    constructor(id, title, imageUrl, detailedAddress, category, details, followers, coordinates, postedBy, reviews, events) {
         this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
@@ -12,6 +12,7 @@ class DetailedStudio {
         this.reviews = reviews;
         this.nReviews = reviews.length;
         this.avgRating = this.avgRating();
+        this.events = events;
     }
 
     avgRating() {

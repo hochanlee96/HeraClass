@@ -12,13 +12,12 @@ const ReviewContainer = ({ studioId, userEmail }) => {
 
     useEffect(() => {
         if (fetchedStudio) {
+            const sortedReviews = fetchedStudio.reviews.sort((a, b) => {
+                return new Date(b.date).getTime() - new Date(a.date).getTime()
+            })
             setReviews([...fetchedStudio.reviews])
         }
     }, [fetchedStudio])
-
-    const reviewAdded = newReview => {
-        setReviews(prev => [newReview, ...prev])
-    }
 
     const reviewEdited = (reviewIndex, newReview) => {
         setReviews(prev => {
@@ -48,8 +47,8 @@ const ReviewContainer = ({ studioId, userEmail }) => {
     }
 
     return (<>
-        <p>Reviews</p>
-        {isEditing ? null : <NewReview studioId={studioId} reviewAdded={(newReview) => reviewAdded(newReview)} />}
+        <p><strong>Reviews</strong></p>
+        {isEditing ? null : <NewReview studioId={studioId} />}
         {reviewArray}
     </>);
 }
