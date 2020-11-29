@@ -8,7 +8,7 @@ import classes from './MyPage.module.css';
 const MyPage = () => {
 
     const numFavorites = useSelector(state => state.auth.favorites.length);
-    const numEvents = useSelector(state => state.auth.enrolled.length);
+    const numEvents = useSelector(state => state.auth.events.length);
 
     return (
         <>

@@ -118,8 +118,6 @@ const StudioDetail = props => {
                 console.log("added");
             }
             const resData = await response.json();
-            console.log(resData);
-            console.log(eventId);
             history.go(0);
         } else {
             const ok = window.confirm("Do you want to log in first?");
@@ -171,7 +169,7 @@ const StudioDetail = props => {
                 <div key={event._id}>
                     <p>title : {event.title}</p>
                     <p>trainer: {event.trainer}</p>
-                    <p>date: {event.date}</p>
+                    <p>date: {new Date(event.date).toLocaleDateString()}</p>
                     <p>duration: {event.duration}</p>
                     <p>difficulty: {event.difficulty}</p>
                     <p>category: {event.category}</p>

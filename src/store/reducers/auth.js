@@ -4,7 +4,7 @@ const initialState = {
     email: '',
     username: '',
     favorites: [],
-    enrolled: [],
+    events: [],
     expires: null,
     redirect: ''
 }
@@ -17,7 +17,7 @@ export default (state = initialState, action) => {
                 email: action.userData.email,
                 username: action.userData.username,
                 favorites: [...action.userData.favorites],
-                enrolled: [...action.userData.enrolled]
+                events: [...action.userData.events]
             }
         case SET_REDIRECT_PATH:
             return {

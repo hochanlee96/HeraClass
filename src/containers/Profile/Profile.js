@@ -7,6 +7,8 @@ import * as authActions from '../../store/actions/auth';
 
 const Profile = props => {
     const [usernameInput, setUsernameInput] = useState('');
+    const [isVerified, setIsVerified] = useState(false);
+    const [message, setMessage] = useState('');
     const [tempUsername, setTempUsername] = useState(usernameInput);
     const [email, setEmail] = useState('');
     const [edit, setEdit] = useState(false);
@@ -29,6 +31,7 @@ const Profile = props => {
             else {
                 setUsernameInput(resData.username);
                 setEmail(resData.email);
+                setIsVerified(resData.verified);
             }
         } catch (err) {
             console.log(err)
@@ -95,6 +98,23 @@ const Profile = props => {
         setEdit(false);
     }
 
+    const verifyEmail = async () => {
+        const response = await fetch("http://localhost:3001/user/auth/verify", {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include'
+        });
+        const resData = await response.json()
+        if (resData.error === "not signed in") {
+            dispatch(authActions.logout());
+        } else {
+            console.log(resData.message);
+            setMessage(resData.message);
+
+        }
+    }
+
     let editContent = <form onSubmit={onSubmitHandler}>
         <label>Username : </label>
         <input onChange={onChangeHandler} type='text' value={usernameInput} />
@@ -112,6 +132,9 @@ const Profile = props => {
             {edit ? editContent : userInfo}
             {edit ? <button onClick={cancelEdit}>Go back</button>
                 : <button onClick={editButton}>Edit</button>}
+            {isVerified ? <p>You are verified!</p> : <p>You are not verified yet!</p>}
+            {isVerified ? null : <button onClick={verifyEmail}>Verify now</button>}
+            <p>{message}</p>
         </>
     )
 }

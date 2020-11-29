@@ -44,7 +44,7 @@ const ReviewContainer = ({ studioId, userEmail }) => {
     let reviewArray = null;
     if (reviews) {
         reviewArray = reviews.map((review, index) => (
-            <Review key={review._id} reviewId={review._id} username={review.author.username} rating={review.rating} review={review.review} date={review.date.toString()} isOwner={review.author.email === userEmail} reviewEdited={(newReview) => reviewEdited(review._id, newReview)} reviewDeleted={() => reviewDeleted(review._id)} editingHandler={editingHandler} />
+            <Review key={review._id} reviewId={review._id} username={review.author.username} rating={review.rating} review={review.review} date={new Date(review.date).toLocaleDateString()} isOwner={review.author.email === userEmail} reviewEdited={(newReview) => reviewEdited(review._id, newReview)} reviewDeleted={() => reviewDeleted(review._id)} editingHandler={editingHandler} />
         ))
     }
 
