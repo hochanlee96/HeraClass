@@ -12,6 +12,8 @@ const Profile = props => {
     const [tempUsername, setTempUsername] = useState(usernameInput);
     const [email, setEmail] = useState('');
     const [edit, setEdit] = useState(false);
+    const [checking, setChecking] = useState(false);
+    const [timer, setTimer] = useState(null);
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -114,6 +116,32 @@ const Profile = props => {
 
         }
     }
+
+    const check = useCallback(async () => {
+        const response = await fetch('http://localhost:3001/user/auth/check-verification', {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include'
+        })
+        const resData = await response.json();
+        console.log(resData);
+        if (resData.verified) {
+            setIsVerified(true)
+            setMessage(null);
+        }
+    }, [])
+
+    useEffect(() => {
+        if (message && !isVerified && !checking) {
+            setTimer(setTimeout(() => {
+                console.log('checking')
+                setChecking(true);
+                check().then(setChecking(false))
+            }, 3000))
+        }
+    }, [message, isVerified, checking, check])
+
 
     let editContent = <form onSubmit={onSubmitHandler}>
         <label>Username : </label>

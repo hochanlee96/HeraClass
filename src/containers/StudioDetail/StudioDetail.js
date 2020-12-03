@@ -130,6 +130,7 @@ const StudioDetail = props => {
                     console.log("added");
                 }
                 const resData = await response.json();
+                console.log(resData);
                 history.go(0);
             } else {
                 const ok = window.confirm("You have to verify your email. Verify now?");
