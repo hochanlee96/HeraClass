@@ -2,6 +2,7 @@ import { AUTHENTICATE, LOGOUT, UPDATE_FAVORITES, SET_REDIRECT_PATH } from '../ac
 
 const initialState = {
     email: '',
+    verified: false,
     username: '',
     favorites: [],
     events: [],
@@ -15,6 +16,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 email: action.userData.email,
+                verified: action.userData.verified,
                 username: action.userData.username,
                 favorites: [...action.userData.favorites],
                 events: [...action.userData.events]

@@ -11,6 +11,7 @@ import * as authActions from '../../store/actions/auth';
 import DetailedStudio from '../../models/studio/detailedStudio';
 import NaverMap from '../../components/Map/NaverMap';
 import ReviewContainer from '../../components/Reviews/ReviewContainer';
+import EventsContainer from '../../components/Event/EventsContainer/EventsContainer';
 
 const StudioDetail = props => {
 
@@ -21,9 +22,12 @@ const StudioDetail = props => {
     const [fetchedStudio, setFetchedStudio] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const isSignedIn = useSelector(state => state.auth.email !== '');
+    const isVerified = useSelector(state => state.auth.verified);
     const userEmail = useSelector(state => state.auth.email);
     const [isFavorite, setIsFavorite] = useState(false);
     const [loadedStudio, setLoadedStudio] = useState(false);
+    const [eventsArray, setEventsArray] = useState(null);
+    // const [eventToday, setEventToday] = useState(null);
 
     const dispatch = useDispatch();
 
@@ -101,24 +105,38 @@ const StudioDetail = props => {
         });
     }, [studioId, fetchStudio])
 
+    useEffect(() => {
+        if (fetchedStudio) {
+            setEventsArray(fetchedStudio.events)
+        }
+    }, [fetchedStudio])
+
     const joinEvent = async eventId => {
         //
         if (isSignedIn) {
-            const response = await fetch(`http://localhost:3001/event/${eventId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    join: true
-                })
-            });
-            if (response.status === 200) {
-                console.log("added");
+            if (isVerified) {
+
+                const response = await fetch(`http://localhost:3001/event/${eventId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        join: true
+                    })
+                });
+                if (response.status === 200) {
+                    console.log("added");
+                }
+                const resData = await response.json();
+                history.go(0);
+            } else {
+                const ok = window.confirm("You have to verify your email. Verify now?");
+                if (ok) {
+                    history.push('/profile');
+                }
             }
-            const resData = await response.json();
-            history.go(0);
         } else {
             const ok = window.confirm("Do you want to log in first?");
             if (ok) {
@@ -158,8 +176,22 @@ const StudioDetail = props => {
         map = <NaverMap title={[fetchedStudio.title]} coordinates={[{ ...fetchedStudio.coordinates }]} center={{ ...fetchedStudio.coordinates }} zoom={18} printCenter={(center) => console.log(center)} />
     }
 
+
+    // useEffect(() => {
+    //     if (fetchedStudio && fetchedStudio.events) {
+    //         const today = new Date().toLocaleDateString();
+    //         const allEvents = [...fetchedStudio.events];
+    //         allEvents.forEach(event => {
+    //             console.log(new Date(event.date).toLocaleDateString() === today)
+    //         });
+    //         allEvents.filter(event => new Date(event.date).toLocaleDateString() === today);
+    //         console.log('aall', allEvents)
+    //         setEventToday(allEvents);
+    //     }
+    // }, [fetchedStudio])
+
     let events = null;
-    if (fetchedStudio && fetchedStudio.events) {
+    if (eventsArray) {
         events = fetchedStudio.events.map(event => {
             let enrolled = false;
             if (userEmail && event.students.findIndex(studentEmail => studentEmail === userEmail) > -1) {
@@ -184,11 +216,10 @@ const StudioDetail = props => {
         <div style={{ width: '100%', height: '100%' }}>
             {isLoading ? <Spinner /> : detail}
             {map}
-            <p><strong>Events</strong>
-            </p>
-            {events}
+            <EventsContainer studioId={studioId} eventsArray={eventsArray} userEmail={userEmail} joinEvent={(eventId) => joinEvent(eventId)} />
+            {/* {events} */}
             {loadedStudio ? <ReviewContainer studioId={studioId} userEmail={userEmail} /> : null}
-        </div>
+        </div >
     )
 }
 
