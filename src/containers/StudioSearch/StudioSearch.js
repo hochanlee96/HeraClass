@@ -16,7 +16,6 @@ const StudioSearch = props => {
     const [currentLocation, setCurrentLocation] = useState({ latitude: '37.5577770', longitude: '126.9575865' })
     const [currentAddress, setCurrentAddress] = useState('서울 서대문구 북아현동');
     const [maxDistance, setMaxDistance] = useState('20');
-    const [showDistances, setShowDistances] = useState(false);
     const [isEditingAddress, setisEditingAddress] = useState(false);
     const [addressInput, setAddressInput] = useState('');
     const [coordinates, setCoordinates] = useState(null);
@@ -24,7 +23,13 @@ const StudioSearch = props => {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [keywordTouched, setKeywordTouched] = useState(false);
     const [searchingLocation, setSearchingLocation] = useState(false);
-    const [timer, setTimer] = useState(null);
+    const [checked, setChecked] = useState(false);
+    const [showFilters, setShowFilters] = useState(false);
+    const [amenityArray, setAmenityArray] = useState([]);
+    const [filters, setFilters] = useState({ currentLocation: { ...currentLocation }, maxDistance: maxDistance });
+    const [tempFilters, setTempFilters] = useState({ currentLocation: { ...currentLocation }, maxDistance: '20' });
+    const [tempSearchKeyword, setTempSearchKeyword] = useState('');
+    // const [timer, setTimer] = useState(null);
 
     const dispatch = useDispatch();
 
@@ -33,41 +38,69 @@ const StudioSearch = props => {
             setAddressInput(event.target.value)
         } else if (event.target.name === 'search') {
             setSearchKeyword(event.target.value);
+            // setFilters({ ...filters, keyword: event.target.value });
             setKeywordTouched(true);
-            clearTimeout(timer);
+            // clearTimeout(timer);
+        } else if (event.target.name === 'distance') {
+            setMaxDistance(event.target.value);
+        } else if (event.target.name === 'amenity') {
+            const target = event.target.value;
+            const newArray = [...amenityArray]
+            const index = amenityArray.findIndex(element => element === target);
+            if (index > -1) {
+                newArray.splice(index, 1);
+            } else {
+                newArray.push(target)
+            }
+            setAmenityArray(newArray);
         }
     }
 
-    const search = useCallback(async keyword => {
-        if (keyword) {
-            dispatch(studioActions.fetchStudios({ currentLocation: { ...currentLocation }, keyword, maxDistance }))
-        } else {
-            dispatch(studioActions.fetchStudios({ currentLocation: { ...currentLocation }, maxDistance: maxDistance }))
-        }
-    }, [dispatch, currentLocation, maxDistance])
+    console.log(filters);
+
+    const initialFetch = useCallback(async () => {
+        dispatch(studioActions.fetchStudios({ ...filters }))
+    }, [dispatch, filters])
 
     useEffect(() => {
         if (!keywordTouched) {
             setIsLoading(true);
-            search().then(() => { setIsLoading(false) })
+            initialFetch().then(() => setIsLoading(false))
         }
-    }, [search, keywordTouched])
+    }, [initialFetch, keywordTouched])
 
-    useEffect(() => {
-        if (searchKeyword !== '') {
-            setTimer(setTimeout(() => {
-                console.log("input", searchKeyword)
-                setIsLoading(true);
-                search(searchKeyword).then(setIsLoading(false))
-            }, 1000))
-        }
-        else if (keywordTouched) {
-            setTimer(setTimeout(() => {
-                setIsLoading(true);
-                search().then(setIsLoading(false))
-            }, 1000))
-        }
-    }, [searchKeyword, keywordTouched, search])
+    const search = useCallback(async () => {
+        dispatch(studioActions.fetchStudios({ ...filters }))
+    }, [dispatch, filters])
+
+    // useEffect(() => {
+    //     if (distanceChanged) {
+    //         search().then(() => setDistanceChanged(false))
+    //     }
+    // }, [distanceChanged, search])
+
+    // useEffect(() => {
+    //     // if (!keywordTouched) {
+    //     setIsLoading(true);
+    //     search().then(() => { setIsLoading(false) })
+    //     // }
+    // }, [search])
+
+    // useEffect(() => {
+    //     if (searchKeyword !== '') {
+    //         setTimer(setTimeout(() => {
+    //             console.log("input", searchKeyword)
+    //             setIsLoading(true);
+    //             search(searchKeyword).then(setIsLoading(false))
+    //         }, 1000))
+    //     }
+    //     else if (keywordTouched) {
+    //         setTimer(setTimeout(() => {
+    //             setIsLoading(true);
+    //             search().then(setIsLoading(false))
+    //         }, 1000))
+    //     }
+    // }, [searchKeyword, keywordTouched, search])
 
 
 
@@ -87,10 +120,11 @@ const StudioSearch = props => {
                 const location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
                 console.log(position);
                 setCurrentLocation(location);
+                setFilters(prev => { return { ...prev, currentLocation: { ...location } } })
                 reverseGeocoding(location);
                 setisEditingAddress(false);
                 setSearchingLocation(false);
-            })
+            }, err => { setSearchingLocation(false); window.alert('위치를 검색할 수 없습니다. 설정을 확인하세요') }, { enableHighAccuracy: true, timeout: 5000 })
         } else {
             console.log("default location");
         }
@@ -108,9 +142,13 @@ const StudioSearch = props => {
             //어떻게 할지...
             window.alert("위치를 검색할 수 없습니다. 더 자세히 입력해주세요");
         } else {
+            const location = { longitude: Number(resData[0].x), latitude: Number(resData[0].y) }
             setCurrentAddress(resData[0].roadAddress);
-            setCurrentLocation({ longitude: Number(resData[0].x), latitude: Number(resData[0].y) })
+            setAddressInput(resData[0].roadAddress);
+            setCurrentLocation({ ...location });
+            setFilters(prev => { return { ...prev, currentLocation: { ...location } } })
             setisEditingAddress(false);
+            setSearchingLocation(false);
         }
 
     }
@@ -132,6 +170,16 @@ const StudioSearch = props => {
         }
     }, [allStudios])
 
+    const applyFilters = () => {
+        setSearchKeyword(tempSearchKeyword);
+        setShowFilters(false);
+        setFilters(prev => { return { ...prev, maxDistance: maxDistance, amenities: [...amenityArray] } });
+    }
+
+    useEffect(() => {
+        search()
+    }, [search])
+
     let navermap = null;
     if (coordinates) {
         navermap = <NaverMap title={studioTitles} coordinates={coordinates} center={currentLocation} zoom={13} printCenter={center => { setCenter({ latitude: center._lat, longitude: center._lng }) }} />
@@ -152,22 +200,51 @@ const StudioSearch = props => {
         <div>
             <label>검색창</label>
             <input type="text" placeholder="검색어를 입력하세요" value={searchKeyword} onChange={onChange} name="search" />
+            <button onClick={() => { setTempSearchKeyword(searchKeyword); setFilters(prev => { return { ...prev, keyword: searchKeyword, maxDistance: '20', amenities: [] } }); setMaxDistance('20'); setAmenityArray([]) }}>검색하기</button>
             <p>This is the Studio Search page</p>
             {locationSearchComponent}
-            <p onClick={() => setShowDistances(prev => !prev)}>{maxDistance} km</p>
+            <p>Filters</p>
+            <p>거리: {maxDistance} km</p>
+            <p>편의시설: {amenityArray.length > 0 ? amenityArray.join(', ') : "설정없음"}</p>
+            <button onClick={() => {
+                setShowFilters(prev => !prev);
+                if (!showFilters) {
+                    setTempFilters({ ...filters })
+                } else {
+                    setMaxDistance(tempFilters.maxDistance);
+                    if (tempFilters.amenities && tempFilters.amenities.length > 0) {
+                        setAmenityArray([...tempFilters.amenities])
+                    } else {
+                        setAmenityArray([]);
+                    }
 
-            {showDistances ? <>
+                }
+            }}>{showFilters ? "Hide" : "Show"} Filters</button>
+            {showFilters ? <>
+                <label><input type='radio' name="distance" value='1' onChange={onChange} checked={maxDistance === '1'} />1km</label>
+                <label><input type='radio' name="distance" value='5' onChange={onChange} checked={maxDistance === '5'} />5km</label>
+                <label><input type='radio' name="distance" value='10' onChange={onChange} checked={maxDistance === '10'} />10km</label>
+                <label><input type='radio' name="distance" value='20' onChange={onChange} checked={maxDistance === '20'} />20km</label>
+                <label><input type='checkbox' name="amenity" value="showers" checked={amenityArray.find(el => el === 'showers') ? true : false} onChange={onChange} /> 샤워실</label>
+                <label><input type='checkbox' name="amenity" value="lockers" checked={amenityArray.find(el => el === "lockers") ? true : false} onChange={onChange} /> 라커</label>
+                <label><input type='checkbox' name="amenity" value="parking" checked={amenityArray.find(el => el === "parking") ? true : false} onChange={onChange} /> 주차공간</label>
+                {/* amenity 추가하기 */}
+                <button onClick={applyFilters}>Search</button>
+            </> : null}
+            {/* {showDistances ? <>
                 <p onClick={() => {
                     const ok = window.confirm('set max distance to 1km?');
                     if (ok) {
                         setMaxDistance('1')
+                        setDistanceChanged(true);
                         setShowDistances(false);
                     }
                 }}>1km</p>
                 <p onClick={() => {
                     const ok = window.confirm('set max distance to 5km?');
                     if (ok) {
-                        setMaxDistance('5')
+                        setMaxDistance('5');
+                        setDistanceChanged(true);
                         setShowDistances(false);
                     }
                 }}>5km</p>
@@ -175,6 +252,7 @@ const StudioSearch = props => {
                     const ok = window.confirm('set max distance to 10km?');
                     if (ok) {
                         setMaxDistance('10')
+                        setDistanceChanged(true);
                         setShowDistances(false);
                     }
                 }}>10km</p>
@@ -182,10 +260,11 @@ const StudioSearch = props => {
                     const ok = window.confirm('set max distance to 20km?');
                     if (ok) {
                         setMaxDistance('20')
+                        setDistanceChanged(true);
                         setShowDistances(false);
                     }
                 }}>20km</p>
-            </> : null}
+            </> : null} */}
             <div className={classes.MainContainer}>
                 {isLoading ? <Spinner /> : <StudioListContainer history={props.history} allStudios={allStudios} userEmail={userEmail} favPage={false} currentLocation={currentLocation} maxDistance={maxDistance} />}
             </div>

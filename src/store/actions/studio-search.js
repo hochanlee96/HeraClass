@@ -47,21 +47,20 @@ const filterToQueryString = filter => {
     if (filter.maxDistance) {
         queryString = queryString + '&maxDistance=' + filter.maxDistance
     }
+    if (filter.amenities && filter.amenities.length > 0) {
+        const amenities = filter.amenities.join(',');
+        console.log(amenities.split(','))
+        queryString = queryString + '&amenities=' + amenities;
+    }
+    console.log(queryString);
     return queryString;
 }
 
 export const fetchStudios = searchFilter => {
+    console.log('search', searchFilter)
     return async dispatch => {
         try {
             const queryString = filterToQueryString(searchFilter);
-            //서버이용하기
-            // const coordDistance = { '1': 0.013, '5': 0.045, '10': 0.09, '20': 0.9 }
-            // const boundary = {
-            //     maxLat: Number(currentLocation.latitude) + coordDistance[maxDistance],
-            //     minLat: Number(currentLocation.latitude) - coordDistance[maxDistance],
-            //     maxLng: Number(currentLocation.longitude) + coordDistance[maxDistance],
-            //     minLng: Number(currentLocation.longitude) - coordDistance[maxDistance],
-            // }
             const response = await fetch(`http://localhost:3001/user/studio-search/search?${queryString}`, {
                 credentials: 'include'
             });
@@ -69,7 +68,6 @@ export const fetchStudios = searchFilter => {
                 throw new Error('Something went wrong!');
             }
             const resData = await response.json();
-            // console.log(resData);
             const fetchedStudios = [];
 
             for (const key in resData) {

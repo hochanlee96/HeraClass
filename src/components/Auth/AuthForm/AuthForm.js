@@ -29,16 +29,17 @@ const AuthForm = () => {
         setIsSignin(prev => !prev)
     }
 
-    const submitHandler = event => {
+    const submitHandler = async event => {
         event.preventDefault();
         try {
             if (isSignin) {
-                dispatch(authActions.login(emailInput, passwordInput));
+                await dispatch(authActions.login(emailInput, passwordInput));
             } else {
-                dispatch(authActions.register(emailInput, usernameInput, passwordInput));
+                await dispatch(authActions.register(emailInput, usernameInput, passwordInput));
             }
             history.push(redirect_path)
         } catch (err) {
+            console.log('error occured here!', err)
             setError(err.message);
         }
     }

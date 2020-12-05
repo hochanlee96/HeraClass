@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Events = () => {
     const [events, setEvents] = useState(null);
@@ -64,6 +65,10 @@ const Events = () => {
                     <p>category: {event.category}</p>
                     <p>capacity: {event.capacity}</p>
                     <p># students enrolled: {event.students.length}</p>
+                    <p>장소: <NavLink
+                        to={`/detail/${event.studioId._id}`}
+                        exact
+                    >{event.studioId.title}</NavLink></p>
                     <p>주소: {event.studioId.address}</p>
                     <button onClick={() => cancelEvent(event._id)}>Cancel Event</button>
                 </div>
