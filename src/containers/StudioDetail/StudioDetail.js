@@ -115,7 +115,6 @@ const StudioDetail = props => {
         //
         if (isSignedIn) {
             if (isVerified) {
-
                 const response = await fetch(`http://localhost:3001/event/${eventId}`, {
                     method: 'PUT',
                     headers: {
@@ -128,10 +127,13 @@ const StudioDetail = props => {
                 });
                 if (response.status === 200) {
                     console.log("added");
+                    history.go(0);
                 }
                 const resData = await response.json();
                 console.log(resData);
-                history.go(0);
+                if (resData.error === 'full') {
+                    window.alert('The event is full!')
+                }
             } else {
                 const ok = window.confirm("You have to verify your email. Verify now?");
                 if (ok) {
@@ -191,28 +193,28 @@ const StudioDetail = props => {
     //     }
     // }, [fetchedStudio])
 
-    let events = null;
-    if (eventsArray) {
-        events = fetchedStudio.events.map(event => {
-            let enrolled = false;
-            if (userEmail && event.students.findIndex(studentEmail => studentEmail === userEmail) > -1) {
-                enrolled = true;
-            }
-            return (
-                <div key={event._id}>
-                    <p>title : {event.title}</p>
-                    <p>trainer: {event.trainer}</p>
-                    <p>date: {new Date(event.date).toLocaleDateString()}</p>
-                    <p>duration: {event.duration}</p>
-                    <p>difficulty: {event.difficulty}</p>
-                    <p>category: {event.category}</p>
-                    <p>capacity: {event.capacity}</p>
-                    <p># students enrolled: {event.students.length}</p>
-                    {enrolled ? <p>You are enrolled in this event!</p> : <button onClick={() => joinEvent(event._id)}>Join</button>}
-                </div>
-            )
-        })
-    }
+    // let events = null;
+    // if (eventsArray) {
+    //     events = fetchedStudio.events.map(event => {
+    //         let enrolled = false;
+    //         if (userEmail && event.students.findIndex(studentEmail => studentEmail === userEmail) > -1) {
+    //             enrolled = true;
+    //         }
+    //         return (
+    //             <div key={event._id}>
+    //                 <p>title : {event.title}</p>
+    //                 <p>trainer: {event.trainer}</p>
+    //                 <p>date: {new Date(event.date).toLocaleDateString()}</p>
+    //                 <p>duration: {event.duration}</p>
+    //                 <p>difficulty: {event.difficulty}</p>
+    //                 <p>category: {event.category}</p>
+    //                 <p>capacity: {event.capacity}</p>
+    //                 <p># students enrolled: {event.students.length}</p>
+    //                 {(event.capacity <= event.students.length) ? <p>Full</p> : enrolled ? <p>You are enrolled in this event!</p> : <button onClick={() => joinEvent(event._id)}>Join</button>}
+    //             </div>
+    //         )
+    //     })
+    // }
     return (
         <div style={{ width: '100%', height: '100%' }}>
             {isLoading ? <Spinner /> : detail}

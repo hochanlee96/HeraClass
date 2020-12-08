@@ -15,6 +15,8 @@ import About from './containers/About/About';
 import Pricing from './containers/Pricing/Pricing';
 import Contact from './containers/Contact/Contact';
 import Events from './containers/Events/Events';
+import FindId from './containers/Find/FindId/FindId';
+import FindPassword from './containers/Find/FindPassword/FindPassword';
 import * as authActions from './store/actions/auth';
 
 function App() {
@@ -59,6 +61,8 @@ function App() {
         <Route path="/profile" exact component={Auth} />
         <Route path="/auth" exact component={Auth} />
         <Route path="/logout" exact component={Logout} />
+        <Route path="/find/id" exact component={FindId} />
+        <Route path="/find/password" exact component={FindPassword} />
         <Route path="/" exact component={Home} />
         <Redirect to="/home" />
       </Switch>)

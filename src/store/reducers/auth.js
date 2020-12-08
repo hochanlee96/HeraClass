@@ -6,6 +6,7 @@ const initialState = {
     username: '',
     favorites: [],
     events: [],
+    social: false,
     expires: null,
     redirect: ''
 }
@@ -13,12 +14,14 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case AUTHENTICATE:
+            console.log('action', action);
             return {
                 ...state,
                 email: action.userData.email,
                 verified: action.userData.verified,
                 username: action.userData.username,
                 favorites: [...action.userData.favorites],
+                social: action.userData.social,
                 events: [...action.userData.events]
             }
         case SET_REDIRECT_PATH:

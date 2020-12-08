@@ -52,7 +52,7 @@ const setLogoutTimer = expires => {
 }
 
 
-export const register = (email, username, password) => {
+export const register = (email, username, password, number) => {
     return async dispatch => {
         console.log('register');
         const response = await fetch("http://localhost:3001/user/auth/register", {
@@ -65,6 +65,7 @@ export const register = (email, username, password) => {
                 email: email,
                 username: username,
                 password: password,
+                phoneNumber: number
             })
         });
 
@@ -93,6 +94,7 @@ export const login = (email, password) => {
         });
 
         const resData = await response.json();
+        console.log('resdata', resData)
         if (!resData.error) {
             dispatch(authenticate(resData));
         } else {

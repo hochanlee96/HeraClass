@@ -78,7 +78,7 @@ const EventsContainer = ({ userEmail, joinEvent, eventsArray }) => {
                     <p>category: {event.category}</p>
                     <p>capacity: {event.capacity}</p>
                     <p># students enrolled: {event.students.length}</p>
-                    {enrolled ? <p>You are enrolled in this event!</p> : <button onClick={() => joinEvent(event._id)}>Join</button>}
+                    {(event.capacity <= event.students.length) ? <p>Full</p> : enrolled ? <p>You are enrolled in this event!</p> : <button onClick={() => joinEvent(event._id)}>Join</button>}
                 </div>
             )
         })
