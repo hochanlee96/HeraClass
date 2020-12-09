@@ -31,6 +31,9 @@ const StudioSearch = props => {
     const [tempSearchKeyword, setTempSearchKeyword] = useState('');
     // const [timer, setTimer] = useState(null);
 
+    const categoryKeywords = ["요가", "크로스핏", "헬스", "P.T", "복싱", "골프"]
+    const [categoryArray, setCategoryArray] = useState([]);
+
     const dispatch = useDispatch();
 
     const onChange = event => {
@@ -53,6 +56,16 @@ const StudioSearch = props => {
                 newArray.push(target)
             }
             setAmenityArray(newArray);
+        } else if (event.target.name === 'category') {
+            const target = event.target.value;
+            const newArray = [...categoryArray];
+            const index = categoryArray.findIndex(el => el === target);
+            if (index > -1) {
+                newArray.splice(index, 1);
+            } else {
+                newArray.push(target)
+            }
+            setCategoryArray(newArray);
         }
     }
 
@@ -171,14 +184,23 @@ const StudioSearch = props => {
     }, [allStudios])
 
     const applyFilters = () => {
-        setSearchKeyword(tempSearchKeyword);
+        if (categoryArray && categoryArray.length > 0) {
+            setSearchKeyword('');
+        } else {
+            setSearchKeyword(tempSearchKeyword);
+        }
         setShowFilters(false);
-        setFilters(prev => { return { ...prev, maxDistance: maxDistance, amenities: [...amenityArray] } });
+        setFilters(prev => { return { ...prev, keyword: '', maxDistance: maxDistance, amenities: [...amenityArray], category: [...categoryArray] } });
     }
 
     useEffect(() => {
         search()
     }, [search])
+
+    const category = categoryKeywords.map(key => (
+        <label key={key}><input type='checkbox' name="category" value={key} checked={categoryArray.find(el => el === key) ? true : false} onChange={onChange} />{key}</label>
+    ))
+    console.log('cat', categoryArray)
 
     let navermap = null;
     if (coordinates) {
@@ -200,10 +222,12 @@ const StudioSearch = props => {
         <div>
             <label>검색창</label>
             <input type="text" placeholder="검색어를 입력하세요" value={searchKeyword} onChange={onChange} name="search" />
-            <button onClick={() => { setTempSearchKeyword(searchKeyword); setFilters(prev => { return { ...prev, keyword: searchKeyword, maxDistance: '20', amenities: [] } }); setMaxDistance('20'); setAmenityArray([]) }}>검색하기</button>
+            <button onClick={() => { setTempSearchKeyword(searchKeyword); setFilters(prev => { return { ...prev, keyword: searchKeyword, maxDistance: '20', amenities: [], category: [] } }); setMaxDistance('20'); setAmenityArray([]); setCategoryArray([]) }}>검색하기</button>
             <p>This is the Studio Search page</p>
             {locationSearchComponent}
             <p>Filters</p>
+
+            <p>종목: {categoryArray.length > 0 ? categoryArray.join(', ') : "설정없음"}</p>
             <p>거리: {maxDistance} km</p>
             <p>편의시설: {amenityArray.length > 0 ? amenityArray.join(', ') : "설정없음"}</p>
             <button onClick={() => {
@@ -221,6 +245,7 @@ const StudioSearch = props => {
                 }
             }}>{showFilters ? "Hide" : "Show"} Filters</button>
             {showFilters ? <>
+                {category}
                 <label><input type='radio' name="distance" value='1' onChange={onChange} checked={maxDistance === '1'} />1km</label>
                 <label><input type='radio' name="distance" value='5' onChange={onChange} checked={maxDistance === '5'} />5km</label>
                 <label><input type='radio' name="distance" value='10' onChange={onChange} checked={maxDistance === '10'} />10km</label>
@@ -228,7 +253,6 @@ const StudioSearch = props => {
                 <label><input type='checkbox' name="amenity" value="showers" checked={amenityArray.find(el => el === 'showers') ? true : false} onChange={onChange} /> 샤워실</label>
                 <label><input type='checkbox' name="amenity" value="lockers" checked={amenityArray.find(el => el === "lockers") ? true : false} onChange={onChange} /> 라커</label>
                 <label><input type='checkbox' name="amenity" value="parking" checked={amenityArray.find(el => el === "parking") ? true : false} onChange={onChange} /> 주차공간</label>
-                {/* amenity 추가하기 */}
                 <button onClick={applyFilters}>Search</button>
             </> : null}
             {/* {showDistances ? <>

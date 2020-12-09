@@ -52,6 +52,10 @@ const filterToQueryString = filter => {
         console.log(amenities.split(','))
         queryString = queryString + '&amenities=' + amenities;
     }
+    if (filter.category && filter.category.length > 0) {
+        const category = filter.category.join(',');
+        queryString = queryString + '&category=' + category;
+    }
     console.log(queryString);
     return queryString;
 }
