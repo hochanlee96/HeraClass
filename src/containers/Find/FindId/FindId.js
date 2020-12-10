@@ -1,19 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { Link } from 'react-router-dom';
+
+import Input from '../../../components/UI/Input/Input';
+import { validate } from '../../../shared/helper';
+
+const initialState = {
+    username: {
+        value: '',
+        touched: false,
+        validation: 'username',
+        isValid: false,
+        errorMessage: ''
+    },
+    phoneNumber: {
+        value: '',
+        touched: false,
+        validation: 'phoneNumber',
+        isValid: false,
+        errorMessage: ''
+    }
+};
+
+const reducer = (state, action) => {
+    const { name, value } = action;
+    let validation;
+    switch (action.type) {
+        case 'onChange':
+            validation = { ...validate(state[name].validation, value.trim()) };
+            return { ...state, [name]: { ...state[name], value: value, isValid: validation.isValid, errorMessage: validation.errorMessage } }
+        case 'onFocus':
+            return { ...state }
+        case 'onBlur':
+            return { ...state, [name]: { ...state[name], touched: true } }
+        default:
+            throw new Error();
+    }
+}
+
 
 const FindId = () => {
 
-    const [phoneNumberInput, setPhoneNumberInput] = useState('');
-    const [usernameInput, setUsernameInput] = useState('');
+    const [state, formDispatch] = useReducer(reducer, initialState);
     const [message, setMessage] = useState('');
+    const [formIsValid, setFormIsValid] = useState(false);
 
-    const onChange = event => {
-        if (event.target.name === "phoneNumber") {
-            setPhoneNumberInput(event.target.value);
-        } else if (event.target.name === "name") {
-            setUsernameInput(event.target.value);
-        }
-    }
 
     const onSubmit = async event => {
         event.preventDefault()
@@ -24,8 +54,8 @@ const FindId = () => {
             },
             credentials: 'include',
             body: JSON.stringify({
-                username: usernameInput,
-                phoneNumber: phoneNumberInput
+                username: state.username.value,
+                phoneNumber: state.phoneNumber.value
             })
         });
         const resData = await response.json();
@@ -38,18 +68,22 @@ const FindId = () => {
         }
     }
 
+    useEffect(() => {
+        setFormIsValid(state.username.isValid && state.phoneNumber.isValid)
+    }, [state])
+
     return (
         <>
             <form onSubmit={onSubmit}>
                 <label>
                     Name
-                <input type="text" placeholder="name" name="name" onChange={onChange} value={usernameInput} />
+                    <Input name="username" onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} type="text" placeholder="Username" value={state.username.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} touched={state.username.touched} errorMessage={state.username.errorMessage} />
                 </label>
                 <label>
                     Phone Number
-                <input type="number" placeholder="Phone Number" name="phoneNumber" onChange={onChange} value={phoneNumberInput} />
+                    <Input name="phoneNumber" type="number" placeholder="phone number without -" value={state.phoneNumber.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} touched={state.phoneNumber.touched} errorMessage={state.phoneNumber.errorMessage} />
                 </label>
-                <input type="submit" value="Search" />
+                <input type="submit" value="Search" disabled={!formIsValid} />
                 {message}
             </form>
             <Link to="/auth">로그인으로 돌아가기</Link>

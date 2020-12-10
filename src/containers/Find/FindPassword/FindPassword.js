@@ -1,34 +1,87 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { useHistory, Link } from 'react-router-dom';
+
+import Input from '../../../components/UI/Input/Input';
+import { validate } from '../../../shared/helper';
+
+const initialState = {
+    email: {
+        value: '',
+        touched: false,
+        validation: 'email',
+        isValid: false,
+        errorMessage: ''
+    },
+    newPassword: {
+        value: '',
+        touched: false,
+        validation: 'password',
+        isValid: false,
+        errorMessage: ''
+    },
+    confirmPassword: {
+        value: '',
+        touched: false,
+        validation: 'confirmPassword',
+        isValid: false,
+        errorMessage: ''
+    },
+    username: {
+        value: '',
+        touched: false,
+        validation: 'username',
+        isValid: false,
+        errorMessage: ''
+    },
+    verificationNumber: {
+        value: '',
+        touched: false,
+        validation: 'verificationNumber',
+        isValid: false,
+        errorMessage: ''
+    }
+};
+
+const reducer = (state, action) => {
+
+    const { name, value } = action;
+    let validation;
+    switch (action.type) {
+        case 'onChange':
+            if (name === "confirmPassword") {
+                validation = { ...validate(state[name].validation, value.trim(), state.newPassword.value.trim()) }
+            } else {
+                validation = { ...validate(state[name].validation, value.trim()) };
+            }
+            return { ...state, [name]: { ...state[name], value: value, isValid: validation.isValid, errorMessage: validation.errorMessage } }
+        case 'onFocus':
+            return { ...state }
+        case 'onBlur':
+            return { ...state, [name]: { ...state[name], touched: true } }
+        default:
+            throw new Error();
+    }
+}
 
 const FindPassword = () => {
 
     const history = useHistory();
 
+    const [state, formDispatch] = useReducer(reducer, initialState);
+    const [formIsSane, setFormIsSane] = useState(false);
+
     const [message, setMessage] = useState('');
 
     const [emailMethod, setEmailMethod] = useState(true);
-    const [emailInput, setEmailInput] = useState('');
-    const [usernameInput, setUsernameInput] = useState('');
-
     const [enterVerification, setEnterVerification] = useState(false);
-    const [verificationNumberInput, setVerificationNumberInput] = useState('');
-    const [newPasswordInput, setNewPasswordInput] = useState('');
-    const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
 
-    const onChange = event => {
-        if (event.target.name === 'email') {
-            setEmailInput(event.target.value);
-        } else if (event.target.name === 'username') {
-            setUsernameInput(event.target.value);
-        } else if (event.target.name === 'verification') {
-            setVerificationNumberInput(event.target.value);
-        } else if (event.target.name === 'new-password') {
-            setNewPasswordInput(event.target.value);
-        } else if (event.target.name === 'confirm-password') {
-            setConfirmPasswordInput(event.target.value);
+    useEffect(() => {
+        if (enterVerification) {
+            setFormIsSane(state.verificationNumber.isValid && state.newPassword.isValid && state.confirmPassword.isValid)
+        } else {
+            setFormIsSane(state.email.isValid && state.username.isValid)
         }
-    }
+    }, [state, enterVerification])
 
     const submitEmailAndUsername = async event => {
         event.preventDefault();
@@ -40,13 +93,14 @@ const FindPassword = () => {
             credentials: 'include',
             body: JSON.stringify({
                 emailMethod: emailMethod,
-                email: emailInput,
-                username: usernameInput
+                email: state.email.value,
+                username: state.username.value
             })
         });
         const resData = await response.json();
         if ((resData.message || resData.statusName) === 'success') {
             setEnterVerification(true);
+            setFormIsSane(false);
             setMessage(`${emailMethod ? "이메일" : "휴대폰으"}로 인증번호가 발송되었습니다`)
         } else if (resData.error === "doesn't exist") {
             setMessage('존재하지 않는 사용자입니다. 소셜로그인을 확인해보세요')
@@ -64,8 +118,8 @@ const FindPassword = () => {
             },
             credentials: 'include',
             body: JSON.stringify({
-                verificationNumber: verificationNumberInput,
-                newPassword: newPasswordInput
+                verificationNumber: state.verificationNumber.value,
+                newPassword: state.newPassword.value
             })
         });
         const resData = await response.json();
@@ -89,13 +143,13 @@ const FindPassword = () => {
         <form onSubmit={submitEmailAndUsername}>
             <label>
                 이메일
-                <input type="email" placeholder="이메일" name="email" onChange={onChange} value={emailInput} />
+                <Input name="email" onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} type="email" placeholder="Email" value={state.email.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} touched={state.email.touched} errorMessage={state.email.errorMessage} />
             </label>
             <label>
                 이름
-                <input type="text" placeholder="이름" name="username" onChange={onChange} value={usernameInput} />
+                <Input name="username" onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} type="text" placeholder="Username" value={state.username.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} touched={state.username.touched} errorMessage={state.username.errorMessage} />
             </label>
-            <input type="submit" value="비밀번호 찾기" />
+            <input type="submit" value="비밀번호 찾기" disabled={!formIsSane} />
         </form>
     )
 
@@ -110,17 +164,17 @@ const FindPassword = () => {
                 <form onSubmit={resetPassword}>
                     <label>
                         인증번호
-                    <input type="number" name="verification" placeholder="인증번호" onChange={onChange} value={verificationNumberInput} />
+                        <Input name="verificationNumber" type="number" placeholder="verification" value={state.verificationNumber.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} touched={state.verificationNumber.touched} errorMessage={state.verificationNumber.errorMessage} />
                     </label>
                     <label>
                         새 비밀번호
-                    <input type="password" name="new-password" placeholder="새 비밀번호" onChange={onChange} value={newPasswordInput} />
+                        <Input name="newPassword" type="password" placeholder="Newe Password" value={state.newPassword.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} touched={state.password.touched} errorMessage={state.password.errorMessage} />
                     </label>
                     <label>
                         비밀번호 확인
-                    <input type="password" name="confirm-password" placeholder="비밀번호 확인" onChange={onChange} value={confirmPasswordInput} />
+                        <Input name="confirmPassword" type="password" placeholder="confirm password" value={state.confirmPassword.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} touched={state.confirmPassword.touched} errorMessage={state.confirmPassword.errorMessage} />
                     </label>
-                    <input type="submit" value="비밀번호 재설정" />
+                    <input type="submit" value="비밀번호 재설정" disabled={!formIsSane} />
                 </form>
             </>
         )

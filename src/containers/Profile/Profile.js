@@ -72,6 +72,7 @@ const Profile = () => {
     const [edit, setEdit] = useState(false);
     const [checking, setChecking] = useState(false);
     const [reset, setReset] = useState(false);
+    const [formisValid, setFormIsValid] = useState(false);
     const [passwordError, setPasswordError] = useState('');
     const [timer, setTimer] = useState(null);
 
@@ -102,6 +103,10 @@ const Profile = () => {
     useEffect(() => {
         fetchUserData();
     }, [fetchUserData])
+
+    useEffect(() => {
+        reset ? setFormIsValid(state.currentPassword.isValid && state.newPassword.isValid && state.confirmPassword.isValid) : setFormIsValid(false);
+    }, [state, reset])
 
 
     const editProfile = async (username) => {
@@ -245,7 +250,7 @@ const Profile = () => {
                 <label> Confirm Password
                     <Input name="confirmPassword" type="password" placeholder="Confirm Password" value={state.confirmPassword.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} touched={state.confirmPassword.touched} errorMessage={state.confirmPassword.errorMessage} />
                 </label>
-                <input type="submit" value="Reset" />
+                <input type="submit" value="Reset" disabled={!formisValid} />
             </form>
         )
     }
