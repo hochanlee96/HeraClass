@@ -26,7 +26,7 @@ const NewReview = ({ studioId }) => {
 
     const onSubmit = async event => {
         event.preventDefault();
-        const response = await fetch(`http://localhost:3001/user/review/${studioId}`, {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_BASE_URL}/user/review/${studioId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,7 +47,6 @@ const NewReview = ({ studioId }) => {
             }
         } else {
             //this has to be refreshed
-            console.log('res', resData)
             setReviewInput('');
             setRatingInput('');
             // history.push(`/detail/${studioId}`);

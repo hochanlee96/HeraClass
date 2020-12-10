@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useReducer, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-// import { dbService } from '../../fbase';
 
 import * as authActions from '../../store/actions/auth';
 import Input from '../../components/UI/Input/Input';
@@ -68,15 +67,11 @@ const Profile = () => {
     const isVerified = useSelector(state => state.auth.verified);
     const isSocial = useSelector(state => state.auth.social);
 
-    // const [usernameInput, setUsernameInput] = useState('');
     const [message, setMessage] = useState('');
     const [tempUsername, setTempUsername] = useState(state.username.value);
     const [edit, setEdit] = useState(false);
     const [checking, setChecking] = useState(false);
     const [reset, setReset] = useState(false);
-    // const [currentPasswordInput, setCurrentPasswordInput] = useState('');
-    // const [newPasswordInput, setNewPasswordInput] = useState('');
-    // const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [timer, setTimer] = useState(null);
 
@@ -85,7 +80,7 @@ const Profile = () => {
 
     const fetchUserData = useCallback(async () => {
         try {
-            const response = await fetch("http://localhost:3001/user/auth/user-data", {
+            const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/user-data", {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -97,7 +92,6 @@ const Profile = () => {
             }
             else {
                 formDispatch({ type: 'setUsername', username: resData.username })
-                // setUsernameInput(resData.username);
                 setEmail(resData.email);
             }
         } catch (err) {
@@ -109,22 +103,9 @@ const Profile = () => {
         fetchUserData();
     }, [fetchUserData])
 
-    // const onChangeHandler = event => {
-    //     setUsernameInput(event.target.value);
-    // }
-
-    // const onPasswordInputChanged = event => {
-    //     if (event.target.name === "current") {
-    //         setCurrentPasswordInput(event.target.value);
-    //     } else if (event.target.name === "new") {
-    //         setNewPasswordInput(event.target.value);
-    //     } else {
-    //         setConfirmPasswordInput(event.target.value);
-    //     }
-    // }
 
     const editProfile = async (username) => {
-        const response = await fetch("http://localhost:3001/user/auth/edit", {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/edit", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -171,13 +152,12 @@ const Profile = () => {
     }
 
     const cancelEdit = () => {
-        // setUsernameInput(tempUsername);
         formDispatch({ type: 'setUsername', username: tempUsername })
         setEdit(false);
     }
 
     const verifyEmail = async () => {
-        const response = await fetch("http://localhost:3001/user/auth/verify", {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/verify", {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -187,20 +167,18 @@ const Profile = () => {
         if (resData.error === "not signed in") {
             dispatch(authActions.logout());
         } else {
-            console.log(resData.message);
             setMessage(resData.message);
         }
     }
 
     const check = useCallback(async () => {
-        const response = await fetch('http://localhost:3001/user/auth/check-verification', {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + '/user/auth/check-verification', {
             headers: {
                 'Content-Type': 'application/json',
             },
             credentials: 'include'
         })
         const resData = await response.json();
-        console.log(resData);
         if (resData.verified) {
             history.go(0);
         }
@@ -211,7 +189,7 @@ const Profile = () => {
         if (state.newPassword.value !== state.confirmPassword.value) {
             setPasswordError("The passwords do not match")
         } else {
-            const response = await fetch("http://localhost:3001/user/auth/password-reset", {
+            const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/password-reset", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -224,7 +202,6 @@ const Profile = () => {
                 })
             });
             const resData = await response.json();
-            console.log(resData)
             if (resData.message === "success") {
                 window.alert("비밀번호가 성공적으로 변경되었습니다")
                 history.go(0);
@@ -237,7 +214,6 @@ const Profile = () => {
     useEffect(() => {
         if (message && !isVerified && !checking) {
             setTimer(setTimeout(() => {
-                console.log('checking')
                 setChecking(true);
                 check().then(setChecking(false))
             }, 3000))
@@ -247,7 +223,6 @@ const Profile = () => {
 
     let editContent = <form onSubmit={onSubmitHandler}>
         <label>Username : </label>
-        {/* <Input type='text' name="username" value={usernameInput} onChange={onChangeHandler} /> */}
         <Input type="text" placeholder="Username" name="username" onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} value={state.username.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} touched={state.username.touched} errorMessage={state.username.errorMessage} />
         <input type='submit' value="Change Username" />
     </form>
@@ -262,15 +237,12 @@ const Profile = () => {
         passwordResetForm = (
             <form onSubmit={resetPassword}>
                 <label> Current Password
-                {/* <input type="password" placeholder="Current Password" name="current" onChange={onPasswordInputChanged} value={currentPasswordInput} /> */}
                     <Input name="currentPassword" type="password" placeholder="Current Password" value={state.currentPassword.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} touched={state.currentPassword.touched} errorMessage={state.currentPassword.errorMessage} />
                 </label>
                 <label> New Password
-                {/* <input type="password" placeholder="New Password" name="new" onChange={onPasswordInputChanged} value={newPasswordInput} /> */}
                     <Input name="newPassword" type="password" placeholder="New Password" value={state.newPassword.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} touched={state.newPassword.touched} errorMessage={state.newPassword.errorMessage} />
                 </label>
                 <label> Confirm Password
-                {/* <input type="password" placeholder="Confirm Password" name="confirm" onChange={onPasswordInputChanged} value={confirmPasswordInput} /> */}
                     <Input name="confirmPassword" type="password" placeholder="Confirm Password" value={state.confirmPassword.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} touched={state.confirmPassword.touched} errorMessage={state.confirmPassword.errorMessage} />
                 </label>
                 <input type="submit" value="Reset" />

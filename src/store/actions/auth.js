@@ -119,33 +119,6 @@ export const authCheckState = () => {
         }
     }
 }
-// export const refreshAuth = refreshToken => {
-//     return async dispatch => {
-//         const response = await fetch("https://securetoken.googleapis.com/v1/token?key=AIzaSyAYs8Y1rgKGc-Nzxz3KuPY87hFlMqFYWAo", {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({
-//                 grant_type: "refresh_token",
-//                 refresh_token: refreshToken
-//             })
-//         });
-
-//         if (!response.ok) {
-//             let message = 'Something went wrong...';
-//             throw new Error(message);
-//         }
-
-//         const resData = await response.json();
-//         dispatch(authenticate(resData.id_token, resData.user_id, parseInt(resData.expires_in) * 1000));
-//         const expirationDate = new Date(new Date().getTime() + parseInt(resData.expires_in) * 1000);
-//         localStorage.setItem('token', resData.id_token);
-//         localStorage.setItem('refreshToken', resData.refresh_token);
-//         localStorage.setItem('userId', resData.user_id);
-//         localStorage.setItem('expiration', expirationDate);
-//     }
-// }
 
 export const updateFavorites = (studioId, add) => {
     return async dispatch => {
@@ -162,7 +135,6 @@ export const updateFavorites = (studioId, add) => {
                 })
             });
             if (!response.ok) {
-                const errorResData = await response.json();
                 let message = 'Something went wrong...';
                 throw new Error(message);
             }
@@ -182,7 +154,6 @@ export const updateFavorites = (studioId, add) => {
                 })
             });
             if (!response.ok) {
-                const errorResData = await response.json();
                 let message = 'Something went wrong...';
                 throw new Error(message);
             }

@@ -15,7 +15,6 @@ const StudioCard = props => {
 
     const clickHandler = studioId => {
         props.history.push(`/detail/${studioId}`);
-        // window.open(`http://localhost:3000/detail/${classId}`)
     }
     const { isFavorite } = props;
 

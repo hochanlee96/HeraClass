@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import * as authActions from '../../../store/actions/auth';
 
-const Logout = props => {
+const Logout = () => {
 
     const dispatch = useDispatch();
 

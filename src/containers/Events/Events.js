@@ -8,7 +8,7 @@ const Events = () => {
         try {
 
             //서버이용해서 fetch class
-            const response = await fetch(`http://localhost:3001/event/enrolled`, {
+            const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + `/event/enrolled`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -19,7 +19,6 @@ const Events = () => {
             }
 
             const resData = await response.json();
-            console.log(resData);
             setEvents(resData);
 
         } catch (error) {
@@ -33,7 +32,7 @@ const Events = () => {
 
     const cancelEvent = async eventId => {
         //async cancel put request
-        const response = await fetch(`http://localhost:3001/event/cancel`, {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + `/event/cancel`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,9 +46,7 @@ const Events = () => {
             throw new Error('Something went wrong!');
         }
         const resData = await response.json();
-        console.log(resData);
         setEvents(resData);
-
     }
 
     let eventsList = null;

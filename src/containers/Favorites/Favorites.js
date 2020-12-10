@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-// import { dbService } from '../../fbase';
 import * as authActions from '../../store/actions/auth';
 import DetailedStudio from '../../models/studio/detailedStudio';
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -15,7 +14,7 @@ const Favorites = props => {
     const dispatch = useDispatch();
 
     const fetchStudios = useCallback(async () => {
-        const response = await fetch('http://localhost:3001/user/studio-search/favorite', {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + '/user/studio-search/favorite', {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -26,7 +25,6 @@ const Favorites = props => {
         if (resData.error === "not signed in") {
             dispatch(authActions.logout());
         } else {
-            console.log(resData);
             resData.forEach(studio => {
                 studioArray.push(
                     new DetailedStudio(

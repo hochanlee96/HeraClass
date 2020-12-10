@@ -38,7 +38,6 @@ const EventsContainer = ({ userEmail, joinEvent, eventsArray }) => {
             setActiveIndex(tomorrow.getDay())
             setTodayEventsArray(eventsArray.filter(event => new Date(event.date).toLocaleDateString() === tomorrow.toLocaleDateString()))
         } else {
-            console.log('back')
             const now = new Date(new Date().toLocaleDateString())
             if (now < new Date(new Date(week[0]).setDate(week[0].getDate() - 1))) {
                 let tempWeek = [...week];
@@ -52,7 +51,6 @@ const EventsContainer = ({ userEmail, joinEvent, eventsArray }) => {
             }
         }
     }
-    console.log(week);
     let days;
     if (week) {
         days = week.map(day => <div key={day.getDay()} style={day.getDay() === activeIndex ? { backgroundColor: 'orange' } : null} onClick={() => onDayClicked(day.getDay(), day.toLocaleDateString())}>

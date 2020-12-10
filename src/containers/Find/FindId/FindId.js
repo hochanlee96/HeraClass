@@ -17,7 +17,7 @@ const FindId = () => {
 
     const onSubmit = async event => {
         event.preventDefault()
-        const response = await fetch("http://localhost:3001/user/auth/find/id", {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/find/id", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

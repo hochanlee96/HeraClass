@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 
-// import { dbService } from '../../fbase';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './StudioDetail.module.css';
 import * as studioActions from '../../store/actions/studio-search';
@@ -44,7 +43,7 @@ const StudioDetail = props => {
         try {
 
             //서버이용해서 fetch class
-            const response = await fetch(`http://localhost:3001/user/studio-search/${studioId}`, {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_BASE_URL}/user/studio-search/${studioId}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -55,7 +54,6 @@ const StudioDetail = props => {
             }
 
             const resData = await response.json();
-            console.log('searched Studio', resData);
             const studioData = new DetailedStudio(
                 resData._id,
                 resData.title,
@@ -69,7 +67,6 @@ const StudioDetail = props => {
                 [...resData.reviews],
                 [...resData.events]
             );
-            console.log("Studio Data", studioData);
             setFetchedStudio(studioData)
             dispatch({ type: FETCH_STUDIO, fetchedStudios: [studioData] });
             setLoadedStudio(true);
@@ -115,7 +112,7 @@ const StudioDetail = props => {
         //
         if (isSignedIn) {
             if (isVerified) {
-                const response = await fetch(`http://localhost:3001/event/${eventId}`, {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_BASE_URL}/event/${eventId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -126,11 +123,9 @@ const StudioDetail = props => {
                     })
                 });
                 if (response.status === 200) {
-                    console.log("added");
                     history.go(0);
                 }
                 const resData = await response.json();
-                console.log(resData);
                 if (resData.error === 'full') {
                     window.alert('The event is full!')
                 }
@@ -180,41 +175,6 @@ const StudioDetail = props => {
     }
 
 
-    // useEffect(() => {
-    //     if (fetchedStudio && fetchedStudio.events) {
-    //         const today = new Date().toLocaleDateString();
-    //         const allEvents = [...fetchedStudio.events];
-    //         allEvents.forEach(event => {
-    //             console.log(new Date(event.date).toLocaleDateString() === today)
-    //         });
-    //         allEvents.filter(event => new Date(event.date).toLocaleDateString() === today);
-    //         console.log('aall', allEvents)
-    //         setEventToday(allEvents);
-    //     }
-    // }, [fetchedStudio])
-
-    // let events = null;
-    // if (eventsArray) {
-    //     events = fetchedStudio.events.map(event => {
-    //         let enrolled = false;
-    //         if (userEmail && event.students.findIndex(studentEmail => studentEmail === userEmail) > -1) {
-    //             enrolled = true;
-    //         }
-    //         return (
-    //             <div key={event._id}>
-    //                 <p>title : {event.title}</p>
-    //                 <p>trainer: {event.trainer}</p>
-    //                 <p>date: {new Date(event.date).toLocaleDateString()}</p>
-    //                 <p>duration: {event.duration}</p>
-    //                 <p>difficulty: {event.difficulty}</p>
-    //                 <p>category: {event.category}</p>
-    //                 <p>capacity: {event.capacity}</p>
-    //                 <p># students enrolled: {event.students.length}</p>
-    //                 {(event.capacity <= event.students.length) ? <p>Full</p> : enrolled ? <p>You are enrolled in this event!</p> : <button onClick={() => joinEvent(event._id)}>Join</button>}
-    //             </div>
-    //         )
-    //     })
-    // }
     return (
         <div style={{ width: '100%', height: '100%' }}>
             {isLoading ? <Spinner /> : detail}

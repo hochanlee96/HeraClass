@@ -32,7 +32,7 @@ const FindPassword = () => {
 
     const submitEmailAndUsername = async event => {
         event.preventDefault();
-        const response = await fetch("http://localhost:3001/user/auth/find/password/send-verification", {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/find/password/send-verification", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const FindPassword = () => {
 
     const resetPassword = async event => {
         event.preventDefault();
-        const response = await fetch("http://localhost:3001/user/auth/find/password/reset-password", {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/find/password/reset-password", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

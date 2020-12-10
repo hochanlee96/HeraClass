@@ -43,7 +43,7 @@ const Review = ({ editingHandler, reviewEdited, reviewDeleted, reviewId, usernam
             if (ratingInput !== tempRatingInput) {
                 updatedReview.rating = ratingInput
             }
-            const response = await fetch(`http://localhost:3001/user/review/${reviewId}`, {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_BASE_URL}/user/review/${reviewId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ const Review = ({ editingHandler, reviewEdited, reviewDeleted, reviewId, usernam
 
     const deleteReview = async () => {
         //async delete request
-        const response = await fetch(`http://localhost:3001/user/review/${studioId}/${reviewId}`, {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_BASE_URL}/user/review/${studioId}/${reviewId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

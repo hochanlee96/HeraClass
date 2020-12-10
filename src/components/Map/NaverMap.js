@@ -2,8 +2,6 @@ import React from "react";
 import { RenderAfterNavermapsLoaded, NaverMap, Marker } from "react-naver-maps";
 
 export const NaverAPIMap = (props) => {
-    const NAVER_API_KEY = 'httryobi1m';
-
 
     const markers = props.coordinates.map(co => (
         <Marker
@@ -15,7 +13,7 @@ export const NaverAPIMap = (props) => {
 
     return (
         <RenderAfterNavermapsLoaded
-            ncpClientId={NAVER_API_KEY} // 자신의 네이버 계정에서 발급받은 Client ID
+            ncpClientId={process.env.REACT_APP_NAVER_API_KEY} // 자신의 네이버 계정에서 발급받은 Client ID
             error={<p>Maps Load Error</p>}
             loading={<p>Maps Loading...</p>}
         >

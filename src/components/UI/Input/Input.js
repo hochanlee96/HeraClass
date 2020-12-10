@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const Input = ({ type, placeholder, name, value, onChange, onFocus, onBlur, disabled, touched, errorMessage }) => {
 

@@ -55,8 +55,8 @@ const Register = props => {
                 <input className={classes.Input} type="password" placeholder="password" value={passwordInput} onChange={(event) => inputChangeHandler('password', event)} />
                 <button className={classes.Button} onClick={props.authContinued}>Sign Up</button>
             </form>
-            <a href={"http://localhost:3001/user/auth/google"}>Login with Google</a>
-            <a href={"http://localhost:3001/user/auth/facebook"}>Login with Facebook</a>
+            <a href={process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/google"}>Login with Google</a>
+            <a href={process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/facebook"}>Login with Facebook</a>
         </div>
     )
 }
