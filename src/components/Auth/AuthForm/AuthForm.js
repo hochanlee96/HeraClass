@@ -10,6 +10,7 @@ const AuthForm = () => {
     const [emailInput, setEmailInput] = useState('');
     const [usernameInput, setUsernameInput] = useState('');
     const [passwordInput, setPasswordInput] = useState('');
+    const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
     const [phoneNumberInput, setPhoneNumberInput] = useState('');
     const [verificationSent, setVerificationSent] = useState(false);
     const [verificationSentMessage, setVerificationSentMesage] = useState('');
@@ -30,6 +31,8 @@ const AuthForm = () => {
             setUsernameInput(event.target.value);
         } else if (identifier === 'password') {
             setPasswordInput(event.target.value);
+        } else if (identifier === 'confirm-password') {
+            setConfirmPasswordInput(event.target.value);
         } else if (identifier === 'phoneNumber') {
             setPhoneNumberInput(event.target.value);
         } else if (identifier === 'verification') {
@@ -121,6 +124,7 @@ const AuthForm = () => {
                 {!isSignin && !phoneNumberVerified && verificationSent && <button onClick={(event) => { event.preventDefault(); checkVerification() }}>확인</button>}
                 {!isSignin && !phoneNumberVerified && verificationSent && <p>{phoneNumberVerifiedMessage}</p>}
                 <input className={classes.Input} type="password" placeholder="password" value={passwordInput} onChange={(event) => inputChangeHandler('password', event)} />
+                {!isSignin && <input className={classes.Input} type="password" placeholder="confirm password" value={confirmPasswordInput} onChange={(event) => inputChangeHandler('confirm-password', event)} />}
                 <button className={classes.Button} onClick={submitHandler}>{isSignin ? 'Log In' : 'Register'}</button>
             </form>
             <button onClick={authToggler}>Switch to {isSignin ? "Sign Up" : "Log In"}</button>

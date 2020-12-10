@@ -143,7 +143,7 @@ const Profile = props => {
         if (resData.verified) {
             history.go(0);
         }
-    }, [])
+    }, [history])
 
     const resetPassword = async event => {
         event.preventDefault();

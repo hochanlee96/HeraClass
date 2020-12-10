@@ -3,24 +3,24 @@ import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import classes from './Header.module.css';
-import Modal from '../../Modal/Modal';
-import Login from '../../../Auth/Login/Login';
-import Signup from '../../../Auth/Register/Register';
+// import Modal from '../../Modal/Modal';
+// import Login from '../../../Auth/Login/Login';
+// import Signup from '../../../Auth/Register/Register';
 import Dropdown from '../Dropdown/Dropdown';
 // import * as authActions from '../../../../store/actions/auth';
 
 const Header = props => {
-    const [showLogin, setShowLogin] = useState(false);
-    const [showSignup, setShowSignup] = useState(false);
+    // const [showLogin, setShowLogin] = useState(false);
+    // const [showSignup, setShowSignup] = useState(false);
     const [dropdown, setDropdown] = useState(false);
 
     const isLoggedIn = useSelector(state => state.auth.username !== '');
     const username = useSelector(state => state.auth.username);
 
-    const modalCloseHandler = () => {
-        setShowLogin(false);
-        setShowSignup(false);
-    }
+    // const modalCloseHandler = () => {
+    //     setShowLogin(false);
+    //     setShowSignup(false);
+    // }
 
     const dropdownToggler = () => {
         setDropdown(prev => !prev);
@@ -34,20 +34,28 @@ const Header = props => {
         ? <div style={{ marginRight: '50px', cursor: 'pointer' }}>
             <p onClick={dropdownToggler}>{username}</p>
         </div>
-        : <div className={classes.Item}>
-            <button
-                onClick={() => {
-                    setShowLogin(true);
-                }}>
-                Login
-                        </button>
-            <button
-                onClick={() => {
-                    setShowSignup(true);
-                }}>
-                Sign Up
-                        </button>
-        </div>)
+        :
+        // <div className={classes.Item}>
+        //     <button
+        //         onClick={() => {
+        //             setShowLogin(true);
+        //         }}>
+        //         Login
+        //                 </button>
+        //     <button
+        //         onClick={() => {
+        //             setShowSignup(true);
+        //         }}>
+        //         Sign Up
+        //                 </button>
+        // </div>
+        <NavLink
+            className={classes.Link}
+            to='/auth'
+            exact >
+            Log In/Sign Up
+                    </NavLink>
+    )
 
     return (
         <>
@@ -103,7 +111,7 @@ const Header = props => {
                     {loginHeader}
                 </nav>
             </div>
-            <div className={classes.Modal} style={{ position: 'absolute', right: '-100px' }}>
+            {/* <div className={classes.Modal} style={{ position: 'absolute', right: '-100px' }}>
                 <Modal show={showLogin} modalClosed={modalCloseHandler}>
                     <Login
                         resetModal={() => setShowLogin(false)}
@@ -115,11 +123,11 @@ const Header = props => {
                         resetModal={() => setShowSignup(false)}
                         show={showSignup} />
                 </Modal>
-                <Dropdown showStyle={!dropdown ? { display: 'none' } : null} show={dropdown} modalClosed={dropdownCloseHandler}>
-                    <NavLink className={classes.Nav} onClick={() => setDropdown(false)} style={{ display: 'block', margin: '10px 0', padding: '10px 10px', borderBottom: '1px solid rgba(0,0,0,0.5)' }} to='/my-page'>My page</NavLink>
-                    <NavLink className={classes.Nav} onClick={() => setDropdown(false)} style={{ display: 'block', margin: '10px 0', padding: '10px 10px', borderBottom: '1px solid rgba(0,0,0,0.5)' }} to='/logout'>Log out</NavLink>
-                </Dropdown>
-            </div>
+            </div> */}
+            <Dropdown showStyle={!dropdown ? { display: 'none' } : null} show={dropdown} modalClosed={dropdownCloseHandler}>
+                <NavLink className={classes.Nav} onClick={() => setDropdown(false)} style={{ display: 'block', margin: '10px 0', padding: '10px 10px', borderBottom: '1px solid rgba(0,0,0,0.5)' }} to='/my-page'>My page</NavLink>
+                <NavLink className={classes.Nav} onClick={() => setDropdown(false)} style={{ display: 'block', margin: '10px 0', padding: '10px 10px', borderBottom: '1px solid rgba(0,0,0,0.5)' }} to='/logout'>Log out</NavLink>
+            </Dropdown>
         </>
     )
 }
