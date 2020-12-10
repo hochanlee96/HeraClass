@@ -22,7 +22,7 @@ export const authenticate = (userData) => {
 
 export const logout = () => {
     return async dispatch => {
-        const response = await fetch("http://localhost:3001/user/auth/logout", {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/logout", {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -54,8 +54,7 @@ const setLogoutTimer = expires => {
 
 export const register = (email, username, password, number) => {
     return async dispatch => {
-        console.log('register');
-        const response = await fetch("http://localhost:3001/user/auth/register", {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/register", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -81,7 +80,7 @@ export const register = (email, username, password, number) => {
 export const login = (email, password) => {
     return async dispatch => {
 
-        const response = await fetch("http://localhost:3001/user/auth/login", {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + "/user/auth/login", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -94,7 +93,6 @@ export const login = (email, password) => {
         });
 
         const resData = await response.json();
-        console.log('resdata', resData)
         if (!resData.error) {
             dispatch(authenticate(resData));
         } else {
@@ -107,7 +105,7 @@ export const login = (email, password) => {
 
 export const authCheckState = () => {
     return async dispatch => {
-        const response = await fetch("http://localhost:3001/user/auth/user-data", {
+        const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + '/user/auth/user-data', {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -152,7 +150,7 @@ export const authCheckState = () => {
 export const updateFavorites = (studioId, add) => {
     return async dispatch => {
         if (add) {
-            const response = await fetch('http://localhost:3001/user/auth/update-favorites', {
+            const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + '/user/auth/update-favorites', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -165,7 +163,6 @@ export const updateFavorites = (studioId, add) => {
             });
             if (!response.ok) {
                 const errorResData = await response.json();
-                console.log(errorResData)
                 let message = 'Something went wrong...';
                 throw new Error(message);
             }
@@ -173,7 +170,7 @@ export const updateFavorites = (studioId, add) => {
 
         } else {
 
-            const response = await fetch('http://localhost:3001/user/auth/update-favorites', {
+            const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + '/user/auth/update-favorites', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -186,7 +183,6 @@ export const updateFavorites = (studioId, add) => {
             });
             if (!response.ok) {
                 const errorResData = await response.json();
-                console.log(errorResData)
                 let message = 'Something went wrong...';
                 throw new Error(message);
             }

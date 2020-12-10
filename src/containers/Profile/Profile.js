@@ -1,23 +1,82 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useReducer, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 // import { dbService } from '../../fbase';
 
 import * as authActions from '../../store/actions/auth';
+import Input from '../../components/UI/Input/Input';
+import { validate } from '../../shared/helper';
 
-const Profile = props => {
-    const [usernameInput, setUsernameInput] = useState('');
+const initialState = {
+    username: {
+        value: '',
+        touched: false,
+        validation: 'username',
+        isValid: false,
+        errorMessage: ''
+    },
+    currentPassword: {
+        value: '',
+        touched: false,
+        validation: 'password',
+        isValid: false,
+        errorMessage: ''
+    },
+    newPassword: {
+        value: '',
+        touched: false,
+        validation: 'password',
+        isValid: false,
+        errorMessage: ''
+    },
+    confirmPassword: {
+        value: '',
+        touched: false,
+        validation: 'confirmPassword',
+        isValid: false,
+        errorMessage: ''
+    }
+}
+
+const reducer = (state, action) => {
+
+    const { name, value } = action;
+    let validation;
+    switch (action.type) {
+        case 'onChange':
+            if (name === "confirmPassword") {
+                validation = { ...validate(state[name].validation, value.trim(), state.newPassword.value.trim()) }
+            } else {
+                validation = { ...validate(state[name].validation, value.trim()) };
+            }
+            return { ...state, [name]: { ...state[name], value: value, isValid: validation.isValid, errorMessage: validation.errorMessage } }
+        case 'onFocus':
+            return { ...state }
+        case 'onBlur':
+            return { ...state, [name]: { ...state[name], touched: true } }
+        case 'setUsername':
+            return { ...state, username: { ...state.username, value: action.username } }
+        default:
+            throw new Error();
+    }
+}
+
+const Profile = () => {
+
+    const [state, formDispatch] = useReducer(reducer, initialState);
+    const [email, setEmail] = useState('');
     const isVerified = useSelector(state => state.auth.verified);
     const isSocial = useSelector(state => state.auth.social);
+
+    // const [usernameInput, setUsernameInput] = useState('');
     const [message, setMessage] = useState('');
-    const [tempUsername, setTempUsername] = useState(usernameInput);
-    const [email, setEmail] = useState('');
+    const [tempUsername, setTempUsername] = useState(state.username.value);
     const [edit, setEdit] = useState(false);
     const [checking, setChecking] = useState(false);
     const [reset, setReset] = useState(false);
-    const [currentPasswordInput, setCurrentPasswordInput] = useState('');
-    const [newPasswordInput, setNewPasswordInput] = useState('');
-    const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
+    // const [currentPasswordInput, setCurrentPasswordInput] = useState('');
+    // const [newPasswordInput, setNewPasswordInput] = useState('');
+    // const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [timer, setTimer] = useState(null);
 
@@ -37,7 +96,8 @@ const Profile = props => {
                 dispatch(authActions.logout());
             }
             else {
-                setUsernameInput(resData.username);
+                formDispatch({ type: 'setUsername', username: resData.username })
+                // setUsernameInput(resData.username);
                 setEmail(resData.email);
             }
         } catch (err) {
@@ -49,19 +109,19 @@ const Profile = props => {
         fetchUserData();
     }, [fetchUserData])
 
-    const onChangeHandler = event => {
-        setUsernameInput(event.target.value);
-    }
+    // const onChangeHandler = event => {
+    //     setUsernameInput(event.target.value);
+    // }
 
-    const onPasswordInputChanged = event => {
-        if (event.target.name === "current") {
-            setCurrentPasswordInput(event.target.value);
-        } else if (event.target.name === "new") {
-            setNewPasswordInput(event.target.value);
-        } else {
-            setConfirmPasswordInput(event.target.value);
-        }
-    }
+    // const onPasswordInputChanged = event => {
+    //     if (event.target.name === "current") {
+    //         setCurrentPasswordInput(event.target.value);
+    //     } else if (event.target.name === "new") {
+    //         setNewPasswordInput(event.target.value);
+    //     } else {
+    //         setConfirmPasswordInput(event.target.value);
+    //     }
+    // }
 
     const editProfile = async (username) => {
         const response = await fetch("http://localhost:3001/user/auth/edit", {
@@ -88,10 +148,10 @@ const Profile = props => {
 
     const onSubmitHandler = event => {
         event.preventDefault();
-        if (usernameInput !== tempUsername) {
+        if (state.username.value !== tempUsername) {
             const ok = window.confirm("Change username?");
             if (ok) {
-                editProfile(usernameInput);
+                editProfile(state.username.value);
                 history.go(0);
                 setEdit(false);
             } else {
@@ -106,12 +166,13 @@ const Profile = props => {
     }
 
     const editButton = () => {
-        setTempUsername(usernameInput);
+        setTempUsername(state.username.value);
         setEdit(true);
     }
 
     const cancelEdit = () => {
-        setUsernameInput(tempUsername);
+        // setUsernameInput(tempUsername);
+        formDispatch({ type: 'setUsername', username: tempUsername })
         setEdit(false);
     }
 
@@ -147,7 +208,7 @@ const Profile = props => {
 
     const resetPassword = async event => {
         event.preventDefault();
-        if (newPasswordInput !== confirmPasswordInput) {
+        if (state.newPassword.value !== state.confirmPassword.value) {
             setPasswordError("The passwords do not match")
         } else {
             const response = await fetch("http://localhost:3001/user/auth/password-reset", {
@@ -158,13 +219,14 @@ const Profile = props => {
                 credentials: 'include',
                 body: JSON.stringify({
                     email: email,
-                    password: currentPasswordInput,
-                    newPassword: newPasswordInput,
+                    password: state.currentPassword.value,
+                    newPassword: state.newPassword.value,
                 })
             });
             const resData = await response.json();
             console.log(resData)
             if (resData.message === "success") {
+                window.alert("비밀번호가 성공적으로 변경되었습니다")
                 history.go(0);
             } else {
                 setPasswordError(resData.error);
@@ -185,13 +247,14 @@ const Profile = props => {
 
     let editContent = <form onSubmit={onSubmitHandler}>
         <label>Username : </label>
-        <input onChange={onChangeHandler} type='text' value={usernameInput} />
+        {/* <Input type='text' name="username" value={usernameInput} onChange={onChangeHandler} /> */}
+        <Input type="text" placeholder="Username" name="username" onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} value={state.username.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} touched={state.username.touched} errorMessage={state.username.errorMessage} />
         <input type='submit' value="Change Username" />
     </form>
 
     let userInfo = (<>
         <p>User Email: {email}</p>
-        <p>Username: {usernameInput}</p>
+        <p>Username: {state.username.value}</p>
     </>)
 
     let passwordResetForm;
@@ -199,13 +262,16 @@ const Profile = props => {
         passwordResetForm = (
             <form onSubmit={resetPassword}>
                 <label> Current Password
-                <input type="password" placeholder="Current Password" name="current" onChange={onPasswordInputChanged} value={currentPasswordInput} />
+                {/* <input type="password" placeholder="Current Password" name="current" onChange={onPasswordInputChanged} value={currentPasswordInput} /> */}
+                    <Input name="currentPassword" type="password" placeholder="Current Password" value={state.currentPassword.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} touched={state.currentPassword.touched} errorMessage={state.currentPassword.errorMessage} />
                 </label>
                 <label> New Password
-                <input type="password" placeholder="New Password" name="new" onChange={onPasswordInputChanged} value={newPasswordInput} />
+                {/* <input type="password" placeholder="New Password" name="new" onChange={onPasswordInputChanged} value={newPasswordInput} /> */}
+                    <Input name="newPassword" type="password" placeholder="New Password" value={state.newPassword.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} touched={state.newPassword.touched} errorMessage={state.newPassword.errorMessage} />
                 </label>
                 <label> Confirm Password
-                <input type="password" placeholder="Confirm Password" name="confirm" onChange={onPasswordInputChanged} value={confirmPasswordInput} />
+                {/* <input type="password" placeholder="Confirm Password" name="confirm" onChange={onPasswordInputChanged} value={confirmPasswordInput} /> */}
+                    <Input name="confirmPassword" type="password" placeholder="Confirm Password" value={state.confirmPassword.value} onChange={(event) => formDispatch({ type: 'onChange', name: event.target.name, value: event.target.value })} onBlur={(event) => { formDispatch({ type: 'onBlur', name: event.target.name }) }} onFocus={(event) => formDispatch({ type: 'onFocus', name: event.target.name })} touched={state.confirmPassword.touched} errorMessage={state.confirmPassword.errorMessage} />
                 </label>
                 <input type="submit" value="Reset" />
             </form>

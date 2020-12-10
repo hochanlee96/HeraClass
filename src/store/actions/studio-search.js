@@ -10,37 +10,8 @@ const computeDistance = (myLocation, studioLocation) => {
     return 12742 * Math.asin(Math.sqrt(a));
 }
 
-// export const fetchKeyword = (currentLocation, keyword) => {
-//     return async dispatch => {
-//         const response = await fetch(`http://localhost:3001/user/studio-search/search/keyword/${keyword}`, {
-//             credentials: 'include'
-//         });
-//         const resData = await response.json();
-//         console.log(resData);
-//         const fetchedStudios = [];
-
-//         for (const key in resData) {
-//             fetchedStudios.push(new SimpleStudio(
-//                 resData[key]._id,
-//                 resData[key].title,
-//                 resData[key].imageUrl,
-//                 resData[key].bigAddress,
-//                 [...resData[key].category],
-//                 [...resData[key].followers],
-//                 { ...resData[key].coordinates },
-//                 resData[key].postedBy,
-//                 [...resData[key].reviews],
-//                 computeDistance(currentLocation, resData[key].coordinates)
-//             ));
-//         }
-//         dispatch({ type: FETCH_STUDIO, fetchedStudios: fetchedStudios });
-//     }
-// }
-
 const filterToQueryString = filter => {
-    console.log('filter', filter)
     let queryString = 'center=' + filter.currentLocation.latitude + ',' + filter.currentLocation.longitude;
-    console.log(queryString);
     if (filter.keyword) {
         queryString = queryString + '&keyword=' + filter.keyword
     }
@@ -49,23 +20,20 @@ const filterToQueryString = filter => {
     }
     if (filter.amenities && filter.amenities.length > 0) {
         const amenities = filter.amenities.join(',');
-        console.log(amenities.split(','))
         queryString = queryString + '&amenities=' + amenities;
     }
     if (filter.category && filter.category.length > 0) {
         const category = filter.category.join(',');
         queryString = queryString + '&category=' + category;
     }
-    console.log(queryString);
     return queryString;
 }
 
 export const fetchStudios = searchFilter => {
-    console.log('search', searchFilter)
     return async dispatch => {
         try {
             const queryString = filterToQueryString(searchFilter);
-            const response = await fetch(`http://localhost:3001/user/studio-search/search?${queryString}`, {
+            const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + `/user/studio-search/search?${queryString}`, {
                 credentials: 'include'
             });
             if (!response.ok) {
@@ -100,7 +68,7 @@ export const updateFollower = (studioId, userEmail, add) => {
         try {
             if (add) {
                 //서버이용
-                const response = await fetch('http://localhost:3001/user/studio-search/update-followers', {
+                const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + '/user/studio-search/update-followers', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -117,7 +85,7 @@ export const updateFollower = (studioId, userEmail, add) => {
 
             } else {
                 //서버이용
-                const response = await fetch('http://localhost:3001/user/studio-search/update-followers', {
+                const response = await fetch(process.env.REACT_APP_SERVER_BASE_URL + '/user/studio-search/update-followers', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
